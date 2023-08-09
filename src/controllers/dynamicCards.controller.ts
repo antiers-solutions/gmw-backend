@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { sessionCheck } from '../middleware/sessionCheck';
 import sendResponse from '../responses/response.helper';
 import dynamicCardsHelper from '../controller-helpers/dynamicCards.helper';
+
 class DynamicCardsController implements Controller {
   public path = '/dynamic-cards';
 

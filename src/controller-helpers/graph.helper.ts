@@ -33,7 +33,7 @@ class GraphHelper {
       });
 
       const statusData: any = [];
-      // formating the result in the form required in the frontend
+      // formating the results in the form required in the frontend
       for (const key in countByStatus) {
         statusData.push({
           name: key.charAt(0).toUpperCase() + key.slice(1, key.length),
@@ -68,7 +68,7 @@ class GraphHelper {
 
       const levelData: any = [];
 
-      // formating the result in the form required in the frontend
+      // formating the results in the form required in the frontend
 
       Object.values(countByLevel).forEach((item, index: number) => {
         const level = index + 1;
