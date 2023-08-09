@@ -1,0 +1,349 @@
+# This application is the backend server for the Grant Management Webapp
+
+
+## Installation
+
+#### Install the dependencies with npm
+
+```bash
+  npm i 
+```
+Note: docker and docker compose must be installed in your local system before running this software using docker 
+
+#### Running project in development mode using docker compose
+```bash
+  docker-compose up -d
+```
+#### Running project using npm 
+- First set up mongoDB in your local system using the [mongoDB installation guide](https://www.mongodb.com/docs/manual/installation/)
+- Setup Redis on your local system using the [redis installation guide](https://redis.io/docs/getting-started/)
+After successfully setting up the required services
+
+```bash
+  npm start 
+```
+## Testing Guide
+#### Run unit tests
+```bash
+  npm run test 
+```
+#### Run test cases for APIs
+```bash
+  npm run test:api
+```
+#### For unit test coverage
+```bash
+  npm run test:coverage
+```
+#### For test case coverage for APIs
+```bash
+  npm run test:api:coverage
+```
+
+## API Reference
+
+### api/project
+get data for projects
+
+#### 1. Get all projects
+
+```http
+  GET /project/get-all
+```
+#### Request qureyParams
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `pageLimit` | `number` | number of projects to be displayed on one page |
+| `pageNo` | `number` | Index of current page |
+
+#### Response 
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | Id of of the project |
+| `start_date`      | `date` | date when the project was started (application was accepted) |
+| `project_name`      | `string` | name of project |
+| `status`      | `string` | status of projects |
+| `total_cost`      | `{ amount: string; currency: string }` | billing information of the project as a whole (amount and denom) |
+| `total_duration`      | `string` | estimated time for the project to be completed |
+| `team_id`      | `string` | Id of of the team working on this project |
+| `level`      | `string` | level of project |
+| `milestones`      | `string` | ndex of the current milestones in the project |
+| `totalMilestones`      | `string` | total number of milestones in this project |
+| `totalCount`      | `string` | length of the array of data |
+
+#### 2. Get project by id
+
+```http
+  GET project/get-by-id/:projectId
+```
+#### Request Params
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `projectId`      | `string` | **Required**. id of the project to be searched |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | id of of the project |
+| `user_github_id`     | `string` | id of the user who first submitted the application for a grant |
+| `file_name`      | `string` | name of the project MD file (from the github repo) |
+| `start_date`      | `date` | date when the project was started (application was accepted) |
+| `payment_details`      | `string` | payment address of the team mentioned in the project MD file |
+| `md_content`      | `string` | content of the project MD file |
+| `md_link`      | `string` | link used to download the RAW MD file contents from github |
+| `html_url`      | `string` | this link will redirect the user to the page on github that displays all the contents of the MD file |
+| `project_name`      | `string` | name of project |
+| `status`      | `string` | status of projects |
+| `total_cost`      | `{ amount: string; currency: string }` | billing information of the project as a whole (amount and denom) |
+| `total_duration`      | `string` | estimated time for the project to be completed |
+| `team_id`      | `string` | Id of of the team working on this project |
+| `level`      | `string` | level of project |
+| `legal_structure`      | `{ registered_address: string, registered_legal_entity: string }` | the address and legal entity of the team working on this project |
+| `milestones`      | `string` | ndex of the current milestones in the project |
+| `totalMilestones`      | `string` | total number of milestones in this project |
+
+
+
+#### 3.  Get groject by name
+
+```http
+  GET project/get-by-name
+```
+#### Request queryParams
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `searchedName` | `string` | **Required**. Name of the project |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | id of of the project |
+| `start_date`      | `date` | date when the project was started (application was accepted) |
+| `payment_details`      | `string` | payment address of the team mentioned in the project MD file |
+| `html_url`      | `string` | this link will redirect the user to the page on github that displays all the contents of the MD file |
+| `project_name`      | `string` | name of project |
+| `status`      | `string` | status of projects |
+| `total_cost`      | `{ amount: string; currency: string }` | billing information of the project as a whole (amount and denom) |
+| `total_duration`      | `string` | estimated time for the project to be completed |
+| `team_id`      | `string` | Id of of the team working on this project |
+| `level`      | `string` | level of project |
+| `milestones`      | `string` | ndex of the current milestones in the project |
+| `totalMilestones`      | `string` | total number of milestones in this project |
+| `file_name`      | `string` | name of the MD file of the project |
+
+#### 4. Get filtered data for projects by their level/status
+
+```http
+  GET /api/items/${id}
+```
+
+#### Request queryParams 
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `pageLimit`      | `number` | number of projects to be displayed on one page |
+| `pageNo`      | `number` | index of the current page |
+| `level`      | `string` | level criteria for filtering projects |
+| `status`      | `string` | status critera for filtering projects |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | id of of the project |
+| `start_date`      | `date` | date when the project was started (application was accepted) |
+| `project_name`      | `string` | name of project |
+| `status`      | `string` | status of projects |
+| `total_cost`      | `{ amount: string; currency: string }` | billing information of the project as a whole (amount and denom) |
+| `total_duration`      | `string` | estimated time for the project to be completed |
+| `team_id`      | `string` | Id of of the team working on this project |
+| `level`      | `string` | level of project |
+| `milestones`      | `string` | ndex of the current milestones in the project |
+| `totalMilestones`      | `string` | total number of milestones in this project |
+
+#### 5. Update a project's status
+
+```http
+  PUT project/update-status
+```
+#### Request Body
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `updatedStatus`      | `string` | **Required**. the new status of the project |
+| `id`      | `string` | **Required**. the id of the project |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `status`      | `string` | "success" is returned |
+
+### api/teams
+Get data for teams
+
+#### 1. Get list of all teams
+
+```http
+  GET teams/get-all
+```
+#### Request Body
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `pageLimit` | `number` | number of projects to be displayed on one page |
+| `pageNo` | `number` | Index of current page |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `totalCount`      | `number` | total number of teams |
+| `id`      | `string` | id of team |
+| `name`      | `string` | name of team |
+| `projects`      | `[{ projectId : string, status : string }]` | array containing all the projectIds and their respective status for this team |
+
+#### 2. Get data of a team by it's id
+
+```http
+  GET teams/get-by-id/:teamId
+```
+#### Request Body
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `teamId` | `string` | id of the team to be searched |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `team data` |  |  |
+| `id`      | `string` | id of team |
+| `name`      | `string` | name of team |
+| `projects`      | `[{ projectId : string, status : string }]` | array containing all the projectIds and their respective status for this team |
+| `project data` |  |  |
+| `id`      | `string` | id of of the project |
+| `start_date`      | `date` | date when the project was started (application was accepted) |
+| `project_name`      | `string` | name of project |
+| `status`      | `string` | status of projects |
+| `total_cost`      | `{ amount: string; currency: string }` | billing information of the project as a whole (amount and denom) |
+| `total_duration`      | `string` | estimated time for the project to be completed |
+| `team_id`      | `string` | Id of of the team working on this project |
+| `level`      | `string` | level of project |
+| `milestones`      | `string` | ndex of the current milestones in the project |
+| `totalMilestones`      | `string` | total number of milestones in this project |
+
+#### 3. Get data of teams by it's name
+
+```http
+  GET teams/search-by-name
+```
+#### Request Body
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `searchedName` | `string` | number of team to be searched |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `totalCount`      | `number` | total number of teams |
+| `id`      | `string` | id of team |
+| `name`      | `string` | name of team |
+| `projects`      | `[{ projectId : string, status : string }]` | array containing all the projectIds and their respective status for this team |
+
+#### 4. Merge data of selected teams under one name
+
+```http
+  PUT team/merge-team
+```
+#### Request Body
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `updatedName` | `string` | new name of the selected teams |
+| `teamIds` | `[string]` | array of team ids to be merged |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `newTeamId`      | `string` | id of the new team |
+
+### api/user
+
+#### 1. Sign in to github and for login session and security using user-agent
+
+```http
+  POST user/signup
+```
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `name`      | `string` | name of the github user who logged in |
+| `gitId`      | `string` | username of the github user who logged in |
+| `image_url`      | `string` | url to the profile picture of the github user who logged in |
+
+#### 2. Log out user out of session
+
+```http
+  DELETE user/logout
+```
+#### Request Cookies Param
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `token`      | `string` | name of the github user who logged in |
+
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `data`      | `null` | "null" is returned upon successful logout |
+
+### api/dynamic-cards
+
+#### 1. Get data for cards on front-end
+
+```http
+  GET /dynamic-cards
+```
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `totalProposals`      | `number` | all applications in the grants program |
+| `totalProjects`      | `number` | all applications that were accepted |
+| `totalRejectedProposals`      | `number` | all applications that were rejected |
+| `totalCompletedProjects`      | `number` | all projects that were completed |
+
+### api/graphs
+
+#### 1. Get number of projects per each status
+
+```http
+  GET graph/get-projects-count-by-status
+```
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `active`      | `number` | count of projects that have the status “active” |
+| `hold`      | `number` | count of projects that have the status “hold” |
+| `complete`      | `number` | count of projects that have the status “complete” |
+
+#### 2. Get number of projects per each level
+
+```http
+  GET graph/get-projects-count-by-level
+```
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `level1`      | `number` | count of projects at level1 |
+| `level2`      | `number` | count of projects at level2 |
+| `level3`      | `number` | count of projects at level3 |
+
+#### 3. Get number of applications accepted/rejected (month-wise)
+
+```http
+  GET graph/get-rejected-accepted-projects-year
+```
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `month`      | `string` | name of month |
+| `accepted`      | `number` | count of accepted applications |
+| `rejected`      | `number` | count of rejected applications |

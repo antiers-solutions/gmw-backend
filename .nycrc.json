@@ -1,0 +1,19 @@
+{
+    "exclude": [
+        "src/app.ts",
+        "src/config/index.ts",
+        "src/constants/index.ts",
+        "src/interfaces/index.ts",
+        "src/test/testConstants.ts",
+        "src/helpers/redis.helper.ts",
+        "src/helpers/mdParse.helper.ts",
+        "src/helpers/octokit.helper.ts",
+        "src/helpers/mongo.data.helper.ts",
+        "src/responses/response.helper.ts",
+        "src/helpers/githubHook.helper.ts",
+        "src/interfaces/request.interface.ts",
+        "src/interfaces/responses.interface.ts",
+        "src/interfaces/controller.interfaces.ts",
+        "src/controllers/githubHook.controller.ts"
+    ]
+}
