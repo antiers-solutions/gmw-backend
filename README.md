@@ -18,7 +18,7 @@
 **You can start all the required backend services using docker by using the docker-compose file in the repo. Otherwise, this can also be done manually by following the steps mentioned below.** 
 #### Install the dependencies with npm:
 
-- node version: LTS or above
+- Recommended node version: v16
 ```bash
   npm i 
 ```

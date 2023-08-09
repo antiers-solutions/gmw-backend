@@ -24,8 +24,8 @@
       "pre-commit": "npm run fix"
     }
   },
-  "author": "Antier Solutions",
-  "license": "Unlicense",
+  "author": "Antier Solutions Private Limited",
+  "license": "Apache-2.0",
   "dependencies": {
     "@octokit/core": "^4.2.4",
     "@octokit/oauth-app": "^4.2.4",
