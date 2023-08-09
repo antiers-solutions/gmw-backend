@@ -2,19 +2,19 @@ import sinon from 'sinon';
 import { expect } from 'chai';
 import * as config from '../config';
 import { makeid } from '../utils/helper.utils';
-import teamsHelper from '../helpers/teams.helper';
+import teamsHelper from '../controller-helpers/teams.helper';
 import redisHelper from '../helpers/redis.helper';
-import graphHelper from '../helpers/graph.helper';
+import graphHelper from '../controller-helpers/graph.helper';
 import { Project, Pull, Team } from './testConstants';
-import projectsHelper from '../helpers/projects.helper';
-import milestoneHelper from '../helpers/milestone.helper';
+import projectsHelper from '../controller-helpers/projects.helper';
+import milestoneHelper from '../controller-helpers/milestone.helper';
 import octoConnectionHelper from '../helpers/octoConnection.helper';
 import { mongoDBConnection, disconnectMongo } from '../mongoDB/connection';
 
 import getPullRequestDetails from '../helpers/octokit.helper';
 
 before(async () => {
-  config.initiate();
+  config.loadEnvs();
   redisHelper.startRedis();
   await mongoDBConnection();
 });
@@ -47,7 +47,7 @@ describe('Get Project Count By Status', () => {
 });
 
 describe('Get Project Count By Level', () => {
-  const stub = sinon.stub(graphHelper, 'gelProjectCountByLevel');
+  const stub = sinon.stub(graphHelper, 'getProjectCountByLevel');
   it('It should return data of type array ', async () => {
     // Configure the stub to return a mock response
     stub.resolves({
@@ -58,7 +58,7 @@ describe('Get Project Count By Level', () => {
       ]
     });
 
-    const response = await graphHelper.gelProjectCountByLevel();
+    const response = await graphHelper.getProjectCountByLevel();
 
     expect(response.data).to.be.an('array');
     response.data.forEach((e: any) => {

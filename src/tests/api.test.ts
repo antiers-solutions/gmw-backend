@@ -4,6 +4,7 @@ import express from 'express';
 import { expect } from 'chai';
 import request from 'supertest';
 import * as config from '../config';
+config.loadEnvs();
 import redisHelper from '../helpers/redis.helper';
 import { Milestone, Project, Team } from './testConstants';
 import UserController from '../controllers/user.controller';
@@ -13,8 +14,6 @@ import ProjectController from '../controllers/projects.controller';
 import MilestoneController from '../controllers/milestone.controller';
 import GithubHookController from '../controllers/githubHook.controller';
 import { mongoDBConnection, disconnectMongo } from '../mongoDB/connection';
-
-config.initiate();
 
 let authToken: string;
 let app: express.Application;
