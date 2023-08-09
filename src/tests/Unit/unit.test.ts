@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import * as config from '../../config';
-import { makeid } from '../../utils/helper.utils';
+import { log } from '../../utils/helper.utils';
 import { Pull, Team } from '../Constants/testConstants';
 import graphHelper from '../../controller-helpers/graph.helper';
 import teamsHelper from '../../controller-helpers/teams.helper';
@@ -995,28 +995,6 @@ describe('Making request for get pulls data to OctoHelper', async () => {
 
     // Restore the original function behavior
     stub.restore();
-  });
-});
-
-// *****************************UtilHelper********************************
-
-describe('MakeId util helper function ', async () => {
-  it('Return unique id', async () => {
-    const response = makeid(10);
-    expect(response).to.be.a('string');
-    expect(response.length).to.equal(10);
-  });
-
-  it('-Ve test case giving string length 0 ', async () => {
-    const response = makeid(0);
-    expect(response).to.be.a('string');
-    expect(response.length).to.equal(0);
-  });
-
-  it('-Ve test case giving string length -1 ', async () => {
-    const response = makeid(-1);
-    expect(response).to.be.a('string');
-    expect(response.length).to.equal(0);
   });
 });
 
