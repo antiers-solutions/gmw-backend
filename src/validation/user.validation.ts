@@ -7,7 +7,7 @@ export const userValidation = (
   next: express.NextFunction
 ) => {
   const schema = Joi.object({
-    access_token: Joi.string().min(3).required()
+    access_token: Joi.string().min(7).required()
   });
 
   const { error } = schema.validate(req.body);

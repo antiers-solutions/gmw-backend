@@ -1,8 +1,8 @@
 {
-  "name": "typescript_sql",
+  "name": "gmw-backend",
   "version": "1.0.0",
-  "description": "boilerplate",
-  "main": "index.js",
+  "description": "backend services for grant management webapp",
+  "main": "server.ts",
   "scripts": {
     "set": "npm install && npm run prepare",
     "dev": "NODE_ENV=dev nodemon ./src/server.ts",
@@ -25,7 +25,7 @@
     }
   },
   "author": "Antier Solutions",
-  "license": "ISC",
+  "license": "Unlicense",
   "dependencies": {
     "@octokit/core": "^4.2.4",
     "@octokit/oauth-app": "^4.2.4",
