@@ -85,6 +85,7 @@ class ProjectHelper {
       const data = await mongoDataHelper.findAndQueryData(DATA_MODELS.Project, {
         id: searchId
       });
+      // if not present then return
 
       if (!data.length)
         return {
@@ -159,7 +160,7 @@ class ProjectHelper {
           { id: id },
           { status: status }
         );
-
+        // if not present then return
         if (!data.modifiedCount) {
           return {
             status: STATUS_CODES.NOTFOUND,
@@ -220,6 +221,9 @@ class ProjectHelper {
             level: level,
             status: status
           });
+
+          // if not present then return
+
           if (!filteredData.length) {
             return {
               status: STATUS_CODES.NOTFOUND,
@@ -257,6 +261,8 @@ class ProjectHelper {
           const count = await mongoDataHelper.getCount(DATA_MODELS.Project, {
             level: level
           });
+
+          // if not present then return
 
           if (!filteredData.length) {
             return {
@@ -297,6 +303,9 @@ class ProjectHelper {
           const count = await mongoDataHelper.getCount(DATA_MODELS.Project, {
             status: status
           });
+
+          // if not present then return
+
           if (!filteredData.length) {
             return {
               status: STATUS_CODES.NOTFOUND,

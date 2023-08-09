@@ -17,14 +17,20 @@ class DynamicCard {
 
   async getCardsData(): Promise<ESResponse> {
     try {
+      // getting total proposals accepted and rejected
       const totalProposals = await mongoDataHelper.getCount(
         DATA_MODELS.Proposal
       );
+
+      // getting the total projects
       const totalProjects = await mongoDataHelper.getCount(DATA_MODELS.Project);
+      // getting the total rejected proposals
       const totalRejectedProposals = await mongoDataHelper.getCount(
         DATA_MODELS.Proposal,
         { status: 'rejected' }
       );
+
+      // getting the the total completed projects
       const totalCompletedProjects = await mongoDataHelper.getCount(
         DATA_MODELS.Project,
         { status: 'complete' }
