@@ -29,23 +29,22 @@ class MilestoneHelper {
       if (pageSize <= 40) {
         // getting all the milestones data with pagination and selected data.
 
-        const milestones =
-          await mongoDataHelper.findAndQueryDataWithSelectedColumnsAndPagination(
-            DATA_MODELS.Milestone,
-            {},
-            [
-              'id',
-              'file_name',
-              'project_id',
-              'project_md_link',
-              'status',
-              'cost',
-              'milesoneNo',
-              'merged_at'
-            ],
-            pageNumber,
-            pageSize
-          );
+        const milestones = await mongoDataHelper.findSelectedDataWithPagination(
+          DATA_MODELS.Milestone,
+          {},
+          [
+            'id',
+            'file_name',
+            'project_id',
+            'project_md_link',
+            'status',
+            'cost',
+            'milesoneNo',
+            'merged_at'
+          ],
+          pageNumber,
+          pageSize
+        );
         // return if not present
         if (!milestones.length) {
           return {
@@ -57,8 +56,8 @@ class MilestoneHelper {
         return { data: { milestones, totalCount }, error: false };
       } else {
         return {
-          status: STATUS_CODES.NOTFOUND,
-          message: RESPONSE_MESSAGES.NOT_FOUND
+          status: STATUS_CODES.UNPROCESSABLE,
+          message: RESPONSE_MESSAGES.Max_LIMIT
         };
       }
     } catch (error) {
@@ -103,7 +102,6 @@ class MilestoneHelper {
 
       return { data, error: false };
     } catch (error) {
-      console.log('error from helper', error);
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }

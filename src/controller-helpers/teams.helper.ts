@@ -30,14 +30,13 @@ class TeamsHelper {
       // to query all the teams data present in the db with the page number required and page size
 
       if (pageSize <= 40) {
-        const teams =
-          await mongoDataHelper.findAndQueryDataWithSelectedColumnsAndPagination(
-            DATA_MODELS.Team,
-            {},
-            ['id', 'projects', 'name'],
-            pageNumber,
-            pageSize
-          );
+        const teams = await mongoDataHelper.findSelectedDataWithPagination(
+          DATA_MODELS.Team,
+          {},
+          ['id', 'projects', 'name'],
+          pageNumber,
+          pageSize
+        );
 
         // check if team and team_count found or not
         if (!teams.length || !totalCount) {
@@ -67,12 +66,11 @@ class TeamsHelper {
         };
       } else {
         return {
-          message: RESPONSE_MESSAGES.NOT_FOUND,
-          status: STATUS_CODES.BADREQUEST
+          message: RESPONSE_MESSAGES.Max_LIMIT,
+          status: STATUS_CODES.UNPROCESSABLE
         };
       }
     } catch (err) {
-      console.log('error from helper: ', err);
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }
@@ -122,7 +120,6 @@ class TeamsHelper {
         error: false
       };
     } catch (error) {
-      console.log('error from helper', error);
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }
@@ -219,7 +216,6 @@ class TeamsHelper {
 
       return { data: newTeamId, error: false };
     } catch (error) {
-      console.log('error from helper', error);
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }

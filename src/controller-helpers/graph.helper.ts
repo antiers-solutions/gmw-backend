@@ -6,6 +6,7 @@ import {
   MONTHS
 } from '../constants';
 import mongoDataHelper from '../helpers/mongo.data.helper';
+import redisHelper from '../helpers/redis.helper';
 
 class GraphHelper {
   static instance: GraphHelper = null;
@@ -80,7 +81,6 @@ class GraphHelper {
 
       return { data: levelData, error: false };
     } catch (err) {
-      console.log('internal server: ', err);
       return { error: true, data: null, status: STATUS_CODES.INTERNALSERVER };
     }
   };
@@ -130,11 +130,7 @@ class GraphHelper {
         // if year and requested year is same then proceed
 
         if (year === getDataYear) {
-          console.log('year: ', year, 'month', MONTHS[month]);
-
           if (proposal.status === 'rejected') {
-            console.log('entered rejected');
-
             // storing all the data in the years object
 
             monthCount[MONTHS[month]].Rejected++;
@@ -143,8 +139,6 @@ class GraphHelper {
               ...yearObejct[getDataYear]
             };
           } else if (proposal.status === 'accepted') {
-            console.log('entered accepted');
-
             monthCount[MONTHS[month]].Accepted++;
             yearObejct[getDataYear] = {
               [MONTHS[month]]: monthCount[MONTHS[month]],
@@ -163,9 +157,7 @@ class GraphHelper {
         yearlyGraphData.push({ name: item, ...yearUnformedData[item] });
       return { data: yearlyGraphData, error: false };
     } catch (error) {
-      console.log('error: ', error);
-
-      return;
+      return { error: true, data: null, status: STATUS_CODES.INTERNALSERVER };
     }
   };
 }

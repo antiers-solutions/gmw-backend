@@ -19,7 +19,6 @@ class Redis {
   }
   public async stopRedis() {
     await this.client.disconnect();
-    // console.log('Redis disconnected Successfully');
   }
 
   /**
@@ -45,7 +44,6 @@ class Redis {
 
       return result;
     } catch (error) {
-      console.log('error from redis storeInRedis:: ', error);
       return null;
     }
   }
@@ -63,7 +61,6 @@ class Redis {
 
       return userSession;
     } catch (error) {
-      console.log('error from redis getDataFromRedis:: ', error);
       return null;
     }
   }
@@ -85,7 +82,6 @@ class Redis {
         return result;
       }
     } catch (error) {
-      console.log('error from redis getDataFromRedis:: ', error);
       return null;
     }
   }
@@ -108,7 +104,6 @@ class Redis {
         return result;
       }
     } catch (error) {
-      console.log('error from redis removeFromRedis:: ', error);
       return null;
     }
   }
@@ -130,7 +125,6 @@ class Redis {
         return result;
       }
     } catch (error) {
-      console.log('error from redis getDataFromRedisKey:: ', error);
       return null;
     }
   }

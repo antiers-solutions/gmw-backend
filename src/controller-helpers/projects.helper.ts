@@ -29,25 +29,24 @@ class ProjectHelper {
 
       if (pageSize <= 40) {
         // getting data of all the projects with filtered column and pagination
-        const projects =
-          await mongoDataHelper.findAndQueryDataWithSelectedColumnsAndPagination(
-            DATA_MODELS.Project,
-            {},
-            [
-              'id',
-              'start_date',
-              'project_name',
-              'status',
-              'total_cost',
-              'total_duration',
-              'team_id',
-              'level',
-              'milestones',
-              'totalMilestones'
-            ],
-            pageNumber,
-            pageSize
-          );
+        const projects = await mongoDataHelper.findSelectedDataWithPagination(
+          DATA_MODELS.Project,
+          {},
+          [
+            'id',
+            'start_date',
+            'project_name',
+            'status',
+            'total_cost',
+            'total_duration',
+            'team_id',
+            'level',
+            'milestones',
+            'totalMilestones'
+          ],
+          pageNumber,
+          pageSize
+        );
 
         // if no data then return
         if (!projects.length || !totalCount) {
@@ -65,8 +64,8 @@ class ProjectHelper {
         };
       } else {
         return {
-          message: RESPONSE_MESSAGES.NOT_FOUND,
-          status: STATUS_CODES.BADREQUEST
+          message: RESPONSE_MESSAGES.Max_LIMIT,
+          status: STATUS_CODES.UNPROCESSABLE
         };
       }
     } catch (error) {
@@ -140,7 +139,6 @@ class ProjectHelper {
       // return data
       return { error: false, data };
     } catch (error) {
-      console.log('error from helper', error);
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }
@@ -194,7 +192,7 @@ class ProjectHelper {
         // gettind data in filtered data when fileration is done on basis of level and status both
         if (level && status) {
           const filteredData =
-            await mongoDataHelper.findAndQueryDataWithSelectedColumnsAndPagination(
+            await mongoDataHelper.findSelectedDataWithPagination(
               DATA_MODELS.Project,
               {
                 level: level,
@@ -236,7 +234,7 @@ class ProjectHelper {
         // gettind data in filtered data when fileration is done on basis of level
         else if (level) {
           const filteredData =
-            await mongoDataHelper.findAndQueryDataWithSelectedColumnsAndPagination(
+            await mongoDataHelper.findSelectedDataWithPagination(
               DATA_MODELS.Project,
               {
                 level: level
@@ -277,7 +275,7 @@ class ProjectHelper {
         // gettind data in filtered data when fileration is done on basis of status
         else if (status) {
           const filteredData =
-            await mongoDataHelper.findAndQueryDataWithSelectedColumnsAndPagination(
+            await mongoDataHelper.findSelectedDataWithPagination(
               DATA_MODELS.Project,
               {
                 status: status
@@ -321,13 +319,11 @@ class ProjectHelper {
         };
       } else {
         return {
-          message: RESPONSE_MESSAGES.NOT_FOUND,
-          status: STATUS_CODES.BADREQUEST
+          message: RESPONSE_MESSAGES.Max_LIMIT,
+          status: STATUS_CODES.UNPROCESSABLE
         };
       }
     } catch (error) {
-      console.log('Error : ', error);
-
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }

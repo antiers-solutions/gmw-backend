@@ -25,7 +25,6 @@ export const sessionCheck = async (
       );
       if (data) {
         const updatedSeconds = Math.floor(Date.now() / 1000) + 60 * 60;
-        // const updatedSeconds = Math.floor(Date.now() / 1000) + 30;
 
         // updating the user agent time for session login
         await redisHelper.storeInRedis(
@@ -56,7 +55,6 @@ export const sessionCheck = async (
       });
     }
   } catch (err) {
-    console.log('error in session checker: ', err);
     return sendResponse(res, {
       message: RESPONSE_MESSAGES.INERNAL_SERVER_ERROR,
       status: STATUS_CODES.INTERNALSERVER

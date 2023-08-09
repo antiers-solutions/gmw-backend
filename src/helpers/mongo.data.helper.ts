@@ -34,7 +34,6 @@ class MongoDataHelper {
         return result;
       }
     } catch (error) {
-      console.log('error from count data in db query', error);
       return null;
     }
   }
@@ -49,12 +48,10 @@ class MongoDataHelper {
     try {
       this._checkModel(name);
       const Model = this._getModel(name);
-      console.log(Model);
       const DataObject = new Model(data);
       const result = await DataObject.save();
       return result;
     } catch (error) {
-      console.log('error from save query', error);
       return null;
     }
   }
@@ -73,7 +70,6 @@ class MongoDataHelper {
       const result = await Model.insertMany(data);
       return result;
     } catch (error) {
-      console.log('error from save query', error);
       return null;
     }
   }
@@ -91,7 +87,6 @@ class MongoDataHelper {
       const result = await this._getModel(name).find(query);
       return result;
     } catch (error) {
-      console.log('error from  find query helper', error.message);
       return null;
     }
   }
@@ -119,7 +114,6 @@ class MongoDataHelper {
 
       return result;
     } catch (error) {
-      console.log('error from find query helper', error);
       return null;
     }
   }
@@ -134,7 +128,7 @@ class MongoDataHelper {
    * @returns
    */
 
-  async findAndQueryDataWithSelectedColumnsAndPagination(
+  async findSelectedDataWithPagination(
     name: string,
     query: any,
     selectedFields: string[],
@@ -155,7 +149,6 @@ class MongoDataHelper {
 
       return result;
     } catch (error) {
-      console.log('error from find query helper', error);
       return null;
     }
   }
@@ -177,7 +170,6 @@ class MongoDataHelper {
       });
       return result;
     } catch (error) {
-      console.log('error in findOneAndUpdate : ', error);
       return null;
     }
   }
@@ -207,7 +199,6 @@ class MongoDataHelper {
 
       return result;
     } catch (error) {
-      console.log('error from  find query helper', error);
       return null;
     }
   }
@@ -226,7 +217,6 @@ class MongoDataHelper {
       const result = await this._getModel(name).updateOne(id, update);
       return result;
     } catch (error) {
-      console.log('error from update data helper function', error);
       return null;
     }
   }
@@ -244,7 +234,6 @@ class MongoDataHelper {
       const result = await this._getModel(name).deleteMany(deleteObj);
       return result;
     } catch (error) {
-      console.log('error from update data helper function', error);
       return null;
     }
   }
@@ -261,7 +250,6 @@ class MongoDataHelper {
       const result = await this._getModel(name).deleteOne(deleteObj);
       return result;
     } catch (error) {
-      console.log('error from update data helper function', error);
       return null;
     }
   }
