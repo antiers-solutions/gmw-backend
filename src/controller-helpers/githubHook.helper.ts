@@ -21,7 +21,6 @@ class GithubHookHelper {
       if (requestBody?.pull_request) {
         const { pull_request } = requestBody;
         const { url } = pull_request;
-        // console.log('pull_request ::: ', pull_request);
 
         const response: any = await axios.get(`${url}/files`);
         const element = response?.data[0];
@@ -41,8 +40,6 @@ class GithubHookHelper {
               );
 
               project.merged_at = pull_request.merged_at;
-
-              console.log('project : ', project);
 
               //save or update the saved Project data
               await MongoDataHelper.findOneAndUpdate(
@@ -71,10 +68,10 @@ class GithubHookHelper {
                 data: 'success'
               };
             } else {
-              throw new Error('Proposal not present in Proposal collection');
+              throw new Error('Proposal in not present in the collection');
             }
           } else {
-            throw new Error('changes is not in applications/ directory');
+            throw new Error('Changes are not in the applications/ directory');
           }
         } else {
           let dataRes;

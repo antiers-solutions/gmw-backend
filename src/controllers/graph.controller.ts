@@ -40,10 +40,8 @@ class GraphController implements Controller {
     sendResponse(res, totalPurposal);
   };
 
-  //
   public getRejectedProjectsBody = async (req: any, res: any) => {
     const year = Number(req.query.year);
-    console.log(year, 'year');
     const rejectedAcceptedData =
       await graphHelper.getRejectedAndAcceptedProjectsBody(year);
     sendResponse(res, rejectedAcceptedData);

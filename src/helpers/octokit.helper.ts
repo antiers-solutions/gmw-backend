@@ -23,8 +23,6 @@ const getPullRequestDetails = async () => {
 
     // get all closed pull request and filter the merged only for added new files
     for (let page = 1; page <= pages; page++) {
-      console.log('Page: ', page);
-
       // get the all merged data
       const pullRequestsResponse = await octoConnectionHelper.octoRequest(
         'GET /repos/w3f/Grants-Program/pulls',
@@ -90,8 +88,6 @@ const getPullRequestDetails = async () => {
           extrected_proposal_data: ''
         };
 
-        console.log('File Name: ', fileName, ', MergedAt: ', item?.merged_at);
-
         // check if closed pull request is merged or not
         if (fileName && item?.merged_at) {
           // collect data for syncing the merge date on project data
@@ -115,8 +111,6 @@ const getPullRequestDetails = async () => {
       }
     }
 
-    console.log('Pull Request Data Extarcted');
-
     return { mergedPullRequestsForAddedFiles, purposals };
   } catch (err) {
     console.log(
@@ -132,12 +126,12 @@ const firstTimeFileDataLoad = async () => {
   try {
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
-      'GET /repos/JatinAntier/Grants-Program_dummy/contents/applications'
+      process.env.APPLICATIONS_REPO
     );
 
     //get all milestones files
     const milestoneFiles: any = await octoConnectionHelper.octoRequest(
-      'GET /repos/w3f/Grant-Milestone-Delivery/contents/deliveries'
+      process.env.DELIVERIES_REPO
     );
 
     // if projects and milestone meta-data file not found then return

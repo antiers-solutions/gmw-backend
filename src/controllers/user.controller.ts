@@ -28,7 +28,6 @@ class UserController implements Controller {
     );
 
     // set access token cookie
-    console.log(userSign?.token, 'token');
     res.cookie('token', userSign?.token, {
       path: '/',
       httpOnly: true

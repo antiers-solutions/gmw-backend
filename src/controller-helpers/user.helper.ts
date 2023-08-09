@@ -144,7 +144,6 @@ class UserHelper {
         }
       }
     } catch (err) {
-      console.log('err while signIn: ', err.message);
       return {
         error: true,
         data: { isLogin: false },
@@ -175,7 +174,6 @@ class UserHelper {
         site_admin: response.data?.site_admin
       };
     } catch (error) {
-      console.log('error in userSigninData : ', error.message);
       return { error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   }
@@ -210,6 +208,7 @@ class UserHelper {
     try {
       // this reomves the token from the redis hence preventing the re-login
       await redisHelper.removeFromRedis(REDIS_VARIABLES.UserData, token);
+      await redisHelper.removeFromRedis(REDIS_VARIABLES.UserAgent, token);
       return { message: '', error: false, data: null };
     } catch (error) {
       return { error: true, status: STATUS_CODES.INTERNALSERVER };

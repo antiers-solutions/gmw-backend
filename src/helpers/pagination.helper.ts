@@ -29,7 +29,6 @@ class PaginationMongo {
         return result;
       }
     } catch (error) {
-      console.log('error from count data in db query', error);
       return error;
     }
   }

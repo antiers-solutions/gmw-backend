@@ -38,7 +38,8 @@ export const STATUS_CODES = {
   INTERNALSERVER: 500,
   BADGATEWAYS: 502,
   SERVICEUNAVILABLE: 503,
-  GATEWAYTIMEOUT: 504
+  GATEWAYTIMEOUT: 504,
+  UNPROCESSABLE: 422
 };
 
 // Response messages
@@ -51,13 +52,14 @@ export const RESPONSE_MESSAGES = {
   INVALID_ID: 'Id is not valid!',
   INVALID_NAME: 'Name is not valid',
   UNAUTHORIZED: 'Unauthorized!',
-  ROUTE_404: 'Route not found.'
+  ROUTE_404: 'Route not found.',
+  Max_LIMIT: 'Invalid page limit (defaults to 10, maximum is 40)'
 };
 
 // Error messages
 export const ERROR_MESSAGES = {
   ERROR_WHILE_EXTRACTING_PULL_REQUEST_DATA:
-    'Something goes wrong while extracting the closed pull request data!'
+    'Something went wrong while extracting the closed pull request data'
 };
 
 export const MONTHS = [
