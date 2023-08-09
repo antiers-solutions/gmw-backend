@@ -34,8 +34,6 @@ class UserController implements Controller {
       httpOnly: true
     });
 
-    console.log();
-
     return sendResponse(res, userSign);
   };
 
