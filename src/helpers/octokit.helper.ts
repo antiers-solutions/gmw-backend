@@ -366,7 +366,7 @@ export const parseMetaDataFile = async (
         : '',
       status: null,
       total_cost: { amount, currency },
-      total_duration: pairData['total estimated duration'],
+      total_duration: pairData['total estimated duration'] || '',
       team_id: teamId,
       level: pairData['level'],
       html_url: mdDetails.html_url,
