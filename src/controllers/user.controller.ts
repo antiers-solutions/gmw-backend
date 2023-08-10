@@ -19,24 +19,35 @@ class UserController implements Controller {
     this.router.delete(`${this.path}/logout`, this.userLogout);
   };
 
-  // controller is user login and sigup handler, after getting its response from its helper function
+  /**
+   * It gets the ser login and sigup details from its helper
+   * and sends the cookie with the response
+   * @param req
+   * @param res
+   * @returns
+   */
   private userSignUp = async (req: Request, res: Response) => {
-    const userSign = await UserHelper.userSignin(
+    const userData = await UserHelper.userSignin(
       res,
       req.body,
       req.headers['user-agent']
     );
 
     // set access token cookie
-    res.cookie('token', userSign?.token, {
+    res.cookie('token', userData?.token, {
       path: '/',
       httpOnly: true
     });
 
-    return sendResponse(res, userSign);
+    return sendResponse(res, userData);
   };
 
-  // controller handles the user logout
+  /**
+   * It handles the user logout helper
+   * @param req
+   * @param res
+   * @returns
+   */
   private userLogout = async (req: Request, res: Response) => {
     const token = req.cookies.token;
 

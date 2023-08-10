@@ -1,0 +1,18 @@
+import * as config from '../../config';
+import { runTeamsTests } from './TeamsTets/teams.test';
+import { runGraphTests } from './GraphTests/graphs.test';
+import { runProjectTests } from './ProjectsTests/projects.test';
+import { runMilestoneTests } from './MileStoneTests/milestones.test';
+import { runOctoConnectionTests } from './OctoConnectionTests/octoConnection.test';
+
+before(() => {
+  config.loadEnvs();
+});
+
+describe('Unit Tests ', async () => {
+  runGraphTests();
+  runTeamsTests();
+  runProjectTests();
+  runMilestoneTests();
+  runOctoConnectionTests();
+});

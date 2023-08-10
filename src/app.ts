@@ -32,7 +32,7 @@ class App {
 
   /**
    * only return the http server after binding the port and start listning for requests
-   * if you try to call without calling listen then it return default null value as server\kkkkk
+   * if you try to call without calling listen then it return default null value as server
    * @returns http server instance
    */
   public getServer = (): Server => {

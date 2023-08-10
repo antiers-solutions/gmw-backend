@@ -1,6 +1,4 @@
-/**
- * logging helper
- */
+// logging helper class
 class Logs {
   static log: Logs = null;
 
@@ -13,7 +11,7 @@ class Logs {
   };
 
   /**
-   * logs in red
+   * error logs
    * @param arg
    */
   red = (...arg: any) => {
@@ -21,7 +19,7 @@ class Logs {
   };
 
   /**
-   * logs in green
+   * success operation logs
    * @param arg
    */
   green = (...arg: any) => {
@@ -29,19 +27,26 @@ class Logs {
   };
 
   /**
-   * logs in gray
+   * general warning logs
    * @param arg
    */
-  gray = (...arg: any) => {
+  blue = (...arg: any) => {
     console.log('\x1b[34m', ...arg, '\x1b[39m');
   };
 
   /**
-   * logs
+   * normal logs
    * @param arg
    */
   log = (...arg: any) => {
     console.log(...arg);
+  };
+
+  /**
+   * error logs
+   */
+  error = (...arg: any) => {
+    console.error(...arg);
   };
 }
 

@@ -26,7 +26,12 @@ class MilestoneController implements Controller {
     );
   }
 
-  // this function sends all the milestone data after getting it from its helper funtion as a response
+  /**
+   * It gets all the milestone datacfrom its helper
+   * and sends the response
+   * @param req
+   * @param res
+   */
   private getAllMilestoneData = async (req: Request, res: Response) => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
@@ -39,8 +44,12 @@ class MilestoneController implements Controller {
     sendResponse(res, getAllMilestone);
   };
 
-  // this function sends the milestone data from a specific project it after getting it from its helper funtion as a response
-
+  /**
+   * It gets the milestone data for a specific project from its helper
+   * and sends the response for it
+   * @param req
+   * @param res
+   */
   private getMilestonesByProjectId = async (req: Request, res: Response) => {
     const proejctID = req.params?.projectId;
 

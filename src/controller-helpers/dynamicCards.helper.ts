@@ -1,4 +1,9 @@
-import { DATA_MODELS, RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
+import {
+  DATA_MODELS,
+  RESPONSE_MESSAGES,
+  STATUS,
+  STATUS_CODES
+} from '../constants';
 import mongoDataHelper from '../helpers/mongo.data.helper';
 import { ESResponse } from '@interfaces';
 
@@ -13,8 +18,10 @@ class DynamicCard {
     return DynamicCard.instance;
   };
 
-  // helper gets important count data of the availabe from the db
-
+  /**
+   * It gets the count of projects and complete projects, rejected and all proposals
+   * @returns
+   */
   async getCardsData(): Promise<ESResponse> {
     try {
       // getting total proposals accepted and rejected
@@ -27,13 +34,13 @@ class DynamicCard {
       // getting the total rejected proposals
       const totalRejectedProposals = await mongoDataHelper.getCount(
         DATA_MODELS.Proposal,
-        { status: 'rejected' }
+        { status: STATUS.REJECTED }
       );
 
       // getting the the total completed projects
       const totalCompletedProjects = await mongoDataHelper.getCount(
         DATA_MODELS.Project,
-        { status: 'complete' }
+        { status: STATUS.COMPLETE }
       );
 
       return {
@@ -46,7 +53,12 @@ class DynamicCard {
         error: false
       };
     } catch (error) {
-      return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
     }
   }
 }

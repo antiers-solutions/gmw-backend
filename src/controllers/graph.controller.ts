@@ -28,18 +28,34 @@ class GraphController implements Controller {
     );
   }
 
-  // get the total projects count
+  /**
+   * It  gets the total projects count by status from its helper
+   * and sends the reponse for it
+   * @param req
+   * @param res
+   */
   public getProjectsCountByStatus = async (req: any, res: any) => {
     const totalProjects = await graphHelper.getProjectsCountByStatus();
     sendResponse(res, totalProjects);
   };
 
-  //get the total purposal application
+  /**
+   * It gets the total purposal application from its helper
+   * and sends the response for it
+   * @param req
+   * @param res
+   */
   public getProjectCountByLevel = async (req: any, res: any) => {
     const totalPurposal = await graphHelper.getProjectCountByLevel();
     sendResponse(res, totalPurposal);
   };
 
+  /**
+   * It gets the rejected and accepted prosposals count from its helper
+   * and sends the response for it
+   * @param req
+   * @param res
+   */
   public getRejectedProjectsBody = async (req: any, res: any) => {
     const year = Number(req.query.year);
     const rejectedAcceptedData =

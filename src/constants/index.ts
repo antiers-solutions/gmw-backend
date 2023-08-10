@@ -10,7 +10,8 @@ export const DATA_MODELS = {
 export const STATUS = {
   ACCEPTED: 'accepted',
   REJECTED: 'rejected',
-  INREVIEW: 'in-review'
+  INREVIEW: 'in-review',
+  COMPLETE: 'complete'
 };
 
 export const REDIS_VARIABLES = {
@@ -44,7 +45,7 @@ export const STATUS_CODES = {
 
 // Response messages
 export const RESPONSE_MESSAGES = {
-  INERNAL_SERVER_ERROR: 'Internal Server Error.',
+  INTERNAL_SERVER_ERROR: 'Internal Server Error.',
   NOT_FOUND: 'Not Found!',
   USER_NOT_FOUND: 'User not found!',
   UPDATED_SUCCESS: 'Updated Successfully.',

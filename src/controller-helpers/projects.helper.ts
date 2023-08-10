@@ -20,12 +20,12 @@ class ProjectHelper {
    * @param pageSize
    * @returns
    */
-  async getProjectData(
+  public getProjectData = async (
     pageNumber: number,
     pageSize: number
-  ): Promise<ESResponse> {
+  ): Promise<ESResponse> => {
     try {
-      const totalCount = await mongoDataHelper.getCount('Project');
+      const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Project);
 
       if (pageSize <= 40) {
         // getting data of all the projects with filtered column and pagination
@@ -57,7 +57,6 @@ class ProjectHelper {
         }
 
         // return the data
-
         return {
           data: { projects, totalCount },
           error: false
@@ -69,23 +68,27 @@ class ProjectHelper {
         };
       }
     } catch (error) {
-      return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
     }
-  }
+  };
 
   /**
    * handler gets proejct data on basis of id from the database
    * @param searchId
    * @returns
    */
-  async getProjectDataByID(searchId: any): Promise<ESResponse> {
+  public getProjectDataByID = async (searchId: any): Promise<ESResponse> => {
     try {
       // gets project data based on the id.
       const data = await mongoDataHelper.findAndQueryData(DATA_MODELS.Project, {
         id: searchId
       });
       // if not present then return
-
       if (!data.length)
         return {
           status: STATUS_CODES.NOTFOUND,
@@ -95,14 +98,16 @@ class ProjectHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * handler gets proejct data on basis of name from the database
    * @param searchedName
    * @returns
    */
-  async getProjectDataByName(searchedName: any): Promise<ESResponse> {
+  public getProjectDataByName = async (
+    searchedName: any
+  ): Promise<ESResponse> => {
     try {
       // using the regex expression for finding the name of the project in the db
       const data = await mongoDataHelper.findAndQueryDataWithSelectedColumns(
@@ -128,7 +133,6 @@ class ProjectHelper {
       );
 
       // return if data returned is empty
-
       if (!data.length) {
         return {
           status: STATUS_CODES.NOTFOUND,
@@ -139,9 +143,14 @@ class ProjectHelper {
       // return data
       return { error: false, data };
     } catch (error) {
-      return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
     }
-  }
+  };
 
   /**
    * handler is use to update status of project in database
@@ -149,7 +158,10 @@ class ProjectHelper {
    * @param id
    * @returns
    */
-  async updateProjectStatus(status: string, id: string): Promise<ESResponse> {
+  public updateProjectStatus = async (
+    status: string,
+    id: string
+  ): Promise<ESResponse> => {
     try {
       if (status) {
         // if status is present then it updates the status of the proejct manually
@@ -169,9 +181,14 @@ class ProjectHelper {
         return { data: 'success', error: false };
       }
     } catch (error) {
-      return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
     }
-  }
+  };
 
   /**
    * handler is use to get filtered project data on basis of level and status
@@ -181,12 +198,12 @@ class ProjectHelper {
    * @param status
    * @returns
    */
-  async filterProject(
+  public filterProject = async (
     pageNumber: number,
     pageSize: number,
     level?: string,
     status?: string
-  ): Promise<ESResponse> {
+  ): Promise<ESResponse> => {
     try {
       if (pageSize <= 40) {
         // gettind data in filtered data when fileration is done on basis of level and status both
@@ -221,7 +238,6 @@ class ProjectHelper {
           });
 
           // if not present then return
-
           if (!filteredData.length) {
             return {
               status: STATUS_CODES.NOTFOUND,
@@ -261,7 +277,6 @@ class ProjectHelper {
           });
 
           // if not present then return
-
           if (!filteredData.length) {
             return {
               status: STATUS_CODES.NOTFOUND,
@@ -303,7 +318,6 @@ class ProjectHelper {
           });
 
           // if not present then return
-
           if (!filteredData.length) {
             return {
               status: STATUS_CODES.NOTFOUND,
@@ -324,9 +338,14 @@ class ProjectHelper {
         };
       }
     } catch (error) {
-      return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
     }
-  }
+  };
 }
 
 export default ProjectHelper.getInstance();

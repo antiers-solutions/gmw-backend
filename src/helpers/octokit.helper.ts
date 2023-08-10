@@ -4,8 +4,13 @@ import octoConnectionHelper from './octoConnection.helper';
 import mongoDataHelper from './mongo.data.helper';
 import { DATA_MODELS, ERROR_MESSAGES, STATUS } from '../constants';
 import { v4 } from 'uuid';
+import { log } from '../utils/helper.utils';
 
-//extract the metadata file data
+/**
+ * It extracts the metadata file data
+ * @param mdContent
+ * @returns
+ */
 const reformMDContent = (mdContent: string) => {
   let fileData = '';
   for (const item of parsedMdFile(mdContent)) {
@@ -14,7 +19,10 @@ const reformMDContent = (mdContent: string) => {
   return fileData;
 };
 
-// get all closed and merged pull request data for new files added only
+/**
+ * It gets all the closed pull request data and parse it
+ * @returns
+ */
 const getPullRequestDetails = async () => {
   try {
     const mergedPullRequestsForAddedFiles: any = {};
@@ -40,11 +48,13 @@ const getPullRequestDetails = async () => {
       // get the pull request file data using the pull request number
       for (const item of pullRequests) {
         //if pull is not merged then skip it
-        // if(!item.merged_at) continue;
+
+        const repoPath =
+          process.env.GITHUB_REPO_PATH || '/repos/w3f/Grants-Program/pulls';
 
         // get the file data for pull request using the pull request number
         const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-          `GET /repos/w3f/Grants-Program/pulls/${item.number}/files`,
+          `GET ${repoPath}/${item.number}/files`,
           {
             state: 'closed',
             base: 'master',
@@ -55,7 +65,7 @@ const getPullRequestDetails = async () => {
 
         // get the reviwers details
         const reviwers = await octoConnectionHelper.octoRequest(
-          `GET /repos/w3f/Grants-Program/pulls/${item.number}/reviews`,
+          `GET ${repoPath}/${item.number}/reviews`,
           {
             state: 'closed',
             base: 'master',
@@ -113,15 +123,19 @@ const getPullRequestDetails = async () => {
 
     return { mergedPullRequestsForAddedFiles, purposals };
   } catch (err) {
-    console.log(
-      'error while getting and formatting the merged pull request data: ',
-      err.message
+    log.red(
+      'Error while getting and formatting the all closed pull request data:\n',
+      err
     );
     return null;
   }
 };
 
-//load the data of all already merged metedata project files
+/**
+ * It loads the data of all the already merged metedata project files to database
+ * this function only run when there is no project data found in database
+ * @returns
+ */
 const firstTimeFileDataLoad = async () => {
   try {
     // get all purposed md files
@@ -136,7 +150,7 @@ const firstTimeFileDataLoad = async () => {
 
     // if projects and milestone meta-data file not found then return
     if (!files?.data && !milestoneFiles?.data) {
-      console.log('Project Metadata and Milestone Metadata file not found');
+      log.red('Project Metadata and Milestone Metadata file not found');
       return;
     }
 
@@ -157,7 +171,6 @@ const firstTimeFileDataLoad = async () => {
         file.name === '_category_.yml'
       )
         continue;
-      console.log('Page: ', file?.name);
 
       const mdData = await parseMetaDataFile(
         file,
@@ -192,7 +205,6 @@ const firstTimeFileDataLoad = async () => {
       mdData.project.milestones.push(...milestones.milestoneIds);
 
       //push the data into bulk save array
-      // console.log(mdData.project, mdData.team, 'data');
       extractedData.team.push(mdData.team);
       extractedData.project.push(mdData.project);
       extractedData.milestone.push(...milestones.milestoneFileData);
@@ -219,15 +231,20 @@ const firstTimeFileDataLoad = async () => {
       mergedPullRequests.purposals
     );
 
-    console.log('Saved the Initial Grants Data');
+    log.green('Data Successfully Stored');
   } catch (err) {
-    console.log('error in the dataload: ', err);
+    log.red('Error in the initial grants data loading into database:\n', err);
   }
 };
 
 export default firstTimeFileDataLoad;
 
-//for parsing the purposed project metadata file
+/**
+ * It is used for extracting and parsing the all merged metadata files data
+ * @param mdDetails
+ * @param mergedPullRequests
+ * @returns
+ */
 export const parseMetaDataFile = async (
   mdDetails: any,
   mergedPullRequests?: any
@@ -349,7 +366,7 @@ export const parseMetaDataFile = async (
         : '',
       status: null,
       total_cost: { amount, currency },
-      total_duration: pairData['total estimated duration'],
+      total_duration: pairData['total estimated duration'] || '',
       team_id: teamId,
       level: pairData['level'],
       html_url: mdDetails.html_url,
@@ -363,12 +380,19 @@ export const parseMetaDataFile = async (
 
     return { project, team, milestones };
   } catch (err) {
-    console.log('error while parsing the md file ', err.message);
+    log.red('Error while parsing the metadata files: ', err);
     return { project: null, team: null, milestones: null };
   }
 };
 
-//extract the milestone
+/**
+ * It is used to extract the milestones data
+ * @param miltestoneMds
+ * @param milestoneDetails
+ * @param projectFileDetails
+ * @param projectId
+ * @returns
+ */
 const formMilestonePayload = async (
   miltestoneMds: any[],
   milestoneDetails: any[],
@@ -396,7 +420,7 @@ const formMilestonePayload = async (
         user_github_id: '',
         project_md_link: projectFileDetails.html_url,
         md_content: res.data,
-        status: 'complete',
+        status: STATUS.COMPLETE,
         cost: milestoneDetails[index] ? milestoneDetails[index].costs : '',
         merged_at: ''
       };
@@ -404,7 +428,7 @@ const formMilestonePayload = async (
     }
     return { milestoneFileData, milestoneIds };
   } catch (err) {
-    console.log('error while fething the milestone: ');
+    log.red('Error while fething and formating the milestone data:\n', err);
     return { milestoneFileData: [], milestoneIds: [] };
   }
 };

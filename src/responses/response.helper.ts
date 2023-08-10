@@ -16,12 +16,12 @@ function sendResponse(res: Response, resData: ESResponse) {
     else if (statusCode === STATUS_CODES.INTERNALSERVER)
       res
         .status(statusCode)
-        .send({ message: RESPONSE_MESSAGES.INERNAL_SERVER_ERROR });
+        .send({ message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR });
     else res.status(statusCode).send({ data: resData.data });
   } catch (err) {
     res
       .status(STATUS_CODES.INTERNALSERVER)
-      .send({ message: RESPONSE_MESSAGES.INERNAL_SERVER_ERROR });
+      .send({ message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR });
   }
 }
 

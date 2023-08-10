@@ -18,7 +18,11 @@ class DynamicCardsController implements Controller {
     this.router.get(`${this.path}`, sessionCheck, this.getCardsData);
   }
 
-  // this function sends all the milestone data after getting it from its helper funtion as a response
+  /**
+   * It sends all the milestone data after getting it from its helper funtion as a response
+   * @param req
+   * @param res
+   */
   private getCardsData = async (req: Request, res: Response) => {
     const getCardsData = await dynamicCardsHelper.getCardsData();
 
