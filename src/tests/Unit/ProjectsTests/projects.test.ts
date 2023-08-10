@@ -1,20 +1,20 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { ProjectsData } from '../../mockedData';
+import { ProjectsData } from '../mockedData';
 import mongoDataHelper from '../../../helpers/mongo.data.helper';
 import projectsHelper from '../../../controller-helpers/projects.helper';
 
 export const runProjectTests = () => {
   describe('Get all Projects Data ', () => {
     it('It should return object data which contains projects of type array ', async () => {
-      const stub1 = sinon.stub(mongoDataHelper, 'getCount');
-      const stub2 = sinon.stub(
+      const count = sinon.stub(mongoDataHelper, 'getCount');
+      const projectData = sinon.stub(
         mongoDataHelper,
         'findSelectedDataWithPagination'
       );
 
-      stub1.resolves(4);
-      stub2.resolves(ProjectsData);
+      count.resolves(4);
+      projectData.resolves(ProjectsData);
 
       const response = await projectsHelper.getProjectData(1, 2);
 
@@ -34,16 +34,16 @@ export const runProjectTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      count.restore();
+      projectData.restore();
     });
   });
 
   describe('Get Projects Data by id', () => {
     it('It should return object projects of type array ', async () => {
-      const stub1 = sinon.stub(mongoDataHelper, 'findAndQueryData');
+      const stub = sinon.stub(mongoDataHelper, 'findAndQueryData');
 
-      stub1.resolves([
+      stub.resolves([
         {
           _id: {
             $oid: '64ccf06cbe6ae66a4ec44ab4'
@@ -107,7 +107,7 @@ export const runProjectTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
+      stub.restore();
     });
 
     it('It should return object that contains error and status code ', async () => {
@@ -129,12 +129,12 @@ export const runProjectTests = () => {
 
   describe('Get Projects Data by name', () => {
     it('It should return object projects of type array ', async () => {
-      const stub1 = sinon.stub(
+      const stub = sinon.stub(
         mongoDataHelper,
         'findAndQueryDataWithSelectedColumns'
       );
 
-      stub1.resolves([ProjectsData[0]]);
+      stub.resolves([ProjectsData[0]]);
 
       const response = await projectsHelper.getProjectDataByName('admeta');
       expect(response.error).to.equal(false);
@@ -157,15 +157,15 @@ export const runProjectTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
+      stub.restore();
     });
 
     it('It should return object that contains error and status code ', async () => {
-      const stub1 = sinon.stub(
+      const stub = sinon.stub(
         mongoDataHelper,
         'findAndQueryDataWithSelectedColumns'
       );
-      stub1.resolves([]);
+      stub.resolves([]);
       const response = await projectsHelper.getProjectDataByName(
         'any wrong string'
       );
@@ -174,19 +174,19 @@ export const runProjectTests = () => {
       expect(response.status).to.equal(404);
 
       // Restore the original function behavior
-      stub1.restore();
+      stub.restore();
     });
   });
 
   describe('Get filteredProject ', () => {
     it('It should return object projects of type array ', async () => {
-      const stub1 = sinon.stub(mongoDataHelper, 'getCount');
-      const stub2 = sinon.stub(
+      const count = sinon.stub(mongoDataHelper, 'getCount');
+      const projectData = sinon.stub(
         mongoDataHelper,
         'findSelectedDataWithPagination'
       );
-      stub1.resolves(4);
-      stub2.resolves([ProjectsData[3]]);
+      count.resolves(4);
+      projectData.resolves([ProjectsData[3]]);
 
       const response = await projectsHelper.filterProject(
         1,
@@ -211,34 +211,34 @@ export const runProjectTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      count.restore();
+      projectData.restore();
     });
 
     it('giving wrong parameters, it should return object that contains error and status code', async () => {
-      const stub1 = sinon.stub(mongoDataHelper, 'getCount');
-      const stub2 = sinon.stub(
+      const count = sinon.stub(mongoDataHelper, 'getCount');
+      const projectData = sinon.stub(
         mongoDataHelper,
         'findSelectedDataWithPagination'
       );
-      stub1.resolves(4);
-      stub2.resolves([]);
+      count.resolves(4);
+      projectData.resolves([]);
       const response = await projectsHelper.filterProject(-1, -1, '0', 'csd');
 
       expect(response).to.be.an('object');
       expect(response.status).to.equal(404);
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      count.restore();
+      projectData.restore();
     });
   });
 
   describe('Update project status ', () => {
     it('It should return data success and error false ', async () => {
-      const stub1 = sinon.stub(mongoDataHelper, 'updateData');
+      const stub = sinon.stub(mongoDataHelper, 'updateData');
 
-      stub1.resolves({
+      stub.resolves({
         acknowledged: true,
         matchedCount: 0,
         modifiedCount: 1,
@@ -255,7 +255,7 @@ export const runProjectTests = () => {
       expect(response.error).to.equal(false);
 
       // Restore the original function behavior
-      stub1.restore();
+      stub.restore();
     });
 
     // -ve scenario
