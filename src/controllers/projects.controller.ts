@@ -39,7 +39,12 @@ class ProjectController implements Controller {
     );
   }
 
-  // controller sends all the project data after getting it from its helper funtion as a response
+  /**
+   * It is used for calling the get all projects helper
+   * and sending response for it
+   * @param req
+   * @param res
+   */
   private getAllProjectsData = async (req: Request, res: Response) => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
@@ -51,14 +56,24 @@ class ProjectController implements Controller {
     sendResponse(res, getAllProject);
   };
 
-  // controller sends a project from its id  after getting it from its helper funtion as a response
+  /**
+   * It is used for calling the get project by id helper
+   * and sending response for it
+   * @param req
+   * @param res
+   */
   private getProjectById = async (req: Request, res: Response) => {
     const searchID = req.params?.projectId;
     const getsearchedByID = await projectsHelper.getProjectDataByID(searchID);
     sendResponse(res, getsearchedByID);
   };
 
-  // controller sends a project from its name after getting it from its helper funtion as a response
+  /**
+   * It is used for calling the search project helper
+   * and sending response for it
+   * @param req
+   * @param res
+   */
   private searchProjectByName = async (req: Request, res: Response) => {
     const searchedName: any = req.query.searchedName;
 
@@ -69,7 +84,13 @@ class ProjectController implements Controller {
     sendResponse(res, getsearchedByID);
   };
 
-  // controller sends a project filtered on basis of level and status after getting it from its helper funtion as a response
+  /**
+   * It is used for calling the filter project helper
+   * and sending response for it
+   * @param req
+   * @param res
+   * @returns
+   */
   private filterProjects = async (req: Request, res: Response) => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
@@ -85,7 +106,12 @@ class ProjectController implements Controller {
     return sendResponse(res, filteredData);
   };
 
-  // controller for updating the status of project
+  /**
+   * It is used for calling the update status of project helper
+   * and sending response for it
+   * @param req
+   * @param res
+   */
   private updateProjectStatus = async (req: Request, res: Response) => {
     const { updatedStatus, id } = req.body;
 

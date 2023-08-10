@@ -3,6 +3,14 @@ import redisHelper from '../helpers/redis.helper';
 import sendResponse from '../responses/response.helper';
 import { RESPONSE_MESSAGES, STATUS_CODES, REDIS_VARIABLES } from '../constants';
 
+/**
+ * It is use to check if the cookie in requests exists and then verifies it
+ * and extends the session time for the use for every request made
+ * @param req
+ * @param res
+ * @param next
+ * @returns
+ */
 export const sessionCheck = async (
   req: Request,
   res: Response,
@@ -56,7 +64,7 @@ export const sessionCheck = async (
     }
   } catch (err) {
     return sendResponse(res, {
-      message: RESPONSE_MESSAGES.INERNAL_SERVER_ERROR,
+      message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR,
       status: STATUS_CODES.INTERNALSERVER
     });
   }

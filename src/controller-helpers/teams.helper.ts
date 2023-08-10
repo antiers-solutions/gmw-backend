@@ -20,15 +20,14 @@ class TeamsHelper {
    * @param pageSize
    * @returns
    */
-  async getTeamsData(
+  public getTeamsData = async (
     pageNumber?: number,
     pageSize?: number
-  ): Promise<ESResponse> {
+  ): Promise<ESResponse> => {
     try {
       const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Team);
 
       // to query all the teams data present in the db with the page number required and page size
-
       if (pageSize <= 40) {
         const teams = await mongoDataHelper.findSelectedDataWithPagination(
           DATA_MODELS.Team,
@@ -47,7 +46,6 @@ class TeamsHelper {
         }
 
         // sending the status of each team with is own object
-
         const teamsDataWithProjectStatus: any = [];
         for (const team of teams) {
           const status: any = { active: 0, complete: 0, hold: 0 };
@@ -73,14 +71,14 @@ class TeamsHelper {
     } catch (err) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * helper gets team data on basis of id from the database
    * @param searchID
    * @returns
    */
-  async getTeamsDataByID(searchID: any): Promise<ESResponse> {
+  public getTeamsDataByID = async (searchID: any): Promise<ESResponse> => {
     try {
       const teamData = await mongoDataHelper.findAndQueryData(
         DATA_MODELS.Team,
@@ -122,7 +120,7 @@ class TeamsHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * this helper gets team data on basis of name from the database
