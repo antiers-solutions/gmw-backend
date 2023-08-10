@@ -20,7 +20,7 @@ class MongoDataHelper {
    * @param query
    * @returns
    */
-  async getCount(name: string, query?: any) {
+  public getCount = async (name: string, query?: any) => {
     try {
       this._checkModel(name);
 
@@ -36,7 +36,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * save the single data object
@@ -44,7 +44,7 @@ class MongoDataHelper {
    * @param data
    * @returns
    */
-  async savaData(name: string, data: object) {
+  public savaData = async (name: string, data: object) => {
     try {
       this._checkModel(name);
       const Model = this._getModel(name);
@@ -54,7 +54,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * save the data into bulk
@@ -62,7 +62,7 @@ class MongoDataHelper {
    * @param data
    * @returns
    */
-  async bulkSaveData(name: string, data: any[]) {
+  public bulkSaveData = async (name: string, data: any[]) => {
     try {
       this._checkModel(name);
       const Model = this._getModel(name);
@@ -72,7 +72,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * this helper is use to fetch data according to the query provided
@@ -80,8 +80,7 @@ class MongoDataHelper {
    * @param query
    * @returns
    */
-
-  async findAndQueryData(name: string, query: any) {
+  public findAndQueryData = async (name: string, query: any) => {
     try {
       this._checkModel(name);
       const result = await this._getModel(name).find(query);
@@ -89,7 +88,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * this helper is use to fetch data according to the query provided with selected data
@@ -98,12 +97,11 @@ class MongoDataHelper {
    * @param selectedFields
    * @returns
    */
-
-  async findAndQueryDataWithSelectedColumns(
+  public findAndQueryDataWithSelectedColumns = async (
     name: string,
     query: any,
     selectedFields: string[]
-  ) {
+  ) => {
     try {
       this._checkModel(name);
 
@@ -116,7 +114,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    *  this helper is use to fetch data according to the query provided with selected data
@@ -127,14 +125,13 @@ class MongoDataHelper {
    * @param pageSize
    * @returns
    */
-
-  async findSelectedDataWithPagination(
+  public findSelectedDataWithPagination = async (
     name: string,
     query: any,
     selectedFields: string[],
     pageNumber: number,
     pageSize: number
-  ) {
+  ) => {
     try {
       const skipItems = (pageNumber - 1) * pageSize;
 
@@ -151,7 +148,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * if data found then this function will update that data otherwise insert that data
@@ -160,7 +157,11 @@ class MongoDataHelper {
    * @param data
    * @returns
    */
-  async findOneAndUpdate(name: string, filter: unknown, data: unknown) {
+  public findOneAndUpdate = async (
+    name: string,
+    filter: unknown,
+    data: unknown
+  ) => {
     try {
       this._checkModel(name);
 
@@ -172,7 +173,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * this helper is use to fetch data according to the query provided and return the paginated data
@@ -182,12 +183,12 @@ class MongoDataHelper {
    * @param pageSize
    * @returns
    */
-  async findAndQueryDataWithPagination(
+  public findAndQueryDataWithPagination = async (
     name: string,
     query: any,
     pageNumber: number,
     pageSize: number
-  ) {
+  ) => {
     const skipItems = (pageNumber - 1) * pageSize;
 
     try {
@@ -201,7 +202,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * this helper is use to update any single data field in a collections of mongodb
@@ -210,8 +211,7 @@ class MongoDataHelper {
    * @param update
    * @returns
    */
-
-  async updateData(name: string, id: object, update: object) {
+  public updateData = async (name: string, id: object, update: object) => {
     try {
       this._checkModel(name);
       const result = await this._getModel(name).updateOne(id, update);
@@ -219,7 +219,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * this helper is use to remove  data field in a collection of mongodb
@@ -227,8 +227,7 @@ class MongoDataHelper {
    * @param deleteObj
    * @returns
    */
-
-  async deleteData(name: string, deleteObj: object) {
+  public deleteData = async (name: string, deleteObj: object) => {
     try {
       this._checkModel(name);
       const result = await this._getModel(name).deleteMany(deleteObj);
@@ -236,7 +235,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   /**
    * this helper is use to remove single data field in a collection of mongodb
@@ -244,7 +243,7 @@ class MongoDataHelper {
    * @param deleteObj
    * @returns
    */
-  async removeSingleData(name: string, deleteObj: object) {
+  public removeSingleData = async (name: string, deleteObj: object) => {
     try {
       this._checkModel(name);
       const result = await this._getModel(name).deleteOne(deleteObj);
@@ -252,7 +251,7 @@ class MongoDataHelper {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   //---------------------------------internal methods -----------------------------------/
   // check if the model exist or not if not then throw error
@@ -262,7 +261,6 @@ class MongoDataHelper {
   };
 
   // get the selected moongose model
-
   _getModel = (model: string): Model<any> => {
     switch (model) {
       case DATA_MODELS.Milestone:

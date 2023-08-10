@@ -50,7 +50,6 @@ class UserHelper {
         );
 
         // if id is not present then return
-
         if (!resUser.id)
           return {
             data: null,
@@ -64,7 +63,6 @@ class UserHelper {
         const updatedSeconds = Math.floor(Date.now() / 1000) + 60 * 60; // one hour time
 
         //storing the request user-agent for enhanced security
-
         const userCheck = await mongoDataHelper.findAndQueryData(
           DATA_MODELS.User,
           {
@@ -76,7 +74,6 @@ class UserHelper {
           console.log('User Signin');
 
           // storing the genereated token in redis with an expiry time so that session login can be implemented
-
           await redisHelper.storeInRedis(
             REDIS_VARIABLES.UserData,
             { [token]: resUser.id },
@@ -84,7 +81,6 @@ class UserHelper {
           );
 
           // storing the user-agent of the browser from the req so that additional security is added
-
           await redisHelper.storeInRedis(
             REDIS_VARIABLES.UserAgent,
             { [token]: userAgent },
@@ -114,7 +110,6 @@ class UserHelper {
           });
 
           // storing the genereated token in redis with an expiry time so that session login can be implemented
-
           await redisHelper.storeInRedis(
             REDIS_VARIABLES.UserData,
             { [token]: resUser.id },
@@ -122,7 +117,6 @@ class UserHelper {
           );
 
           // storing the user-agent of the browser from the req so that additional security is added
-
           await redisHelper.storeInRedis(
             REDIS_VARIABLES.UserAgent,
             { [token]: userAgent },
@@ -157,7 +151,7 @@ class UserHelper {
    * @param access_token
    * @returns
    */
-  async userSigninData(access_token: string) {
+  private userSigninData = async (access_token: string) => {
     try {
       const response = await axios.get(process.env.GIT_RESPONSE_CODE_URL, {
         headers: {
@@ -176,14 +170,14 @@ class UserHelper {
     } catch (error) {
       return { error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * helper gets user data from the database
    * @param id
    * @returns
    */
-  async userData(id: string): Promise<ESResponse> {
+  public userData = async (id: string): Promise<ESResponse> => {
     try {
       // return the user from the db based on its id.
       const userCheck = await mongoDataHelper.findAndQueryData(
@@ -197,14 +191,14 @@ class UserHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * helper handles the logout
    * @param token
    * @returns
    */
-  async userLogout(token: string): Promise<ESResponse> {
+  public userLogout = async (token: string): Promise<ESResponse> => {
     try {
       // this reomves the token from the redis hence preventing the re-login
       await redisHelper.removeFromRedis(REDIS_VARIABLES.UserData, token);
@@ -213,7 +207,7 @@ class UserHelper {
     } catch (error) {
       return { error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 }
 
 export default new UserHelper();

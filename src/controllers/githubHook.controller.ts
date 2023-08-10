@@ -17,8 +17,11 @@ class GithubHookController implements Controller {
     this.router.post(`${this.path}/merge-pull-request`, this.mergePullRequest);
   }
 
-  // getting the github data
-
+  /**
+   * It gets the github data of pull and merge request
+   * @param req
+   * @param res
+   */
   private getGithubData = async (req: Request, res: Response) => {
     try {
       const result = await GithubHookHelper.getGithubData(req.body);
@@ -29,7 +32,11 @@ class GithubHookController implements Controller {
     }
   };
 
-  // controller handles the merged pull requests
+  /**
+   * It handles the merged pull requests
+   * @param req
+   * @param res
+   */
   private mergePullRequest = async (req: Request, res: Response) => {
     try {
       if (req.body.pr_number) {

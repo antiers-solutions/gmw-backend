@@ -13,8 +13,10 @@ class DynamicCard {
     return DynamicCard.instance;
   };
 
-  // helper gets important count data of the availabe from the db
-
+  /**
+   * It gets the count data of the availabe parameters from the db
+   * @returns
+   */
   async getCardsData(): Promise<ESResponse> {
     try {
       // getting total proposals accepted and rejected

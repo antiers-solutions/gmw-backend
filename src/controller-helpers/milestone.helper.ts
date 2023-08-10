@@ -19,16 +19,15 @@ class MilestoneHelper {
    * @param pageSize
    * @returns
    */
-  async getMilstonesData(
+  public getMilstonesData = async (
     pageNumber?: number,
     pageSize?: number
-  ): Promise<ESResponse> {
+  ): Promise<ESResponse> => {
     try {
       const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Milestone);
 
       if (pageSize <= 40) {
         // getting all the milestones data with pagination and selected data.
-
         const milestones = await mongoDataHelper.findSelectedDataWithPagination(
           DATA_MODELS.Milestone,
           {},
@@ -63,15 +62,16 @@ class MilestoneHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * helper gets a milestone data on basis of project id from the database
    * @param projectId
    * @returns
    */
-
-  async getMilstonesByProjectId(projectId: string): Promise<ESResponse> {
+  public getMilstonesByProjectId = async (
+    projectId: string
+  ): Promise<ESResponse> => {
     try {
       // getting the milestone data on basis of the project id provided
       const data = await mongoDataHelper.findAndQueryDataWithSelectedColumns(
@@ -91,7 +91,6 @@ class MilestoneHelper {
         ]
       );
       // return if not present
-
       if (!data.length) {
         return {
           status: STATUS_CODES.NOTFOUND,
@@ -99,12 +98,11 @@ class MilestoneHelper {
         };
       }
       // return the data
-
       return { data, error: false };
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 }
 
 export default MilestoneHelper.getInstance();

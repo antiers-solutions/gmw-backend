@@ -16,6 +16,11 @@ class GithubHookHelper {
     return GithubHookHelper.instance;
   };
 
+  /**
+   * It gets the data of merger and pull requests from the github
+   * @param requestBody
+   * @returns
+   */
   public getGithubData = async (requestBody: any) => {
     try {
       if (requestBody?.pull_request) {
@@ -89,7 +94,7 @@ class GithubHookHelper {
             file_name: dataRes.project.file_name,
             proposal_name: dataRes.project.project_name,
             extrected_proposal_data: JSON.stringify(dataRes),
-            branch_name: pull_request?.head.ref //The source branch (where the changes are coming from)
+            branch_name: pull_request?.head.ref //The source branch i.e the branch from where the changes are coming.
           };
 
           await MongoDataHelper.savaData(DATA_MODELS.Proposal, dataToSave);
@@ -113,6 +118,11 @@ class GithubHookHelper {
     }
   };
 
+  /**
+   * It merges the open pull requests
+   * @param pullRequestNumber
+   * @returns
+   */
   public mergePullRequest = async (pullRequestNumber: string) => {
     try {
       const headers = {

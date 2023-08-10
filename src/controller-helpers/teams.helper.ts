@@ -20,15 +20,14 @@ class TeamsHelper {
    * @param pageSize
    * @returns
    */
-  async getTeamsData(
+  public getTeamsData = async (
     pageNumber?: number,
     pageSize?: number
-  ): Promise<ESResponse> {
+  ): Promise<ESResponse> => {
     try {
       const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Team);
 
       // to query all the teams data present in the db with the page number required and page size
-
       if (pageSize <= 40) {
         const teams = await mongoDataHelper.findSelectedDataWithPagination(
           DATA_MODELS.Team,
@@ -47,7 +46,6 @@ class TeamsHelper {
         }
 
         // sending the status of each team with is own object
-
         const teamsDataWithProjectStatus: any = [];
         for (const team of teams) {
           const status: any = { active: 0, complete: 0, hold: 0 };
@@ -73,14 +71,14 @@ class TeamsHelper {
     } catch (err) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * helper gets team data on basis of id from the database
    * @param searchID
    * @returns
    */
-  async getTeamsDataByID(searchID: any): Promise<ESResponse> {
+  public getTeamsDataByID = async (searchID: any): Promise<ESResponse> => {
     try {
       const teamData = await mongoDataHelper.findAndQueryData(
         DATA_MODELS.Team,
@@ -122,24 +120,23 @@ class TeamsHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * this helper gets team data on basis of name from the database
    * @param searchedName
    * @returns
    */
-
-  async getTeamsDataByName(searchedName?: any): Promise<ESResponse> {
+  public getTeamsDataByName = async (
+    searchedName?: any
+  ): Promise<ESResponse> => {
     try {
       // using the regex expression for finding the name of the team in the db
-
       const teams = await mongoDataHelper.findAndQueryData(DATA_MODELS.Team, {
         name: new RegExp(`^${searchedName.toLowerCase()}`)
       });
 
       // sending the status of each team with is own object
-
       const teamsDataWithProjectStatus: any = [];
       for (const team of teams) {
         const status: any = { active: 0, complete: 0, hold: 0 };
@@ -166,7 +163,7 @@ class TeamsHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 
   /**
    * this helper is use to merge teams in the database with the new name as a single team
@@ -174,8 +171,10 @@ class TeamsHelper {
    * @param ids
    * @returns
    */
-
-  async modifyTeams(newName: string, ids: [string]): Promise<ESResponse> {
+  public modifyTeams = async (
+    newName: string,
+    ids: [string]
+  ): Promise<ESResponse> => {
     try {
       //create data container the data for merged team
       const newData: any = { members: [], projects: [] };
@@ -218,7 +217,7 @@ class TeamsHelper {
     } catch (error) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
-  }
+  };
 }
 
 export default TeamsHelper.getInstance();

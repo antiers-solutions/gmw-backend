@@ -19,7 +19,10 @@ class GraphHelper {
     return GraphHelper.instance;
   };
 
-  //get total project count
+  /**
+   * It gets the total project count by status
+   * @returns
+   */
   getProjectsCountByStatus = async (): Promise<ESResponse> => {
     try {
       const countByStatus: any = { active: 0, hold: 0, complete: 0 };
@@ -48,7 +51,10 @@ class GraphHelper {
     }
   };
 
-  //get total project count
+  /**
+   * It gets the total project count by level
+   * @returns
+   */
   getProjectCountByLevel = async (): Promise<ESResponse> => {
     try {
       const countByLevel: any = { level1: 0, level2: 0, level3: 0 };
@@ -86,7 +92,7 @@ class GraphHelper {
   };
 
   /**
-   * the helper function is use to calculate the data of accepted and rejected proposals
+   * It is use to calculate the data of accepted and rejected proposals
    * @param getDataYear
    * @returns
    */
@@ -103,7 +109,6 @@ class GraphHelper {
       const yearObejct: any = {};
 
       // this is the count per month for handling the accepted and rejected
-
       const monthCount: any = {
         January: { Accepted: 0, Rejected: 0 },
         February: { Accepted: 0, Rejected: 0 },
@@ -120,7 +125,6 @@ class GraphHelper {
       };
 
       // looping through all the proposals present
-
       for (const proposal of data) {
         const date = new Date(proposal.created_at);
 
@@ -128,11 +132,9 @@ class GraphHelper {
         const month = date.getMonth();
 
         // if year and requested year is same then proceed
-
         if (year === getDataYear) {
           if (proposal.status === 'rejected') {
             // storing all the data in the years object
-
             monthCount[MONTHS[month]].Rejected++;
             yearObejct[getDataYear] = {
               [MONTHS[month]]: monthCount[MONTHS[month]],
@@ -149,7 +151,6 @@ class GraphHelper {
       }
 
       // formating the data in the required form
-
       const yearlyGraphData: any = [];
       const yearUnformedData = yearObejct[getDataYear];
       // form the data for graph

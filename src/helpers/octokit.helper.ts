@@ -5,7 +5,11 @@ import mongoDataHelper from './mongo.data.helper';
 import { DATA_MODELS, ERROR_MESSAGES, STATUS } from '../constants';
 import { v4 } from 'uuid';
 
-//extract the metadata file data
+/**
+ * It extracts the metadata file data
+ * @param mdContent
+ * @returns
+ */
 const reformMDContent = (mdContent: string) => {
   let fileData = '';
   for (const item of parsedMdFile(mdContent)) {
@@ -14,7 +18,10 @@ const reformMDContent = (mdContent: string) => {
   return fileData;
 };
 
-// get all closed and merged pull request data for new files added only
+/**
+ * It gets all the closed and merged pull request data for the new files added
+ * @returns
+ */
 const getPullRequestDetails = async () => {
   try {
     const mergedPullRequestsForAddedFiles: any = {};
@@ -40,7 +47,6 @@ const getPullRequestDetails = async () => {
       // get the pull request file data using the pull request number
       for (const item of pullRequests) {
         //if pull is not merged then skip it
-        // if(!item.merged_at) continue;
 
         // get the file data for pull request using the pull request number
         const fileDetailsResponse = await octoConnectionHelper.octoRequest(
@@ -121,7 +127,10 @@ const getPullRequestDetails = async () => {
   }
 };
 
-//load the data of all already merged metedata project files
+/**
+ * It loads the data of all the already merged metedata project files
+ * @returns
+ */
 const firstTimeFileDataLoad = async () => {
   try {
     // get all purposed md files
@@ -227,7 +236,12 @@ const firstTimeFileDataLoad = async () => {
 
 export default firstTimeFileDataLoad;
 
-//for parsing the purposed project metadata file
+/**
+ * It is used for parsing the purposed project metadata file
+ * @param mdDetails
+ * @param mergedPullRequests
+ * @returns
+ */
 export const parseMetaDataFile = async (
   mdDetails: any,
   mergedPullRequests?: any
@@ -368,7 +382,14 @@ export const parseMetaDataFile = async (
   }
 };
 
-//extract the milestone
+/**
+ * It is used to extract the milestones data
+ * @param miltestoneMds
+ * @param milestoneDetails
+ * @param projectFileDetails
+ * @param projectId
+ * @returns
+ */
 const formMilestonePayload = async (
   miltestoneMds: any[],
   milestoneDetails: any[],

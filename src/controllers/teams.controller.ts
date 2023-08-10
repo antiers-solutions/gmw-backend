@@ -32,8 +32,13 @@ class TeamsController implements Controller {
       this.modifyTeamByName
     );
   }
-  // this function sends all teams after getting it from its helper funtion as a response
 
+  /**
+   * It is used for getting all teams data from its helper
+   * and sends response for it
+   * @param req
+   * @param res
+   */
   private getTeamsData = async (req: Request, res: Response) => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
@@ -42,8 +47,12 @@ class TeamsController implements Controller {
     sendResponse(res, getAllTeams);
   };
 
-  // this function sends a team on basis of id after getting it from its helper funtion as a response
-
+  /**
+   * It is used for getting team by id data from its helper
+   * and sends response for it
+   * @param req
+   * @param res
+   */
   private searchTeamsById = async (req: Request, res: Response) => {
     const searchID = req.params?.teamId;
 
@@ -52,8 +61,12 @@ class TeamsController implements Controller {
     sendResponse(res, getsearchedByID);
   };
 
-  // this function sends a team on basis of name after getting it from its helper funtion as a response
-
+  /**
+   * It is used for getting searched teams by name data from its helper
+   * and sends response for it
+   * @param req
+   * @param res
+   */
   private searchTeamsByName = async (req: Request, res: Response) => {
     const searchedName: any = req.query?.searchedName;
     const getsearchedByName = await TeamsHelper.getTeamsDataByName(
@@ -63,8 +76,12 @@ class TeamsController implements Controller {
     sendResponse(res, getsearchedByName);
   };
 
-  // this function modifies teams and merges them on basis of id ,after getting it from its helper funtion as a response
-
+  /**
+   * It is used for calling the merged teams helper
+   * and sends response for it
+   * @param req
+   * @param res
+   */
   private modifyTeamByName = async (req: Request, res: Response) => {
     const { updatedName, teamIds } = req.body;
 
