@@ -332,8 +332,6 @@ mocha.describe('', async () => {
 });
 
 after(async () => {
-  // redisHelper.stopRedis();
-  // await disconnectMongo();
   await disconnect();
   process.exit(1);
 });

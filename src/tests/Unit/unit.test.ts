@@ -1,7 +1,6 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import * as config from '../../config';
-import { log } from '../../utils/helper.utils';
 import { Pull, Team } from '../Constants/testConstants';
 import graphHelper from '../../controller-helpers/graph.helper';
 import teamsHelper from '../../controller-helpers/teams.helper';
@@ -999,9 +998,6 @@ describe('Making request for get pulls data to OctoHelper', async () => {
 });
 
 after(async () => {
-  // redisHelper.stopRedis();
-  // await disconnectMongo();
   await disconnect();
   octoConnectionHelper.disconnectOcto();
-  // process.exit();
 });

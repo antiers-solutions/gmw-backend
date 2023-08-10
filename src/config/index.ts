@@ -10,7 +10,7 @@ export const loadEnvs = () => {
   try {
     const enviroment = process.env.NODE_ENV;
     if (enviroment === 'local' || enviroment === 'dev') {
-      log.gray('#Development Mode');
+      log.blue('#Development Mode');
       load('local.env');
     } else if (enviroment === 'stage') {
       log.green('#Staging Mode');

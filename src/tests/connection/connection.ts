@@ -1,14 +1,14 @@
 import redisHelper from '../../helpers/redis.helper';
-import { mongoDBConnection, disconnectMongo } from '../../mongoDB/connection';
+import dbConnectionHandler from '../../mongoDB/connection';
 
 export const connect = async () => {
-  redisHelper.startRedis();
-  await mongoDBConnection();
+  redisHelper.connectRedis();
+  await dbConnectionHandler.createDBConnection();
   return true;
 };
 
 export const disconnect = async () => {
-  redisHelper.stopRedis();
-  await disconnectMongo();
+  await redisHelper.releaseRedisConnection();
+  await dbConnectionHandler.releaseDBConnection();
   return true;
 };

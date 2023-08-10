@@ -129,17 +129,14 @@ class TeamsHelper {
    * @param searchedName
    * @returns
    */
-
   async getTeamsDataByName(searchedName?: any): Promise<ESResponse> {
     try {
       // using the regex expression for finding the name of the team in the db
-
       const teams = await mongoDataHelper.findAndQueryData(DATA_MODELS.Team, {
         name: new RegExp(`^${searchedName.toLowerCase()}`)
       });
 
       // sending the status of each team with is own object
-
       const teamsDataWithProjectStatus: any = [];
       for (const team of teams) {
         const status: any = { active: 0, complete: 0, hold: 0 };
@@ -174,7 +171,6 @@ class TeamsHelper {
    * @param ids
    * @returns
    */
-
   async modifyTeams(newName: string, ids: [string]): Promise<ESResponse> {
     try {
       //create data container the data for merged team

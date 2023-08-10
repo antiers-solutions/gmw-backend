@@ -1,23 +1,42 @@
 import * as redis from 'redis';
+import { log } from '../utils/helper.utils';
 
 class Redis {
-  public client: redis.RedisClientType; // this is client variable declared for accessing redis client in the whole class
+  static instance: Redis = null;
 
-  // this is startRedis funtion to connect to the redis client
-  public async startRedis() {
-    // creating the redis client for all the redis operations
-    this.client = redis.createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379'
-    });
+  static getInstance = () => {
+    if (!Redis.instance) {
+      Redis.instance = new Redis();
+      delete Redis.constructor;
+    }
+    return Redis.instance;
+  };
 
-    this.client.on('error', (err: any) => {
-      throw new Error(`Hash map '${err}' does not exist.`);
-    });
-    await this.client.connect();
+  // this is client variable declared for accessing redis client in the whole class
+  public client: redis.RedisClientType;
 
-    console.log('Redis Connected Successfully');
+  // connect the the redis server
+  public async connectRedis() {
+    try {
+      this.client = redis.createClient({
+        url: process.env.REDIS_URL
+      });
+
+      // bind the redis client event
+      this._bindRedisClientEvents();
+
+      await this.client.connect();
+      return true;
+    } catch (err) {
+      log.red('Redis Connection Error: ', err);
+      return false;
+    }
   }
-  public async stopRedis() {
+
+  /**
+   * release the redis connection
+   */
+  public async releaseRedisConnection() {
     await this.client.disconnect();
   }
 
@@ -114,7 +133,6 @@ class Redis {
    * @param key
    * @returns
    */
-
   public async getDataFromRedisKey(hashMap: string, key: string) {
     try {
       const exists = await this.client.exists(hashMap);
@@ -128,5 +146,42 @@ class Redis {
       return null;
     }
   }
+
+  //***************** method for internal usage *****************/
+
+  /**
+   * bind the redis events for error handling and reconnection
+   */
+  private _bindRedisClientEvents = () => {
+    try {
+      // fired when client is trying to connect to redis server
+      this.client.on('connect', () => {
+        log.blue('Connecting to redis server');
+      });
+
+      // fired when client is connected to redis server
+      this.client.on('ready', () => {
+        log.green('Redis connected');
+      });
+      // fired when error thrown by redis server
+      this.client.on('error', (err: Error) => {
+        log.red('Redis Server Error: ', err);
+      });
+
+      // fired by redis client try to reconnect to server
+      this.client.on('end', () => {
+        log.blue('Redis client disconnected');
+      });
+
+      // fired by redis client try to reconnect to server
+      this.client.on('reconnecting', () => {
+        log.blue('Reconnecting to redis server');
+      });
+    } catch (err) {
+      log.red('Error while binding the redis events: ', err);
+    }
+  };
 }
-export default new Redis();
+
+const redisHelper = Redis.getInstance();
+export default redisHelper;
