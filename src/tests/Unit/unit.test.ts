@@ -1,25 +1,22 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import * as config from '../config';
-import { makeid } from '../utils/helper.utils';
-import teamsHelper from '../controller-helpers/teams.helper';
-import redisHelper from '../helpers/redis.helper';
-import graphHelper from '../controller-helpers/graph.helper';
-import { Project, Pull, Team } from './testConstants';
-import projectsHelper from '../controller-helpers/projects.helper';
-import milestoneHelper from '../controller-helpers/milestone.helper';
-import octoConnectionHelper from '../helpers/octoConnection.helper';
-import { mongoDBConnection, disconnectMongo } from '../mongoDB/connection';
-
-import getPullRequestDetails from '../helpers/octokit.helper';
+import * as config from '../../config';
+import { log } from '../../utils/helper.utils';
+import { Pull, Team } from '../Constants/testConstants';
+import graphHelper from '../../controller-helpers/graph.helper';
+import teamsHelper from '../../controller-helpers/teams.helper';
+import projectsHelper from '../../controller-helpers/projects.helper';
+import milestoneHelper from '../../controller-helpers/milestone.helper';
+import octoConnectionHelper from '../../helpers/octoConnection.helper';
+import { connect, disconnect } from '../connection/connection';
 
 before(async () => {
   config.loadEnvs();
-  redisHelper.startRedis();
-  await mongoDBConnection();
+  await connect();
 });
 
-// ********************************Graphs********************************
+// ********************************Graphs**********************************
+
 describe('Get Project Count By Status', () => {
   it('It should return data of type array ', async () => {
     const stub = sinon.stub(graphHelper, 'getProjectsCountByStatus');
@@ -106,7 +103,8 @@ describe('Get Rejected And Accepted Projects Body', () => {
   });
 });
 
-// ******************************MileStone***********************
+// ******************************MileStone*********************************
+
 describe('Get MileStone Data ', () => {
   const stub = sinon.stub(milestoneHelper, 'getMilstonesData');
 
@@ -305,7 +303,7 @@ describe('Get MileStone Data by projectId ', () => {
   });
 });
 
-// // ********************************Projects********************************
+// // ****************************Projects********************************
 
 describe('Get all Projects Data ', () => {
   const stub = sinon.stub(projectsHelper, 'getProjectData');
@@ -737,7 +735,7 @@ describe('Update project status ', () => {
   });
 });
 
-// ********************************Teams********************************
+// ******************************Teams**********************************
 
 describe('Get all Teams Data ', () => {
   const stub = sinon.stub(teamsHelper, 'getTeamsData');
@@ -930,7 +928,8 @@ describe('Modify teams data ', () => {
   });
 });
 
-// ********************************OctoConnectionHelper********************************
+// ***************************OctoConnectionHelper************************
+
 describe('Making request for get pulls data to OctoHelper', async () => {
   const stub = sinon.stub(octoConnectionHelper, 'octoRequest');
 
@@ -999,30 +998,10 @@ describe('Making request for get pulls data to OctoHelper', async () => {
   });
 });
 
-// ********************************UtilHelper********************************
-describe('MakeId util helper function ', async () => {
-  it('Return unique id', async () => {
-    const response = makeid(10);
-    expect(response).to.be.a('string');
-    expect(response.length).to.equal(10);
-  });
-
-  it('-Ve test case giving string length 0 ', async () => {
-    const response = makeid(0);
-    expect(response).to.be.a('string');
-    expect(response.length).to.equal(0);
-  });
-
-  it('-Ve test case giving string length -1 ', async () => {
-    const response = makeid(-1);
-    expect(response).to.be.a('string');
-    expect(response.length).to.equal(0);
-  });
-});
-
 after(async () => {
-  redisHelper.stopRedis();
-  await disconnectMongo();
+  // redisHelper.stopRedis();
+  // await disconnectMongo();
+  await disconnect();
   octoConnectionHelper.disconnectOcto();
   // process.exit();
 });

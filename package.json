@@ -1,19 +1,19 @@
 {
-  "name": "typescript_sql",
+  "name": "gmw-backend",
   "version": "1.0.0",
-  "description": "boilerplate",
-  "main": "index.js",
+  "description": "backend services for grant management webapp",
+  "main": "server.ts",
   "scripts": {
     "set": "npm install && npm run prepare",
     "dev": "NODE_ENV=dev nodemon ./src/server.ts",
     "start": "ts-node ./src/server.ts",
     "build": "tsc -p tsconfig.json && cp src/config/prod.env dist/config",
     "prod": "NODE_ENV=prod node ./dist/server",
-    "test": "mocha -r ts-node/register ./src/tests/main.test.ts",
-    "test:coverage": "nyc --reporter=text mocha -r ts-node/register ./src/tests/main.test.ts",
     "docker-services-up": "sudo docker-compose up -d",
-    "test:api": "mocha --timeout 30000 -r ts-node/register ./src/test/api.test.ts",
-    "test:api:coverage": "nyc --reporter=text mocha --timeout 30000 -r ts-node/register ./src/test/api.test.ts",
+    "test": "mocha -r ts-node/register ./src/tests/Unit/unit.test.ts",
+    "test:coverage": "nyc --reporter=text mocha -r ts-node/register ./src/tests/Unit/unit.test.ts",
+    "test:api": "mocha --timeout 30000 -r ts-node/register ./src/tests/Api/api.test.ts",
+    "test:api:coverage": "nyc --reporter=text mocha --timeout 30000 -r ts-node/register ./src/tests/Api/api.test.ts",
     "lint": "./node_modules/.bin/eslint 'src/**/*.ts'",
     "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "fix": "npm run prettier && npm run lint",
@@ -24,8 +24,8 @@
       "pre-commit": "npm run fix"
     }
   },
-  "author": "Antier Solutions",
-  "license": "ISC",
+  "author": "Antier Solutions Private Limited",
+  "license": "Apache-2.0",
   "dependencies": {
     "@octokit/core": "^4.2.4",
     "@octokit/oauth-app": "^4.2.4",

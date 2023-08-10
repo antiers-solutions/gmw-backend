@@ -1,26 +1,25 @@
-import App from '../app';
+import App from '../../app';
 import mocha from 'mocha';
 import express from 'express';
 import { expect } from 'chai';
 import request from 'supertest';
-import * as config from '../config';
-config.loadEnvs();
-import redisHelper from '../helpers/redis.helper';
-import { Milestone, Project, Team } from './testConstants';
-import UserController from '../controllers/user.controller';
-import GraphController from '../controllers/graph.controller';
-import TeamsController from '../controllers/teams.controller';
-import ProjectController from '../controllers/projects.controller';
-import MilestoneController from '../controllers/milestone.controller';
-import GithubHookController from '../controllers/githubHook.controller';
-import { mongoDBConnection, disconnectMongo } from '../mongoDB/connection';
+import * as config from '../../config';
+import { connect, disconnect } from '../connection/connection';
+import UserController from '../../controllers/user.controller';
+import GraphController from '../../controllers/graph.controller';
+import TeamsController from '../../controllers/teams.controller';
+import { Milestone, Project, Team } from '../Constants/testConstants';
+import ProjectController from '../../controllers/projects.controller';
+import MilestoneController from '../../controllers/milestone.controller';
+import GithubHookController from '../../controllers/githubHook.controller';
 
 let authToken: string;
-let app: express.Application;
 let teamIdForUpdate: string;
+let app: express.Application;
 let projectIdForUpdate: string;
 
 before(async () => {
+  config.loadEnvs();
   app = new App([
     new UserController(),
     new GraphController(),
@@ -29,12 +28,11 @@ before(async () => {
     new MilestoneController(),
     new GithubHookController()
   ]).app;
-
-  redisHelper.startRedis();
-  await mongoDBConnection();
+  await connect();
 });
 
-//*************-------------- User Sign In -----------------****************
+//**************************** User Sign In **************************
+
 mocha.describe('POST /api/user/signup', () => {
   it('It should return authToken and user github data', async () => {
     const body = {
@@ -68,7 +66,7 @@ mocha.describe('POST /api/user/signup', () => {
   });
 });
 
-//*************------------ Teams Related Tests ---------------*******************
+//*******************Teams Related Tests******************************
 
 mocha.describe('GET /api/teams/get-all', async () => {
   it('It should return teams data', async () => {
@@ -172,7 +170,7 @@ mocha.describe('PUT /api/teams/merge-team updates', async () => {
   });
 });
 
-// // *************------------ Project Related Tests ---------------*******************
+// ************************Project Related Tests******************************
 
 mocha.describe('GET /api/project/get-all', async () => {
   it('It should return all Project data', async () => {
@@ -253,7 +251,7 @@ mocha.describe('PUT /api/project/update-status', async () => {
   });
 });
 
-// // *************------------ MileStone Related Tests ---------------*******************
+//************************MileStone Related Tests******************************
 
 mocha.describe('GET /api/milestone/get-all', async () => {
   it('It should return milestone data', async () => {
@@ -286,7 +284,8 @@ mocha.describe('GET /api/milestone/get-by-projectId/:projectId', async () => {
   });
 });
 
-//*************------------ Graph Related Tests ---------------*******************
+//************************Graph Related Tests******************************
+
 mocha.describe('GET /api/graph/get-projects-count-by-status', async () => {
   it('It should return Project Count by its status', async () => {
     const response = await request(app).get(
@@ -306,6 +305,7 @@ mocha.describe('', async () => {
     expect(response.body.data).to.be.an('array');
   });
 });
+
 mocha.describe('', async () => {
   it('GET /api/graph/get-milestones-count-per-project should return Milestone Count by Project', async () => {
     const response = await request(app).get(
@@ -316,7 +316,8 @@ mocha.describe('', async () => {
   });
 });
 
-//*************-------------- User Log Out -----------------****************
+//************************User Log Out***************************
+
 mocha.describe('', async () => {
   it('DELETE /api/user/logout should logout the user and return data null', async () => {
     const headers = {
@@ -331,7 +332,8 @@ mocha.describe('', async () => {
 });
 
 after(async () => {
-  redisHelper.stopRedis();
-  await disconnectMongo();
+  // redisHelper.stopRedis();
+  // await disconnectMongo();
+  await disconnect();
   process.exit(1);
 });

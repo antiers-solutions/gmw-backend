@@ -3,53 +3,72 @@
 
 ## Installation
 
-#### Install the dependencies with npm
-
+#### Clone this repo using:
 ```bash
-  npm i 
+  git clone https://github.com/antiers-solutions/gmw-backend.git
 ```
-Note: docker and docker compose must be installed in your local system before running this software using docker 
-
-#### Running project in development mode using docker compose
+```bash
+  cd gmw-backend/
+```
+#### Running project in development mode using docker compose:
+- Note: docker and docker compose must be installed in your local system before running this software using docker 
 ```bash
   docker-compose up -d
 ```
-#### Running project using npm 
-- First set up mongoDB in your local system using the [mongoDB installation guide](https://www.mongodb.com/docs/manual/installation/)
-- Setup Redis on your local system using the [redis installation guide](https://redis.io/docs/getting-started/)
-After successfully setting up the required services
+**You can start all the required backend services using docker by using the docker-compose file in the repo. Otherwise, this can also be done manually by following the steps mentioned below.** 
+#### Install the dependencies with npm:
+
+- Recommended node version: v16
+```bash
+  npm i 
+```
+
+#### Running project using npm:
+
+- First, setup mongoDB in your local system using the [mongoDB installation guide](https://www.mongodb.com/docs/manual/installation/) (Recommended mongo version: v3.6.8)
+- Second, install Redis using the [redis setup guide](https://redis.io/docs/getting-started/) (Recommended redis version: v4.6.7)
+After successfully setting up and running the required services:
 
 ```bash
   npm start 
 ```
+
 ## Testing Guide
-#### Run unit tests
+#### Run unit tests:
 ```bash
   npm run test 
 ```
-#### Run test cases for APIs
+#### Run test cases for APIs:
 ```bash
   npm run test:api
 ```
-#### For unit test coverage
+#### For unit test coverage:
 ```bash
   npm run test:coverage
 ```
-#### For test case coverage for APIs
+#### For test case coverage for APIs:
 ```bash
   npm run test:api:coverage
 ```
 
 ## API Reference
 
+### This file contains documentation for the following API endpoints
+- api/project
+- api/team
+- api/graph
+- api/dynamic-cards
+- api/user
+
 ### api/project
 get data for projects
 
 #### 1. Get all projects
 
-```http
+```
   GET /project/get-all
 ```
+
 #### Request qureyParams
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
@@ -73,7 +92,7 @@ get data for projects
 
 #### 2. Get project by id
 
-```http
+```
   GET project/get-by-id/:projectId
 ```
 #### Request Params
@@ -106,7 +125,7 @@ get data for projects
 
 #### 3.  Get groject by name
 
-```http
+```
   GET project/get-by-name
 ```
 #### Request queryParams
@@ -133,7 +152,7 @@ get data for projects
 
 #### 4. Get filtered data for projects by their level/status
 
-```http
+```
   GET /api/items/${id}
 ```
 
@@ -161,7 +180,7 @@ get data for projects
 
 #### 5. Update a project's status
 
-```http
+```
   PUT project/update-status
 ```
 #### Request Body
@@ -180,7 +199,7 @@ Get data for teams
 
 #### 1. Get list of all teams
 
-```http
+```
   GET teams/get-all
 ```
 #### Request Body
@@ -199,7 +218,7 @@ Get data for teams
 
 #### 2. Get data of a team by it's id
 
-```http
+```
   GET teams/get-by-id/:teamId
 ```
 #### Request Body
@@ -228,7 +247,7 @@ Get data for teams
 
 #### 3. Get data of teams by it's name
 
-```http
+```
   GET teams/search-by-name
 ```
 #### Request Body
@@ -246,7 +265,7 @@ Get data for teams
 
 #### 4. Merge data of selected teams under one name
 
-```http
+```
   PUT team/merge-team
 ```
 #### Request Body
@@ -264,7 +283,7 @@ Get data for teams
 
 #### 1. Sign in to github and for login session and security using user-agent
 
-```http
+```
   POST user/signup
 ```
 
@@ -277,7 +296,7 @@ Get data for teams
 
 #### 2. Log out user out of session
 
-```http
+```
   DELETE user/logout
 ```
 #### Request Cookies Param
@@ -295,7 +314,7 @@ Get data for teams
 
 #### 1. Get data for cards on front-end
 
-```http
+```
   GET /dynamic-cards
 ```
 
@@ -311,7 +330,7 @@ Get data for teams
 
 #### 1. Get number of projects per each status
 
-```http
+```
   GET graph/get-projects-count-by-status
 ```
 
@@ -324,7 +343,7 @@ Get data for teams
 
 #### 2. Get number of projects per each level
 
-```http
+```
   GET graph/get-projects-count-by-level
 ```
 
@@ -337,7 +356,7 @@ Get data for teams
 
 #### 3. Get number of applications accepted/rejected (month-wise)
 
-```http
+```
   GET graph/get-rejected-accepted-projects-year
 ```
 
