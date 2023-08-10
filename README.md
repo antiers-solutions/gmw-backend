@@ -17,6 +17,10 @@
 ```
 **You can start all the required backend services using docker by using the docker-compose file in the repo. Otherwise, this can also be done manually by following the steps mentioned below.** 
 #### Install the dependencies with npm:
+- Configure the env.example file with the right environment variable values as:
+```bash
+  /src/config/local.env
+``` 
 
 - Recommended node version: v16
 ```bash
@@ -32,6 +36,8 @@ After successfully setting up and running the required services:
 ```bash
   npm start 
 ```
+- While setting up the repo for the first time, the services will automatically start to load data into local database after you run the `npm start` command. It will take around 30-45 minutes for the data to get processed.
+- Upon a successfull data dump, the application will print a log with message "Data Successfully Stored".
 
 ## Testing Guide
 #### Run unit tests:
@@ -53,12 +59,14 @@ After successfully setting up and running the required services:
 
 ## API Reference
 
+#### api/graphs is an open API and does not require logging in. This is done so because api/graphs is a GET API that returns data required for the landing page. Rest all the API have access control implemented into them.
 ### This file contains documentation for the following API endpoints
 - api/project
 - api/team
 - api/graph
 - api/dynamic-cards
 - api/user
+- api/milestone
 
 ### api/project
 get data for projects
@@ -366,3 +374,34 @@ Get data for teams
 | `month`      | `string` | name of month |
 | `accepted`      | `number` | count of accepted applications |
 | `rejected`      | `number` | count of rejected applications |
+
+### api/milestone
+
+#### 1. Get the milestone data for project ID
+
+```
+  GET graph/get-projects-count-by-status
+```
+
+#### Request Params
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `projectId`      | `string` | ID of project |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | ID of milestone |
+| `file_name`      | `string` | Name of the delivery MD file |
+| `project_id`      | `string` | ID of project |
+| `project_md_link`      | `string` | link to the project MD file |
+| `status`      | `string` | current status of project |
+| `cost`      | `string` | cost of the project |
+| `milestoneNo`      | `number` | Number of current milestone |
+| `merged_at`      | `string` | Date when this milestone was merged |
+
+### Webhook API integration
+This API will listen to the events triggered by github
+```
+  POST /github/save-pull-merge-data
+```
