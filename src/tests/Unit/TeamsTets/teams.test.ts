@@ -1,20 +1,20 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { ProjectsData, TeamsData } from '../../mockedData';
+import { ProjectsData, TeamsData } from '../mockedData';
 import MongoDataHelper from '../../../helpers/mongo.data.helper';
 import teamsHelper from '../../../controller-helpers/teams.helper';
 
 export const runTeamsTests = () => {
   describe('Get all Teams Data ', () => {
     it('It should return object data of all teams ', async () => {
-      const stub1 = sinon.stub(MongoDataHelper, 'getCount');
-      const stub2 = sinon.stub(
+      const count = sinon.stub(MongoDataHelper, 'getCount');
+      const data = sinon.stub(
         MongoDataHelper,
         'findSelectedDataWithPagination'
       );
 
-      stub1.resolves(30);
-      stub2.resolves(TeamsData);
+      count.resolves(30);
+      data.resolves(TeamsData);
 
       const response = await teamsHelper.getTeamsData(1, 1);
 
@@ -28,22 +28,22 @@ export const runTeamsTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      count.restore();
+      data.restore();
     });
   });
 
   describe('Get teams data by id ', () => {
     it('It should return object data of team ', async () => {
-      const stub1 = sinon.stub(MongoDataHelper, 'findAndQueryData');
-      const stub2 = sinon.stub(
+      const teamData = sinon.stub(MongoDataHelper, 'findAndQueryData');
+      const projectData = sinon.stub(
         MongoDataHelper,
         'findAndQueryDataWithSelectedColumns'
       );
 
-      stub1.resolves([TeamsData[0]]);
+      teamData.resolves([TeamsData[0]]);
 
-      stub2.resolves([ProjectsData[1]]);
+      projectData.resolves([ProjectsData[1]]);
 
       const response = await teamsHelper.getTeamsDataByID(
         '4933b995-428b-4882-9f23-92ce69182a02'
@@ -72,37 +72,37 @@ export const runTeamsTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      teamData.restore();
+      projectData.restore();
     });
 
     it('giving wrong teams id, it should return object that contains error and status code', async () => {
-      const stub1 = sinon.stub(MongoDataHelper, 'findAndQueryData');
-      const stub2 = sinon.stub(
+      const teamData = sinon.stub(MongoDataHelper, 'findAndQueryData');
+      const projectData = sinon.stub(
         MongoDataHelper,
         'findAndQueryDataWithSelectedColumns'
       );
 
-      stub1.resolves([]);
-      stub2.resolves([]);
+      teamData.resolves([]);
+      projectData.resolves([]);
 
       const response = await teamsHelper.getTeamsDataByID('wrong teams id');
       expect(response).to.be.an('object');
       expect(response.status).to.equal(404);
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      teamData.restore();
+      projectData.restore();
     });
   });
 
   describe('Get teams data by name ', () => {
     it('It should return object data of team ', async () => {
-      const stub1 = sinon.stub(MongoDataHelper, 'getCount');
-      const stub2 = sinon.stub(MongoDataHelper, 'findAndQueryData');
+      const count = sinon.stub(MongoDataHelper, 'getCount');
+      const teamData = sinon.stub(MongoDataHelper, 'findAndQueryData');
 
-      stub1.resolves(5);
-      stub2.resolves([TeamsData[0]]);
+      count.resolves(5);
+      teamData.resolves([TeamsData[0]]);
 
       const response = await teamsHelper.getTeamsDataByName('cess lab');
       expect(response.data).to.be.an('object');
@@ -116,44 +116,44 @@ export const runTeamsTests = () => {
       });
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      count.restore();
+      teamData.restore();
     });
 
     it('giving wrong teams name, it should return object that contains error and status code', async () => {
-      const stub1 = sinon.stub(MongoDataHelper, 'getCount');
-      const stub2 = sinon.stub(MongoDataHelper, 'findAndQueryData');
+      const count = sinon.stub(MongoDataHelper, 'getCount');
+      const teamData = sinon.stub(MongoDataHelper, 'findAndQueryData');
 
-      stub1.resolves(5);
-      stub2.resolves([]);
+      count.resolves(5);
+      teamData.resolves([]);
       const response = await teamsHelper.getTeamsDataByName('wrong teams name');
       expect(response).to.be.an('object');
       expect(response.status).to.equal(404);
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      count.restore();
+      teamData.restore();
     });
   });
 
   describe('Modify teams data ', () => {
     // -ve scenario
     it('giving wrong team id, it should return object that contains error and status code', async () => {
-      const stub1 = sinon.stub(MongoDataHelper, 'findAndQueryData');
-      const stub2 = sinon.stub(
+      const teamData = sinon.stub(MongoDataHelper, 'findAndQueryData');
+      const projectData = sinon.stub(
         MongoDataHelper,
         'findAndQueryDataWithSelectedColumns'
       );
 
-      stub1.resolves([]);
-      stub2.resolves([]);
+      teamData.resolves([]);
+      projectData.resolves([]);
       const response = await teamsHelper.modifyTeams('New NAME ', ['id']);
       expect(response.status).to.equal(404);
       expect(response.message).to.equal('Not Found!');
 
       // Restore the original function behavior
-      stub1.restore();
-      stub2.restore();
+      teamData.restore();
+      projectData.restore();
     });
   });
 };

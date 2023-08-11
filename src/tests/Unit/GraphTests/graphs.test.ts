@@ -1,20 +1,16 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import graphHelper from '../../../controller-helpers/graph.helper';
+import mongoDataHelper from '../../../helpers/mongo.data.helper';
+import { PROJECTS } from '../mockedData';
 
 export const runGraphTests = () => {
   describe('Get Project Count By Status', () => {
     it('It should return data of type array ', async () => {
-      const stub = sinon.stub(graphHelper, 'getProjectsCountByStatus');
+      const stub = sinon.stub(mongoDataHelper, 'findAndQueryData');
 
       // Configure the stub to return a mock response
-      stub.resolves({
-        data: [
-          { name: 'Hold', value: 0 },
-          { name: 'Active', value: 186 },
-          { name: 'Complete', value: 221 }
-        ]
-      });
+      stub.resolves(PROJECTS);
 
       const response = await graphHelper.getProjectsCountByStatus();
 
@@ -31,15 +27,8 @@ export const runGraphTests = () => {
 
   describe('Get Project Count By Level', () => {
     it('It should return data of type array ', async () => {
-      const stub = sinon.stub(graphHelper, 'getProjectCountByLevel');
-      // Configure the stub to return a mock response
-      stub.resolves({
-        data: [
-          { name: 'Level 1', value: 177 },
-          { name: 'Level 2', value: 177 },
-          { name: 'Level 3', value: 34 }
-        ]
-      });
+      const stub = sinon.stub(mongoDataHelper, 'findAndQueryData'); // Configure the stub to return a mock response
+      stub.resolves(PROJECTS);
 
       const response = await graphHelper.getProjectCountByLevel();
 
@@ -56,27 +45,8 @@ export const runGraphTests = () => {
 
   describe('Get Rejected And Accepted Projects Body', () => {
     it('It should return data of type array ', async () => {
-      const stub = sinon.stub(
-        graphHelper,
-        'getRejectedAndAcceptedProjectsBody'
-      );
-      stub.resolves({
-        data: [
-          { name: 'January', Accepted: 19, Rejected: 28 },
-          { name: 'February', Accepted: 14, Rejected: 25 },
-          { name: 'March', Accepted: 10, Rejected: 25 },
-          { name: 'April', Accepted: 11, Rejected: 28 },
-          { name: 'May', Accepted: 5, Rejected: 14 },
-          { name: 'June', Accepted: 9, Rejected: 11 },
-          { name: 'July', Accepted: 17, Rejected: 15 },
-          { name: 'August', Accepted: 7, Rejected: 16 },
-          { name: 'September', Accepted: 5, Rejected: 0 },
-          { name: 'October', Accepted: 10, Rejected: 9 },
-          { name: 'November', Accepted: 14, Rejected: 7 },
-          { name: 'December', Accepted: 11, Rejected: 10 }
-        ],
-        error: false
-      });
+      const stub = sinon.stub(mongoDataHelper, 'findAndQueryData');
+      stub.resolves(PROJECTS);
       const response = await graphHelper.getRejectedAndAcceptedProjectsBody(
         2021
       );

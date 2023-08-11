@@ -4,6 +4,7 @@ import octoConnectionHelper from './octoConnection.helper';
 import mongoDataHelper from './mongo.data.helper';
 import { DATA_MODELS, ERROR_MESSAGES, STATUS } from '../constants';
 import { v4 } from 'uuid';
+import { log } from '../utils/helper.utils';
 
 /**
  * It extracts the metadata file data
@@ -19,7 +20,7 @@ const reformMDContent = (mdContent: string) => {
 };
 
 /**
- * It gets all the closed and merged pull request data for the new files added
+ * It gets all the closed pull request data and parse it
  * @returns
  */
 const getPullRequestDetails = async () => {
@@ -122,16 +123,17 @@ const getPullRequestDetails = async () => {
 
     return { mergedPullRequestsForAddedFiles, purposals };
   } catch (err) {
-    console.log(
-      'error while getting and formatting the merged pull request data: ',
-      err.message
+    log.red(
+      'Error while getting and formatting the all closed pull request data:\n',
+      err
     );
     return null;
   }
 };
 
 /**
- * It loads the data of all the already merged metedata project files
+ * It loads the data of all the already merged metedata project files to database
+ * this function only run when there is no project data found in database
  * @returns
  */
 const firstTimeFileDataLoad = async () => {
@@ -148,7 +150,7 @@ const firstTimeFileDataLoad = async () => {
 
     // if projects and milestone meta-data file not found then return
     if (!files?.data && !milestoneFiles?.data) {
-      console.log('Project Metadata and Milestone Metadata file not found');
+      log.red('Project Metadata and Milestone Metadata file not found');
       return;
     }
 
@@ -169,7 +171,6 @@ const firstTimeFileDataLoad = async () => {
         file.name === '_category_.yml'
       )
         continue;
-      console.log('Page: ', file?.name);
 
       const mdData = await parseMetaDataFile(
         file,
@@ -204,7 +205,6 @@ const firstTimeFileDataLoad = async () => {
       mdData.project.milestones.push(...milestones.milestoneIds);
 
       //push the data into bulk save array
-      // console.log(mdData.project, mdData.team, 'data');
       extractedData.team.push(mdData.team);
       extractedData.project.push(mdData.project);
       extractedData.milestone.push(...milestones.milestoneFileData);
@@ -231,16 +231,16 @@ const firstTimeFileDataLoad = async () => {
       mergedPullRequests.purposals
     );
 
-    console.log('Saved the Initial Grants Data');
+    log.green('Data Successfully Stored');
   } catch (err) {
-    console.log('error in the dataload: ', err);
+    log.red('Error in the initial grants data loading into database:\n', err);
   }
 };
 
 export default firstTimeFileDataLoad;
 
 /**
- * It is used for parsing the purposed project metadata file
+ * It is used for extracting and parsing the all merged metadata files data
  * @param mdDetails
  * @param mergedPullRequests
  * @returns
@@ -380,7 +380,7 @@ export const parseMetaDataFile = async (
 
     return { project, team, milestones };
   } catch (err) {
-    console.log('error while parsing the md file ', err.message);
+    log.red('Error while parsing the metadata files: ', err);
     return { project: null, team: null, milestones: null };
   }
 };
@@ -428,7 +428,7 @@ const formMilestonePayload = async (
     }
     return { milestoneFileData, milestoneIds };
   } catch (err) {
-    console.log('error while fething the milestone: ');
+    log.red('Error while fething and formating the milestone data:\n', err);
     return { milestoneFileData: [], milestoneIds: [] };
   }
 };
