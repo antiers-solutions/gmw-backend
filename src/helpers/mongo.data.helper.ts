@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { DATA_MODELS } from '../constants';
 import modelsObejct from '../models/index';
+import { log } from '../utils/helper.utils';
 
 //mongodb curd helper
 class MongoDataHelper {
@@ -33,8 +34,9 @@ class MongoDataHelper {
         const result = await this._getModel(name)?.count();
         return result;
       }
-    } catch (error) {
-      return null;
+    } catch (err) {
+      log.red('Error while getting the document count from mongodb:\n', err);
+      return 0;
     }
   };
 

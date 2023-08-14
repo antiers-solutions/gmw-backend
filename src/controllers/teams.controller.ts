@@ -39,7 +39,7 @@ class TeamsController implements Controller {
    * @param req
    * @param res
    */
-  private getTeamsData = async (req: Request, res: Response) => {
+  private getTeamsData = async (req: Request, res: Response): Promise<void> => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
     const getAllTeams = await TeamsHelper.getTeamsData(pageNo, pageLimit);
@@ -53,7 +53,10 @@ class TeamsController implements Controller {
    * @param req
    * @param res
    */
-  private searchTeamsById = async (req: Request, res: Response) => {
+  private searchTeamsById = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     const searchID = req.params?.teamId;
 
     const getsearchedByID = await TeamsHelper.getTeamsDataByID(searchID);
@@ -67,7 +70,10 @@ class TeamsController implements Controller {
    * @param req
    * @param res
    */
-  private searchTeamsByName = async (req: Request, res: Response) => {
+  private searchTeamsByName = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     const searchedName: any = req.query?.searchedName;
     const getsearchedByName = await TeamsHelper.getTeamsDataByName(
       searchedName
@@ -82,7 +88,10 @@ class TeamsController implements Controller {
    * @param req
    * @param res
    */
-  private modifyTeamByName = async (req: Request, res: Response) => {
+  private modifyTeamByName = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     const { updatedName, teamIds } = req.body;
 
     const modifiedData = await TeamsHelper.modifyTeams(updatedName, teamIds);
