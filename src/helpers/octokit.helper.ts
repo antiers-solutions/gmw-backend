@@ -381,7 +381,7 @@ export const parseMetaDataFile = async (
 
     return { project, team, milestones };
   } catch (err) {
-    log.red('Error while parsing the metadata files: ', err);
+    log.red('Error while parsing the metadata files: ', err.message);
     return { project: null, team: null, milestones: null };
   }
 };
