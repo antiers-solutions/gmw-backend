@@ -38,6 +38,7 @@ Prerequisites:
 1. Configure the env.example file with the right environment variable:
 - Locate the `env.example` file in the repository's root directory.
 - Create a copy of `env.example` in `/src/config` and name it `local.env`.
+For help in setting up the environment variables refer [this doc](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 
 2. After successfully setting up and running the required services:
 
@@ -51,6 +52,7 @@ Prerequisites:
 1. Configure the env.example file with the right environment variable:
 - Locate the `env.example` file in the repository's root directory.
 - Create a copy of `env.example` in `/src/config` and name it `prod.env`.
+For help in setting up the environment variables refer [this doc](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 
 2. After successfully setting up the `prod.env` file:
 ```bash
