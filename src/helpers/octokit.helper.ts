@@ -140,12 +140,12 @@ const firstTimeFileDataLoad = async () => {
   try {
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
-      process.env.APPLICATIONS_REPO
+      `GET ${process.env.APPLICATIONS_REPO}`
     );
 
     //get all milestones files
     const milestoneFiles: any = await octoConnectionHelper.octoRequest(
-      process.env.DELIVERIES_REPO
+      `GET ${process.env.DELIVERIES_REPO}`
     );
 
     // if projects and milestone meta-data file not found then return
