@@ -1,5 +1,5 @@
 import * as config from '../../config';
-import { runTeamsTests } from './TeamsTets/teams.test';
+import { runTeamsTests } from './TeamsTests/teams.test';
 import { runGraphTests } from './GraphTests/graphs.test';
 import { runProjectTests } from './ProjectsTests/projects.test';
 import { runMilestoneTests } from './MileStoneTests/milestones.test';
