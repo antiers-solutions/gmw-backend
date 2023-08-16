@@ -4,6 +4,6 @@ import Proposal from './Proposal';
 import Project from './Project';
 import Milestone from './Milestone';
 
-const modelsObejct = { Team, Project, Milestone, User, Proposal };
+const models = { Team, Project, Milestone, User, Proposal };
 
-export default modelsObejct;
+export default models;

@@ -136,7 +136,7 @@ const getPullRequestDetails = async () => {
  * this function only run when there is no project data found in database
  * @returns
  */
-const firstTimeFileDataLoad = async () => {
+const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
     // get all purposed md files
@@ -238,7 +238,7 @@ const firstTimeFileDataLoad = async () => {
   }
 };
 
-export default firstTimeFileDataLoad;
+export default loadInitialGrantsData;
 
 /**
  * It is used for extracting and parsing the all merged metadata files data
