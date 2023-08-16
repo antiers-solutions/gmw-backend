@@ -138,6 +138,7 @@ const getPullRequestDetails = async () => {
  */
 const firstTimeFileDataLoad = async () => {
   try {
+    log.log('Initial data started loading, it may take a while.');
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
       process.env.APPLICATIONS_REPO
