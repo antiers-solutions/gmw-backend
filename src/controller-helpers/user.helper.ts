@@ -33,12 +33,15 @@ class UserHelper {
     token?: string;
   }> => {
     try {
-      const response = await axios.post(process.env.GITHUB_ACCESS_TOKEN_URL, {
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code: payload.access_token,
-        redirect_uri: process.env.GITHUB_REDIRECT_URI
-      });
+      const response = await axios.post(
+        process.env.GITHUB_VERIFY_ACCESS_TOKEN_URL,
+        {
+          client_id: process.env.GITHUB_CLIENT_ID,
+          client_secret: process.env.GITHUB_CLIENT_SECRET,
+          code: payload.access_token,
+          redirect_uri: process.env.GITHUB_REDIRECT_URI
+        }
+      );
 
       const params = new URLSearchParams(response.data);
       const access_token = params.get('access_token');
@@ -154,7 +157,7 @@ class UserHelper {
    */
   private userSigninData = async (access_token: string) => {
     try {
-      const response = await axios.get(process.env.GIT_RESPONSE_CODE_URL, {
+      const response = await axios.get(process.env.GIT_USER_DETAILS_URL, {
         headers: {
           Authorization: `token ${access_token}`
         }

@@ -128,7 +128,7 @@ class GithubHookHelper {
       const headers = {
         Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN_CLASSIC}`
       };
-      const apiUrl = `${process.env.GITHUB_REPO_URL}/pulls/${pullRequestNumber}/merge`;
+      const apiUrl = `${process.env.GITHUB_PULL_REQUEST_URL}/pulls/${pullRequestNumber}/merge`;
       await axios.put(apiUrl, {}, { headers });
       const searchResult = await MongoDataHelper.findAndQueryData(
         DATA_MODELS.Proposal,
