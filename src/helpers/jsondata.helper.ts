@@ -1,5 +1,5 @@
 import { log } from '../utils/helper.utils';
-import { getGrantData } from '../grant-data';
+import { getGrantData } from '../db-dump';
 import mongoDataHelper from './mongo.data.helper';
 import { ERROR_MESSAGES } from '../constants';
 
