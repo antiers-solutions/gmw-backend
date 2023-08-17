@@ -35,24 +35,25 @@ Prerequisites:
 ```
 #### Running project using npm:
 
-1. Configure the env.example file with the right environment variable:
+1. Configure the environment file with the right environment variable:
 - Locate the `env.example` file in the repository's root directory.
 - Create a copy of `env.example` in `/src/config` and name it `local.env`.
-For help in setting up the environment variables refer [this doc](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
+For help in setting up the environment variables refer the [congiguration guide](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 
 2. After successfully setting up and running the required services:
 
 ```bash
   npm start 
 ```
-- While setting up the repo for the first time, the services will automatically start to load data into local database after you run the `npm start` command. It will take around 30-45 minutes for the data to get processed.
+- While setting up the repo for the first time, the data will be loaded from the json files in `/src/db-dump` directory.
+- In case, the application does not find the data from the files in `/src/db-dump` directory, the services will automatically start to load data into local database after you run the `npm start` command. It will take around 30-45 minutes for the data to get processed.
 - Upon a successfull data dump, the application will print a log with message "Data Successfully Stored".
 
 #### Running project in development mode using docker compose:
-1. Configure the env.example file with the right environment variable:
+1. Configure the environment file with the right environment variable:
 - Locate the `env.example` file in the repository's root directory.
 - Create a copy of `env.example` in `/src/config` and name it `prod.env`.
-For help in setting up the environment variables refer [this doc](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
+For help in setting up the environment variables refer the [congiguration guide](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 
 2. After successfully setting up the `prod.env` file:
 ```bash
@@ -60,10 +61,10 @@ For help in setting up the environment variables refer [this doc](https://github
 ```
 
 ## Testing Guide
-1. Configure the env.example file with the right environment variable:
+1. Configure the environment file with the right environment variable:
 - Locate the `env.example` file in the repository's root directory.
 - Create a copy of `env.example` in `/src/config` and name it `test.env`.
-For help in setting up the environment variables refer [this doc](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
+For help in setting up the environment variables refer the [congiguration guide](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 #### Run unit tests:
 ```bash
   npm run test 

@@ -1,20 +1,91 @@
 # API Reference
 
-#### api/graphs is an open API and does not require logging in. This is done so because api/graphs is a GET API that returns data required for the landing page. Rest all the API have access control implemented into them.
 ### This file contains documentation for the following API endpoints
+- api/graph
 - api/project
 - api/team
-- api/graph
 - api/dynamic-cards
 - api/user
 - api/milestone
+
+#### api/graphs is an open API and does not require logging in. This is done so because api/graphs is a GET API that returns data required for the landing page.
+
+## api/graphs
+
+### 1. Get number of projects per each status
+
+```
+graph/get-projects-count-by-status
+```
+#### GET
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `active`      | `number` | count of projects that have the status “active” |
+| `hold`      | `number` | count of projects that have the status “hold” |
+| `complete`      | `number` | count of projects that have the status “complete” |
+
+### 2. Get number of projects per each level
+
+```
+graph/get-projects-count-by-level
+```
+#### GET
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `level1`      | `number` | count of projects at level1 |
+| `level2`      | `number` | count of projects at level2 |
+| `level3`      | `number` | count of projects at level3 |
+
+### 3. Get number of applications accepted/rejected (month-wise)
+
+```
+graph/get-rejected-accepted-projects-year
+```
+#### GET
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `month`      | `string` | name of month |
+| `accepted`      | `number` | count of accepted applications |
+| `rejected`      | `number` | count of rejected applications |
+
+## api/milestone
+
+### 1. Get the milestone data for project ID
+
+```
+graph/get-projects-count-by-status
+```
+#### GET
+#### Request Params
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `projectId`      | `string` | ID of project |
+
+#### Response
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | ID of milestone |
+| `file_name`      | `string` | Name of the delivery MD file |
+| `project_id`      | `string` | ID of project |
+| `project_md_link`      | `string` | link to the project MD file |
+| `status`      | `string` | current status of project |
+| `cost`      | `string` | cost of the project |
+| `milestoneNo`      | `number` | Number of current milestone |
+| `merged_at`      | `string` | Date when this milestone was merged |
 
 ## api/project
 get data for projects
 
 ### 1. Get all projects
 
-`GET /project/get-all`
+```
+/project/get-all
+```
+
+#### GET
 
 #### Request qureyParams
 | Parameter | Type     | Description                |
@@ -39,7 +110,10 @@ get data for projects
 
 ### 2. Get project by id
 
-`GET project/get-by-id/:projectId`
+```
+project/get-by-id/:projectId
+```
+#### GET
 #### Request Params
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
@@ -70,7 +144,10 @@ get data for projects
 
 ### 3.  Get groject by name
 
-`GET project/get-by-name`
+```
+project/get-by-name
+```
+#### GET
 #### Request queryParams
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
@@ -95,7 +172,10 @@ get data for projects
 
 ### 4. Get filtered data for projects by their level/status
 
-`GET /api/items/:id`
+```
+/api/items/:id
+```
+#### GET
 
 #### Request queryParams 
 | Parameter | Type     | Description                       |
@@ -121,7 +201,10 @@ get data for projects
 
 ### 5. Update a project's status
 
-`PUT project/update-status`
+```
+project/update-status
+```
+#### PUT
 
 #### Request Body
 | Parameter | Type     | Description                       |
@@ -139,7 +222,10 @@ Get data for teams
 
 ### 1. Get list of all teams
 
-`GET teams/get-all`
+```
+teams/get-all
+```
+#### GET
 
 #### Request Body
 | Parameter | Type     | Description                       |
@@ -157,7 +243,10 @@ Get data for teams
 
 ### 2. Get data of a team by it's id
 
-`GET teams/get-by-id/:teamId`
+```
+teams/get-by-id/:teamId
+```
+#### GET
 
 #### Request Body
 | Parameter | Type     | Description                       |
@@ -185,7 +274,10 @@ Get data for teams
 
 ### 3. Get data of teams by it's name
 
-`GET teams/search-by-name`
+```
+teams/search-by-name
+```
+#### GET
 
 #### Request Body
 | Parameter | Type     | Description                       |
@@ -202,7 +294,10 @@ Get data for teams
 
 ### 4. Merge data of selected teams under one name
 
-`PUT team/merge-team`
+```
+team/merge-team
+```
+#### PUT
 
 #### Request Body
 | Parameter | Type     | Description                       |
@@ -219,7 +314,10 @@ Get data for teams
 
 ### 1. Sign in to github and for login session and security using user-agent
 
-`POST user/signup`
+```
+user/signup
+```
+#### POST
 
 #### Response
 | Parameter | Type     | Description                       |
@@ -230,7 +328,10 @@ Get data for teams
 
 ### 2. Log out user out of session
 
-`DELETE user/logout`
+```
+user/logout
+```
+#### DELETE
 
 #### Request Cookies Param
 | Parameter | Type     | Description                       |
@@ -247,8 +348,10 @@ Get data for teams
 
 ### 1. Get data for cards on front-end
 
-`GET /dynamic-cards`
-
+```
+/dynamic-cards
+```
+#### GET
 #### Response
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
@@ -257,64 +360,9 @@ Get data for teams
 | `totalRejectedProposals`      | `number` | all applications that were rejected |
 | `totalCompletedProjects`      | `number` | all projects that were completed |
 
-## api/graphs
-
-### 1. Get number of projects per each status
-
-`GET graph/get-projects-count-by-status`
-
-#### Response
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `active`      | `number` | count of projects that have the status “active” |
-| `hold`      | `number` | count of projects that have the status “hold” |
-| `complete`      | `number` | count of projects that have the status “complete” |
-
-### 2. Get number of projects per each level
-
-`GET graph/get-projects-count-by-level`
-
-#### Response
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `level1`      | `number` | count of projects at level1 |
-| `level2`      | `number` | count of projects at level2 |
-| `level3`      | `number` | count of projects at level3 |
-
-### 3. Get number of applications accepted/rejected (month-wise)
-
-`GET graph/get-rejected-accepted-projects-year`
-
-#### Response
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `month`      | `string` | name of month |
-| `accepted`      | `number` | count of accepted applications |
-| `rejected`      | `number` | count of rejected applications |
-
-## api/milestone
-
-### 1. Get the milestone data for project ID
-
-`GET graph/get-projects-count-by-status`
-
-#### Request Params
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `projectId`      | `string` | ID of project |
-
-#### Response
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | ID of milestone |
-| `file_name`      | `string` | Name of the delivery MD file |
-| `project_id`      | `string` | ID of project |
-| `project_md_link`      | `string` | link to the project MD file |
-| `status`      | `string` | current status of project |
-| `cost`      | `string` | cost of the project |
-| `milestoneNo`      | `number` | Number of current milestone |
-| `merged_at`      | `string` | Date when this milestone was merged |
-
 ## Webhook API integration
-This API will listen to the events triggered by github
-`POST /github/save-pull-merge-data`
+This API will listen to the events triggered by github: 
+#### POST
+```
+/github/save-pull-merge-data
+```
