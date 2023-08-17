@@ -20,7 +20,7 @@ class DBConnectionHandler {
   createDBConnection = async () => {
     try {
       this._bindMongoConnectionEvents();
-      await mongoose.connect(process.env.MONGO_URI, {
+      await mongoose.connect(`${process.env.MONGO_URI}/${process.env.DBNAME}`, {
         connectTimeoutMS: 40000
       });
       return true;

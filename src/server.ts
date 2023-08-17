@@ -11,10 +11,11 @@ import GithubHookController from './controllers/githubHook.controller';
 import GraphController from './controllers/graph.controller';
 import dbConnectionHandler from './mongoDB/connection';
 import mongoDataHelper from './helpers/mongo.data.helper';
-import loadDataFirstTime from './helpers/octokit.helper';
+import loadInitialGrantsData from './helpers/octokit.helper';
 import redisHelper from './helpers/redis.helper';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import { log } from './utils/helper.utils';
+import { loadDataFromJsonFile } from './helpers/jsondata.helper';
 
 // start the service
 (async () => {
@@ -40,8 +41,12 @@ import { log } from './utils/helper.utils';
 
       //check if there is already data loaded inside mongo
       const projectCount = await mongoDataHelper.getCount(DATA_MODELS.Project);
-      log.log('Project Count: ', projectCount);
-      !projectCount && loadDataFirstTime();
+      log.log('Projects Count: ', projectCount);
+
+      if (!projectCount) {
+        const isDataLoaded = await loadDataFromJsonFile();
+        !isDataLoaded && loadInitialGrantsData();
+      }
 
       // bind the port and listen for requests
       app.listen();

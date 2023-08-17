@@ -5,6 +5,7 @@ import express from 'express';
 import { expect } from 'chai';
 import request from 'supertest';
 import * as config from '../../config';
+import { loadDataFromJsonFile } from '../../helpers/jsondata.helper';
 import { connect, disconnect } from '../connection/connection';
 import UserController from '../../controllers/user.controller';
 import GraphController from '../../controllers/graph.controller';
@@ -12,6 +13,8 @@ import TeamsController from '../../controllers/teams.controller';
 import ProjectController from '../../controllers/projects.controller';
 import MilestoneController from '../../controllers/milestone.controller';
 import GithubHookController from '../../controllers/githubHook.controller';
+import { log } from '../../utils/helper.utils';
+import mongoDataHelper from '../../helpers/mongo.data.helper';
 
 let authToken: string;
 let teamIdForGet: string;
@@ -22,16 +25,26 @@ let projecNameForGet: string;
 let app: express.Application;
 
 before(async () => {
-  config.loadEnvs();
-  app = new App([
-    new UserController(),
-    new GraphController(),
-    new TeamsController(),
-    new ProjectController(),
-    new MilestoneController(),
-    new GithubHookController()
-  ]).app;
-  await connect();
+  try {
+    config.loadEnvs();
+    app = new App([
+      new UserController(),
+      new GraphController(),
+      new TeamsController(),
+      new ProjectController(),
+      new MilestoneController(),
+      new GithubHookController()
+    ]).app;
+    await connect();
+    const isDataLoaded = await loadDataFromJsonFile();
+    log.blue('Creating test database...');
+    if (!isDataLoaded) throw new Error('Data load failed in test enviroment');
+  } catch (err) {
+    log.error('Error while configuring the integration tests: ', err);
+    await mongoDataHelper.dropDB();
+    await disconnect();
+    process.exit(1);
+  }
 });
 
 //**************************** User Sign In **************************
@@ -39,19 +52,19 @@ before(async () => {
 mocha.describe('POST /api/user/signup', () => {
   beforeEach(() => {
     nock('https://github.com').post('/login/oauth/access_token').reply(200, {
-      name: 'Shaurya Awasthi',
-      gitId: 'shaurya-ATR940',
-      image_url: 'https://avatars.githubusercontent.com/u/129488822?v=4'
+      name: 'name',
+      gitId: 'your_username',
+      image_url: 'https://avatars.githubusercontent.com/u/12948?v=4'
     });
 
     nock('https://api.github.com').get('/user').reply(200, {
       id: 2323234433434,
-      name: 'Shaurya Awasthi',
-      git_id: 'shaurya-ATR940',
+      name: 'john',
+      git_id: 'john1',
       avatar_url: 'https://avatars.githubusercontent.com/u/129488822?v=4',
-      login: 'Sura',
-      url: 'https://api.github.com/users/shaurya-ATR940',
-      site_admin: 'Me'
+      login: 'john',
+      url: 'https://api.github.com/users/username',
+      site_admin: ''
     });
   });
 
@@ -463,6 +476,7 @@ mocha.describe('DELETE /api/user/logout', async () => {
 });
 
 after(async () => {
+  log.green('Dropping the test database...');
+  await mongoDataHelper.dropDB();
   await disconnect();
-  // process.exit(1);
 });

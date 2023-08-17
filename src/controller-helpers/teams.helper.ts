@@ -1,7 +1,7 @@
 import { DATA_MODELS, RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
 import mongoDataHelper from '../helpers/mongo.data.helper';
 import { ESResponse } from '@interfaces';
-const { v4 } = require('uuid');
+import { v4 } from 'uuid';
 
 class TeamsHelper {
   static instance: TeamsHelper = null;
@@ -27,47 +27,46 @@ class TeamsHelper {
     try {
       const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Team);
 
-      // to query all the teams data present in the db with the page number required and page size
-      if (pageSize <= 40) {
-        const teams = await mongoDataHelper.findSelectedDataWithPagination(
-          DATA_MODELS.Team,
-          {},
-          ['id', 'projects', 'name'],
-          pageNumber,
-          pageSize
-        );
-
-        // check if team and team_count found or not
-        if (!teams.length || !totalCount) {
-          return {
-            message: RESPONSE_MESSAGES.NOT_FOUND,
-            status: STATUS_CODES.BADREQUEST
-          };
-        }
-
-        // sending the status of each team with is own object
-        const teamsDataWithProjectStatus: any = [];
-        for (const team of teams) {
-          const status: any = { active: 0, complete: 0, hold: 0 };
-          status[team.projects[0].status]++;
-          teamsDataWithProjectStatus.push({
-            id: team.id,
-            projects: team.projects,
-            name: team.name,
-            projectStatus: status
-          });
-        }
-
-        return {
-          data: { totalCount, teamsDataWithProjectStatus },
-          error: false
-        };
-      } else {
+      // only 40 page size is allowed limit for data
+      if (pageSize > 40)
         return {
           message: RESPONSE_MESSAGES.Max_LIMIT,
           status: STATUS_CODES.UNPROCESSABLE
         };
+
+      const teams = await mongoDataHelper.findSelectedDataWithPagination(
+        DATA_MODELS.Team,
+        {},
+        ['id', 'projects', 'name'],
+        pageNumber,
+        pageSize
+      );
+
+      // check if team and team_count found or not
+      if (!teams.length || !totalCount) {
+        return {
+          message: RESPONSE_MESSAGES.NOT_FOUND,
+          status: STATUS_CODES.BADREQUEST
+        };
       }
+
+      // sending the status of each team with is own object
+      const teamsDataWithProjectStatus: any = [];
+      for (const team of teams) {
+        const status: any = { active: 0, complete: 0, hold: 0 };
+        status[team.projects[0].status]++;
+        teamsDataWithProjectStatus.push({
+          id: team.id,
+          projects: team.projects,
+          name: team.name,
+          projectStatus: status
+        });
+      }
+
+      return {
+        data: { totalCount, teamsDataWithProjectStatus },
+        error: false
+      };
     } catch (err) {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }

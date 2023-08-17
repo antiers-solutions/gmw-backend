@@ -21,7 +21,7 @@ class GithubHookHelper {
    * @param requestBody
    * @returns
    */
-  public getGithubData = async (requestBody: any) => {
+  public saveGithubData = async (requestBody: any) => {
     try {
       if (requestBody?.pull_request) {
         const { pull_request } = requestBody;
@@ -30,15 +30,17 @@ class GithubHookHelper {
         const response: any = await axios.get(`${url}/files`);
         const element = response?.data[0];
 
-        //check if data is for merged request
-        if (pull_request?.merged) {
-          if (element?.filename.search('applications/') !== -1) {
-            const fileName = element.filename.split('/')[1];
+        if (element?.filename.search('applications/') !== -1) {
+          const fileName = element.filename.split('/')[1];
 
+          //check if data is for merged request
+          if (pull_request?.merged) {
+            console.log('saving merged pull request data into Db..');
             const dataRes: any = await MongoDataHelper.findAndQueryData(
               DATA_MODELS.Proposal,
               { file_name: fileName }
             );
+
             if (dataRes.length > 0) {
               const { project, team } = JSON.parse(
                 dataRes[0]?.extrected_proposal_data
@@ -57,7 +59,6 @@ class GithubHookHelper {
               await MongoDataHelper.findOneAndUpdate(
                 DATA_MODELS.Team,
                 { name: team.name },
-
                 team
               );
 
@@ -76,34 +77,38 @@ class GithubHookHelper {
               throw new Error('Proposal in not present in the collection');
             }
           } else {
-            throw new Error('Changes are not in the applications/ directory');
+            console.log('saving pull request data into Db..');
+
+            let dataRes: { team: any; project: any; milestones?: any };
+            const response2: any = await axios.get(`${element?.contents_url}`);
+            dataRes = await parseMetaDataFile(response2?.data, {
+              [fileName]: { mergedAt: null }
+            });
+
+            // save the purposal data
+            const dataToSave: any = {
+              id: v4(),
+              sha: element?.sha,
+              approvals: null,
+              team_name: dataRes?.team?.name,
+              status: dataRes?.project?.status,
+              pr_link: pull_request?.html_url,
+              file_name: dataRes?.project?.file_name,
+              proposal_name: dataRes?.project?.project_name,
+              extrected_proposal_data: JSON.stringify(dataRes),
+              branch_name: pull_request?.head.ref //The source branch i.e the branch from where the changes are coming.
+            };
+
+            await MongoDataHelper.savaData(DATA_MODELS.Proposal, dataToSave);
+            dataRes = null;
+
+            return {
+              error: false,
+              data: null
+            };
           }
         } else {
-          let dataRes;
-          const response2: any = await axios.get(`${element?.contents_url}`);
-          dataRes = await parseMetaDataFile(response2?.data);
-
-          // save the purposal data
-          const dataToSave: any = {
-            id: v4(),
-            sha: element?.sha,
-            approvals: null,
-            team_name: dataRes.team.name,
-            status: dataRes.project.status,
-            pr_link: pull_request?.html_url,
-            file_name: dataRes.project.file_name,
-            proposal_name: dataRes.project.project_name,
-            extrected_proposal_data: JSON.stringify(dataRes),
-            branch_name: pull_request?.head.ref //The source branch i.e the branch from where the changes are coming.
-          };
-
-          await MongoDataHelper.savaData(DATA_MODELS.Proposal, dataToSave);
-          dataRes = null;
-
-          return {
-            error: false,
-            data: 'success'
-          };
+          throw new Error('Changes are not in the applications/ directory');
         }
       }
     } catch (error) {
@@ -128,7 +133,7 @@ class GithubHookHelper {
       const headers = {
         Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN_CLASSIC}`
       };
-      const apiUrl = `${process.env.GITHUB_API_URL}/pulls/${pullRequestNumber}/merge`;
+      const apiUrl = `${process.env.GITHUB_PULL_REQUEST_URL}/pulls/${pullRequestNumber}/merge`;
       await axios.put(apiUrl, {}, { headers });
       const searchResult = await MongoDataHelper.findAndQueryData(
         DATA_MODELS.Proposal,

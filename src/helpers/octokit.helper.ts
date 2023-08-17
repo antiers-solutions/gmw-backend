@@ -136,16 +136,17 @@ const getPullRequestDetails = async () => {
  * this function only run when there is no project data found in database
  * @returns
  */
-const firstTimeFileDataLoad = async () => {
+const loadInitialGrantsData = async () => {
   try {
+    log.log('Initial data started loading, it may take a while.');
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
-      process.env.APPLICATIONS_REPO
+      `GET ${process.env.APPLICATIONS_REPO}`
     );
 
     //get all milestones files
     const milestoneFiles: any = await octoConnectionHelper.octoRequest(
-      process.env.DELIVERIES_REPO
+      `GET ${process.env.DELIVERIES_REPO}`
     );
 
     // if projects and milestone meta-data file not found then return
@@ -237,7 +238,7 @@ const firstTimeFileDataLoad = async () => {
   }
 };
 
-export default firstTimeFileDataLoad;
+export default loadInitialGrantsData;
 
 /**
  * It is used for extracting and parsing the all merged metadata files data
@@ -356,11 +357,11 @@ export const parseMetaDataFile = async (
     const project: any = {
       id: projectId,
       user_github_id: null,
-      start_date: mergedPullRequests[mdDetails.name?.toLowerCase()]?.mergedAt,
-      file_name: mdDetails.name?.toLowerCase(),
+      start_date: mergedPullRequests[mdDetails?.name?.toLowerCase()]?.mergedAt,
+      file_name: mdDetails?.name?.toLowerCase(),
       payment_details: pairData['payment address'],
-      md_content: res.data,
-      md_link: mdDetails.download_url,
+      md_content: res?.data,
+      md_link: mdDetails?.download_url,
       project_name: pairData['project name']
         ? pairData['project name'].toLowerCase()
         : '',
@@ -369,7 +370,7 @@ export const parseMetaDataFile = async (
       total_duration: pairData['total estimated duration'] || '',
       team_id: teamId,
       level: pairData['level'],
-      html_url: mdDetails.html_url,
+      html_url: mdDetails?.html_url,
       legal_structure: {
         registered_address: pairData['registered address'] || '',
         registered_legal_entity: pairData['registered legal entity'] || ''
