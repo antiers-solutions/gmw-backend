@@ -7,7 +7,7 @@
     "set": "npm install && npm run prepare",
     "dev": "NODE_ENV=dev nodemon ./src/server.ts",
     "start": "ts-node ./src/server.ts",
-    "build": "tsc -p tsconfig.json && cp src/config/prod.env dist/config && cp src/grant-data/*.json dist/grant-data",
+    "build": "tsc -p tsconfig.json && cp src/config/prod.env dist/config && cp src/db-dump/*.json dist/db-dump",
     "prod": "NODE_ENV=prod node ./dist/server",
     "docker-services-up": "sudo docker-compose up -d",
     "test": "NODE_ENV=test mocha -r ts-node/register ./src/tests/Unit/index.test.ts",
