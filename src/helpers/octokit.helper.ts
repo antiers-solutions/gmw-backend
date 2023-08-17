@@ -136,16 +136,17 @@ const getPullRequestDetails = async () => {
  * this function only run when there is no project data found in database
  * @returns
  */
-const firstTimeFileDataLoad = async () => {
+const loadInitialGrantsData = async () => {
   try {
+    log.log('Initial data started loading, it may take a while.');
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
-      process.env.APPLICATIONS_REPO
+      `GET ${process.env.APPLICATIONS_REPO}`
     );
 
     //get all milestones files
     const milestoneFiles: any = await octoConnectionHelper.octoRequest(
-      process.env.DELIVERIES_REPO
+      `GET ${process.env.DELIVERIES_REPO}`
     );
 
     // if projects and milestone meta-data file not found then return
@@ -237,7 +238,7 @@ const firstTimeFileDataLoad = async () => {
   }
 };
 
-export default firstTimeFileDataLoad;
+export default loadInitialGrantsData;
 
 /**
  * It is used for extracting and parsing the all merged metadata files data
@@ -380,7 +381,7 @@ export const parseMetaDataFile = async (
 
     return { project, team, milestones };
   } catch (err) {
-    log.red('Error while parsing the metadata files: ', err);
+    log.red('Error while parsing the metadata files: ', err.message);
     return { project: null, team: null, milestones: null };
   }
 };

@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { DATA_MODELS } from '../constants';
 import modelsObejct from '../models/index';
+import { log } from '../utils/helper.utils';
 
 //mongodb curd helper
 class MongoDataHelper {
@@ -33,8 +34,9 @@ class MongoDataHelper {
         const result = await this._getModel(name)?.count();
         return result;
       }
-    } catch (error) {
-      return null;
+    } catch (err) {
+      log.red('Error while getting the document count from mongodb:\n', err);
+      return 0;
     }
   };
 
@@ -69,7 +71,8 @@ class MongoDataHelper {
       // inserts multiple data in the db collection at a specific time
       const result = await Model.insertMany(data);
       return result;
-    } catch (error) {
+    } catch (err) {
+      log.red('Error while saving data bluk data:\n', err.message);
       return null;
     }
   };
@@ -250,6 +253,23 @@ class MongoDataHelper {
       return result;
     } catch (error) {
       return null;
+    }
+  };
+
+  /**
+   * clear the all collections except users collection
+   * @returns boolean
+   */
+  public clearCollectionsData = async () => {
+    try {
+      for (const modelKey in DATA_MODELS) {
+        if (modelKey === DATA_MODELS.User) continue;
+        const model = this._getModel(modelKey);
+        await model.deleteMany();
+      }
+      return true;
+    } catch (err) {
+      return false;
     }
   };
 
