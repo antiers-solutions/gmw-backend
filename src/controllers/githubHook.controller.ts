@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { ERR } from '../constants';
+import crypto from 'crypto';
 import { Controller } from '../interfaces';
 import { Request, Response } from 'express';
 import GithubHookHelper from '../controller-helpers/githubHook.helper';
@@ -24,9 +25,22 @@ class GithubHookController implements Controller {
    */
   private getGithubData = async (req: Request, res: Response) => {
     try {
-      const result = await GithubHookHelper.getGithubData(req.body);
-      if (result?.error) throw new Error('Github Error');
-      else res.status(200).send({ data: result?.data });
+      const secret = process.env.WEBHOOK_REQUEST_SECRET;
+      const signature = req.headers['x-hub-signature-256'];
+
+      const hmac = crypto.createHmac('sha256', secret);
+      const body = JSON.stringify(req.body);
+      hmac.update(body);
+
+      const calculatedSignature = `sha256=${hmac.digest('hex')}`;
+
+      if (signature === calculatedSignature) {
+        const result = await GithubHookHelper.getGithubData(req.body);
+        if (result?.error) throw new Error('Github Error');
+        else res.status(200).send({ data: result?.data });
+      } else {
+        throw new Error('invalid request');
+      }
     } catch (error) {
       res.status(500).send({ error: ERR.INTERNAL });
     }

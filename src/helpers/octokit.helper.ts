@@ -357,11 +357,11 @@ export const parseMetaDataFile = async (
     const project: any = {
       id: projectId,
       user_github_id: null,
-      start_date: mergedPullRequests[mdDetails.name?.toLowerCase()]?.mergedAt,
-      file_name: mdDetails.name?.toLowerCase(),
+      start_date: mergedPullRequests[mdDetails?.name?.toLowerCase()]?.mergedAt,
+      file_name: mdDetails?.name?.toLowerCase(),
       payment_details: pairData['payment address'],
-      md_content: res.data,
-      md_link: mdDetails.download_url,
+      md_content: res?.data,
+      md_link: mdDetails?.download_url,
       project_name: pairData['project name']
         ? pairData['project name'].toLowerCase()
         : '',
@@ -370,7 +370,7 @@ export const parseMetaDataFile = async (
       total_duration: pairData['total estimated duration'] || '',
       team_id: teamId,
       level: pairData['level'],
-      html_url: mdDetails.html_url,
+      html_url: mdDetails?.html_url,
       legal_structure: {
         registered_address: pairData['registered address'] || '',
         registered_legal_entity: pairData['registered legal entity'] || ''
@@ -381,7 +381,7 @@ export const parseMetaDataFile = async (
 
     return { project, team, milestones };
   } catch (err) {
-    log.red('Error while parsing the metadata files: ', err.message);
+    log.red('Error while parsing the metadata files: ', err);
     return { project: null, team: null, milestones: null };
   }
 };
