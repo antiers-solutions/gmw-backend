@@ -60,6 +60,10 @@ For help in setting up the environment variables refer [this doc](https://github
 ```
 
 ## Testing Guide
+1. Configure the env.example file with the right environment variable:
+- Locate the `env.example` file in the repository's root directory.
+- Create a copy of `env.example` in `/src/config` and name it `test.env`.
+For help in setting up the environment variables refer [this doc](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 #### Run unit tests:
 ```bash
   npm run test 

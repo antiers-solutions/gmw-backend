@@ -6,14 +6,11 @@
     "outDir": "./dist",
     "baseUrl": "./src",
     "paths": {
-      "@middlewares": ["middlewares/index"],
-      "@interfaces": ["interfaces/index"],
-      "@exceptions": ["exceptions/index"],
-      "@modules/*": ["modules/*"]
+      "@interfaces": ["interfaces/index"]
     },
     "alwaysStrict": false,
     "esModuleInterop": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
