@@ -39,19 +39,19 @@ before(async () => {
 mocha.describe('POST /api/user/signup', () => {
   beforeEach(() => {
     nock('https://github.com').post('/login/oauth/access_token').reply(200, {
-      name: 'Shaurya Awasthi',
-      gitId: 'shaurya-ATR940',
-      image_url: 'https://avatars.githubusercontent.com/u/129488822?v=4'
+      name: 'name',
+      gitId: 'your_username',
+      image_url: 'https://avatars.githubusercontent.com/u/12948?v=4'
     });
 
     nock('https://api.github.com').get('/user').reply(200, {
       id: 2323234433434,
-      name: 'Shaurya Awasthi',
-      git_id: 'shaurya-ATR940',
+      name: 'name',
+      git_id: 'your_username',
       avatar_url: 'https://avatars.githubusercontent.com/u/129488822?v=4',
       login: 'Sura',
-      url: 'https://api.github.com/users/shaurya-ATR940',
-      site_admin: 'Me'
+      url: 'https://api.github.com/users/username',
+      site_admin: 'name'
     });
   });
 
