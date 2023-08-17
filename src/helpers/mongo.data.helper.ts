@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { DATA_MODELS } from '../constants';
 import modelsObejct from '../models/index';
 import { log } from '../utils/helper.utils';
@@ -268,6 +268,15 @@ class MongoDataHelper {
         await model.deleteMany();
       }
       return true;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  public dropDB = async () => {
+    try {
+      const isDroped = await mongoose.connection?.db.dropDatabase();
+      return isDroped;
     } catch (err) {
       return false;
     }
