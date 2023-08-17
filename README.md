@@ -64,6 +64,8 @@ For help in setting up the environment variables refer the [congiguration guide]
 1. Configure the environment file with the right environment variable:
 - Locate the `env.example` file in the repository's root directory.
 - Create a copy of `env.example` in `/src/config` and name it `test.env`.
+**NOTE:-** The `DBNAME` in test.env cannot be same as the `DBNAME` in other environment files.
+
 For help in setting up the environment variables refer the [congiguration guide](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 #### Run unit tests:
 ```bash

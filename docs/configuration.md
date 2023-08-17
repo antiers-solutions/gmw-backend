@@ -22,3 +22,4 @@ This document provides description, defaults and possible values for all environ
 | `GIT_USER_DETAILS_URL` | https://api.github.com/user | - | URL for getting user details |
 | `GITHUB_ACCESS_TOKEN_CLASSIC` | - | any valid github Personal Access Token | Access token for GitHub API |
 | `GITHUB_VERIFY_ACCESS_TOKEN_URL` | https://github.com/login/oauth/access_token | - | URL to check the validity of the access token |
+| `WEBHOOK_REQUEST_SECRET` | - | any secret phrase you want to pass | The secret phrase for Github webhook authorisation. This [guide](https://docs.github.com/en/webhooks-and-events/webhooks/securing-your-webhooks#setting-your-secret-token) will help you in setting your secret |
