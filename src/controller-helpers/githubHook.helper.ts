@@ -21,7 +21,7 @@ class GithubHookHelper {
    * @param requestBody
    * @returns
    */
-  public getGithubData = async (requestBody: any) => {
+  public saveGithubData = async (requestBody: any) => {
     try {
       if (requestBody?.pull_request) {
         const { pull_request } = requestBody;
@@ -35,6 +35,7 @@ class GithubHookHelper {
 
           //check if data is for merged request
           if (pull_request?.merged) {
+            console.log('saving merged pull request data into Db..');
             const dataRes: any = await MongoDataHelper.findAndQueryData(
               DATA_MODELS.Proposal,
               { file_name: fileName }
@@ -76,7 +77,9 @@ class GithubHookHelper {
               throw new Error('Proposal in not present in the collection');
             }
           } else {
-            let dataRes;
+            console.log('saving pull request data into Db..');
+
+            let dataRes: { team: any; project: any; milestones?: any };
             const response2: any = await axios.get(`${element?.contents_url}`);
             dataRes = await parseMetaDataFile(response2?.data, {
               [fileName]: { mergedAt: null }
@@ -101,7 +104,7 @@ class GithubHookHelper {
 
             return {
               error: false,
-              data: 'success'
+              data: null
             };
           }
         } else {

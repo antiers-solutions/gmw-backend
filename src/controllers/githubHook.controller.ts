@@ -14,7 +14,7 @@ class GithubHookController implements Controller {
   }
 
   private initializeRoutes() {
-    this.router.post(`${this.path}/save-pull-merge-data`, this.getGithubData);
+    this.router.post(`${this.path}/save-pull-merge-data`, this.saveGithubData);
     this.router.post(`${this.path}/merge-pull-request`, this.mergePullRequest);
   }
 
@@ -23,7 +23,7 @@ class GithubHookController implements Controller {
    * @param req
    * @param res
    */
-  private getGithubData = async (req: Request, res: Response) => {
+  private saveGithubData = async (req: Request, res: Response) => {
     try {
       const secret = process.env.WEBHOOK_REQUEST_SECRET;
       const signature = req.headers['x-hub-signature-256'];
@@ -35,9 +35,9 @@ class GithubHookController implements Controller {
       const calculatedSignature = `sha256=${hmac.digest('hex')}`;
 
       if (signature === calculatedSignature) {
-        const result = await GithubHookHelper.getGithubData(req.body);
+        const result = await GithubHookHelper.saveGithubData(req.body);
         if (result?.error) throw new Error('Github Error');
-        else res.status(200).send({ data: result?.data });
+        else res.status(200);
       } else {
         throw new Error('invalid request');
       }
