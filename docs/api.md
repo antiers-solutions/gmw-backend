@@ -8,14 +8,14 @@
 - api/user
 - api/milestone
 
-#### api/graphs is an open API and does not require logging in. This is done so because api/graphs is a GET API that returns data required for the landing page.
+#### The api/graphs endpoint is freely available to all users without requiring any login. This approach is taken because the endpoint serves as a GET API specifically intended to provide the data necessary for the landing page. 
 
-## api/graphs
+## Landing Page API
 
 ### 1. Get number of projects per each status
 
 ```
-graph/get-projects-count-by-status
+api/graph/get-projects-count-by-status
 ```
 #### GET
 #### Response
@@ -28,7 +28,7 @@ graph/get-projects-count-by-status
 ### 2. Get number of projects per each level
 
 ```
-graph/get-projects-count-by-level
+api/graph/get-projects-count-by-level
 ```
 #### GET
 #### Response
@@ -41,7 +41,7 @@ graph/get-projects-count-by-level
 ### 3. Get number of applications accepted/rejected (month-wise)
 
 ```
-graph/get-rejected-accepted-projects-year
+api/graph/get-rejected-accepted-projects-year
 ```
 #### GET
 #### Response
@@ -51,12 +51,12 @@ graph/get-rejected-accepted-projects-year
 | `accepted`      | `number` | count of accepted applications |
 | `rejected`      | `number` | count of rejected applications |
 
-## api/milestone
+## Milestones Data API
 
 ### 1. Get the milestone data for project ID
 
 ```
-graph/get-projects-count-by-status
+api/milestones/get-by-projectId/:projectId
 ```
 #### GET
 #### Request Params
@@ -76,13 +76,13 @@ graph/get-projects-count-by-status
 | `milestoneNo`      | `number` | Number of current milestone |
 | `merged_at`      | `string` | Date when this milestone was merged |
 
-## api/project
+## Project Data API
 get data for projects
 
 ### 1. Get all projects
 
 ```
-/project/get-all
+api/project/get-all
 ```
 
 #### GET
@@ -111,7 +111,7 @@ get data for projects
 ### 2. Get project by id
 
 ```
-project/get-by-id/:projectId
+api/project/get-by-id/:projectId
 ```
 #### GET
 #### Request Params
@@ -145,7 +145,7 @@ project/get-by-id/:projectId
 ### 3.  Get groject by name
 
 ```
-project/get-by-name
+api/project/search-by-name
 ```
 #### GET
 #### Request queryParams
@@ -173,7 +173,7 @@ project/get-by-name
 ### 4. Get filtered data for projects by their level/status
 
 ```
-/api/items/:id
+api/project/filter
 ```
 #### GET
 
@@ -202,7 +202,7 @@ project/get-by-name
 ### 5. Update a project's status
 
 ```
-project/update-status
+api/project/update-status
 ```
 #### PUT
 
@@ -217,13 +217,13 @@ project/update-status
 | :-------- | :------- | :-------------------------------- |
 | `status`      | `string` | "success" is returned |
 
-## api/teams
+## Teams Data API
 Get data for teams
 
 ### 1. Get list of all teams
 
 ```
-teams/get-all
+api/teams/get-all
 ```
 #### GET
 
@@ -244,7 +244,7 @@ teams/get-all
 ### 2. Get data of a team by it's id
 
 ```
-teams/get-by-id/:teamId
+api/teams/get-by-id/:teamId
 ```
 #### GET
 
@@ -275,7 +275,7 @@ teams/get-by-id/:teamId
 ### 3. Get data of teams by it's name
 
 ```
-teams/search-by-name
+api/teams/search-by-name
 ```
 #### GET
 
@@ -295,7 +295,7 @@ teams/search-by-name
 ### 4. Merge data of selected teams under one name
 
 ```
-team/merge-team
+api/team/merge-team
 ```
 #### PUT
 
@@ -310,12 +310,12 @@ team/merge-team
 | :-------- | :------- | :-------------------------------- |
 | `newTeamId`      | `string` | id of the new team |
 
-## api/user
+## User Login API
 
 ### 1. Sign in to github and for login session and security using user-agent
 
 ```
-user/signup
+api/user/signup
 ```
 #### POST
 
@@ -329,7 +329,7 @@ user/signup
 ### 2. Log out user out of session
 
 ```
-user/logout
+api/user/logout
 ```
 #### DELETE
 
@@ -344,12 +344,12 @@ user/logout
 | :-------- | :------- | :-------------------------------- |
 | `data`      | `null` | "null" is returned upon successful logout |
 
-## api/dynamic-cards
+## Dynamic Cards API
 
 ### 1. Get data for cards on front-end
 
 ```
-/dynamic-cards
+api/dynamic-cards
 ```
 #### GET
 #### Response
@@ -364,5 +364,5 @@ user/logout
 This API will listen to the events triggered by github: 
 #### POST
 ```
-/github/save-pull-merge-data
+api/github/save-pull-merge-data
 ```
