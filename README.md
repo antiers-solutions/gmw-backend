@@ -19,6 +19,7 @@ Prerequisites:
 - Docker compose: [Installation guide](https://docs.docker.com/compose/install/)
 - Redis: [Installation guide](https://redis.io/docs/getting-started/) (v4.6.7)
 - MongoDB: [Installation guide](https://www.mongodb.com/docs/manual/installation/) (v3.6.8)
+- TypeScript: `npm install typescript -g` (v4.9.5)
 
 #### Clone this repo using:
 ```bash
