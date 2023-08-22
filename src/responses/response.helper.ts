@@ -21,7 +21,10 @@ function sendResponse(res: Response, resData: ESResponse) {
     else if (statusCode === STATUS_CODES.NOTFOUND)
       res
         .status(statusCode)
-        .send({ message: customMessage || RESPONSE_MESSAGES.NOT_FOUND });
+        .send({
+          message: customMessage || RESPONSE_MESSAGES.NOT_FOUND,
+          data: null
+        });
     else res.status(statusCode).send({ data: resData.data });
   } catch (err) {
     res
