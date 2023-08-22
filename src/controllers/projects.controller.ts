@@ -48,8 +48,8 @@ class ProjectController implements Controller {
   private getAllProjectsData = async (req: Request, res: Response) => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
-    const sortBy: any = req.query.sortBy;
-    const orderBy: any = req.query.orderBy;
+    const sortBy: any = req.query.sortBy?.toString()?.toLowerCase();
+    const orderBy: any = req.query.orderBy?.toString()?.toLowerCase();
 
     console.log(sortBy, orderBy);
 
