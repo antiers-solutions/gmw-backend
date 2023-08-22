@@ -1,6 +1,11 @@
 import { ESResponse } from '@interfaces';
 import mongoDataHelper from '../helpers/mongo.data.helper';
-import { DATA_MODELS, RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
+import {
+  DATA_MODELS,
+  RESPONSE_MESSAGES,
+  SORT_NAME,
+  STATUS_CODES
+} from '../constants';
 mongoDataHelper;
 
 class ProjectHelper {
@@ -22,45 +27,121 @@ class ProjectHelper {
    */
   public getProjectData = async (
     pageNumber: number,
-    pageSize: number
+    pageSize: number,
+    sortBy?: string,
+    orderBy?: string
   ): Promise<ESResponse> => {
     try {
       const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Project);
 
       if (pageSize <= 40) {
         // getting data of all the projects with filtered column and pagination
-        const projects = await mongoDataHelper.findSelectedDataWithPagination(
-          DATA_MODELS.Project,
-          {},
-          [
-            'id',
-            'start_date',
-            'project_name',
-            'status',
-            'total_cost',
-            'total_duration',
-            'team_id',
-            'level',
-            'milestones',
-            'totalMilestones'
-          ],
-          pageNumber,
-          pageSize
-        );
 
-        // if no data then return
-        if (!projects.length || !totalCount) {
+        if (sortBy === SORT_NAME.PROJECT_NAME) {
+          console.log('enetred in name check');
+          const projects = await mongoDataHelper.findSelectedDataWithPagination(
+            DATA_MODELS.Project,
+            {},
+            [
+              'id',
+              'start_date',
+              'project_name',
+              'status',
+              'total_cost',
+              'total_duration',
+              'team_id',
+              'level',
+              'milestones',
+              'totalMilestones'
+            ],
+            pageNumber,
+            pageSize,
+            { project_name: orderBy === 'asc' ? 1 : -1 }
+          );
+
+          // if no data then return
+          if (!projects.length || !totalCount) {
+            return {
+              message: RESPONSE_MESSAGES.NOT_FOUND,
+              status: STATUS_CODES.BADREQUEST
+            };
+          }
+
+          // return the data
           return {
-            message: RESPONSE_MESSAGES.NOT_FOUND,
-            status: STATUS_CODES.BADREQUEST
+            data: { projects, totalCount },
+            error: false
+          };
+        } else if (sortBy === SORT_NAME.Date) {
+          console.log('enetred in date check');
+          const projects = await mongoDataHelper.findSelectedDataWithPagination(
+            DATA_MODELS.Project,
+            {},
+            [
+              'id',
+              'start_date',
+              'project_name',
+              'status',
+              'total_cost',
+              'total_duration',
+              'team_id',
+              'level',
+              'milestones',
+              'totalMilestones'
+            ],
+            pageNumber,
+            pageSize,
+            { start_date: orderBy === 'asc' ? 1 : -1 }
+          );
+
+          // if no data then return
+          if (!projects.length || !totalCount) {
+            return {
+              message: RESPONSE_MESSAGES.NOT_FOUND,
+              status: STATUS_CODES.BADREQUEST
+            };
+          }
+
+          // return the data
+          return {
+            data: { projects, totalCount },
+            error: false
+          };
+        } else {
+          console.log('entered the normal check');
+          const projects = await mongoDataHelper.findSelectedDataWithPagination(
+            DATA_MODELS.Project,
+            {},
+            [
+              'id',
+              'start_date',
+              'project_name',
+              'status',
+              'total_cost',
+              'total_duration',
+              'team_id',
+              'level',
+              'milestones',
+              'totalMilestones'
+            ],
+            pageNumber,
+            pageSize
+          );
+
+          // if no data then return
+          if (!projects.length || !totalCount) {
+            return {
+              message: RESPONSE_MESSAGES.NOT_FOUND,
+              status: STATUS_CODES.BADREQUEST
+            };
+          }
+
+          // return the data
+          return {
+            data: { projects, totalCount },
+            error: false
           };
         }
-
-        // return the data
-        return {
-          data: { projects, totalCount },
-          error: false
-        };
       } else {
         return {
           message: RESPONSE_MESSAGES.Max_LIMIT,

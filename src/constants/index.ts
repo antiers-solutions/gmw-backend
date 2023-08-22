@@ -43,6 +43,12 @@ export const STATUS_CODES = {
   UNPROCESSABLE: 422
 };
 
+//Sorting basis
+export const SORT_NAME = {
+  PROJECT_NAME: 'name',
+  Date: 'date'
+};
+
 // Response messages
 export const RESPONSE_MESSAGES = {
   INTERNAL_SERVER_ERROR: 'Internal Server Error.',

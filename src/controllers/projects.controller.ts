@@ -48,10 +48,16 @@ class ProjectController implements Controller {
   private getAllProjectsData = async (req: Request, res: Response) => {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
+    const sortBy: any = req.query.sortBy;
+    const orderBy: any = req.query.orderBy;
+
+    console.log(sortBy, orderBy);
 
     const getAllProject = await projectsHelper.getProjectData(
       pageNo,
-      pageLimit
+      pageLimit,
+      sortBy,
+      orderBy
     );
     sendResponse(res, getAllProject);
   };
