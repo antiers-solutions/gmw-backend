@@ -51,8 +51,6 @@ class ProjectController implements Controller {
     const sortBy: any = req.query.sortBy?.toString()?.toLowerCase();
     const orderBy: any = req.query.orderBy?.toString()?.toLowerCase();
 
-    console.log(sortBy, orderBy);
-
     const getAllProject = await projectsHelper.getProjectData(
       pageNo,
       pageLimit,

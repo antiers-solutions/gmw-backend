@@ -38,7 +38,6 @@ class ProjectHelper {
         // getting data of all the projects with filtered column and pagination
 
         if (sortBy === SORT_NAME.PROJECT_NAME) {
-          console.log('enetred in name check');
           const projects = await mongoDataHelper.findSelectedDataWithPagination(
             DATA_MODELS.Project,
             {},
@@ -73,7 +72,6 @@ class ProjectHelper {
             error: false
           };
         } else if (sortBy === SORT_NAME.Date) {
-          console.log('enetred in date check');
           const projects = await mongoDataHelper.findSelectedDataWithPagination(
             DATA_MODELS.Project,
             {},

@@ -1,5 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# run the linter
 npm run fix
+
+# run the test cases before committing
+npm run test
+npm run test:api
+
+# move all changes to stage
 git add .
