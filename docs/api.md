@@ -92,6 +92,8 @@ api/project/get-all
 | :-------- | :------- | :------------------------- |
 | `pageLimit` | `number` | number of projects to be displayed on one page |
 | `pageNo` | `number` | Index of current page |
+| `sortBy` | `string` | Sort by parameter (name or date) |
+| `orderBy` | `string` | Ascending/Descending order of sorting |
 
 #### Response 
 | Parameter | Type     | Description                       |
