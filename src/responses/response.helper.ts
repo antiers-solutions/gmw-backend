@@ -10,21 +10,19 @@ function sendResponse(res: Response, resData: ESResponse) {
     const customMessage = resData?.message;
 
     //check if there is any message or status code 500 then send response accordingly
-    if (customMessage)
+    if (customMessage && statusCode !== STATUS_CODES.NOTFOUND)
       res
         .status(statusCode)
-        .send({ message: customMessage, data: resData.data });
+        .send({ message: customMessage, data: resData?.data });
     else if (statusCode === STATUS_CODES.INTERNALSERVER)
       res
         .status(statusCode)
         .send({ message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR });
     else if (statusCode === STATUS_CODES.NOTFOUND)
-      res
-        .status(statusCode)
-        .send({
-          message: customMessage || RESPONSE_MESSAGES.NOT_FOUND,
-          data: null
-        });
+      res.status(statusCode).send({
+        message: customMessage || RESPONSE_MESSAGES.NOT_FOUND,
+        data: null
+      });
     else res.status(statusCode).send({ data: resData.data });
   } catch (err) {
     res

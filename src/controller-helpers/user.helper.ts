@@ -126,9 +126,6 @@ class UserHelper {
             { [token]: userAgent },
             updatedSeconds
           );
-
-          console.log('User Signup');
-
           return {
             token: token,
             data: {
