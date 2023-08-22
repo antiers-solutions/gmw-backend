@@ -10,6 +10,7 @@ import axios from 'axios';
 import mongoDataHelper from '../helpers/mongo.data.helper';
 import redisHelper from '../helpers/redis.helper';
 import { v4 } from 'uuid';
+import { log } from '../utils/helper.utils';
 
 class UserHelper {
   /**
@@ -74,7 +75,7 @@ class UserHelper {
         );
 
         if (userCheck.length > 0) {
-          console.log('User Signin');
+          log.green('User Signin');
 
           // storing the genereated token in redis with an expiry time so that session login can be implemented
           await redisHelper.storeInRedis(
@@ -125,9 +126,6 @@ class UserHelper {
             { [token]: userAgent },
             updatedSeconds
           );
-
-          console.log('User Signup');
-
           return {
             token: token,
             data: {

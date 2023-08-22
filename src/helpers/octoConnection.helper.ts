@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import { log } from '../utils/helper.utils';
 
 class OctoHelper {
   static octoConn: Octokit = null;
@@ -40,7 +41,7 @@ class OctoHelper {
       const res: any = await OctoHelper.octoConn.request(route, options);
       return res;
     } catch (err) {
-      console.log('Error while fething data from github api: ', err);
+      log.error('Error while fething data from github api: ', err);
       return null;
     }
   };

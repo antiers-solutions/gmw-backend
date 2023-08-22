@@ -133,7 +133,8 @@ class MongoDataHelper {
     query: any,
     selectedFields: string[],
     pageNumber: number,
-    pageSize: number
+    pageSize: number,
+    sortQuery?: any
   ) => {
     try {
       const skipItems = (pageNumber - 1) * pageSize;
@@ -141,13 +142,26 @@ class MongoDataHelper {
       this._checkModel(name);
       // finds the data based on the query and selected fields provided and then joins them in paginated way
 
-      const result = await this._getModel(name)
-        .find(query)
-        .select(selectedFields.join(' '))
-        .skip(skipItems)
-        .limit(pageSize);
+      if (sortQuery) {
+        const result = await this._getModel(name)
+          .find(query)
+          .sort(sortQuery)
+          .select(selectedFields.join(' '))
+          .skip(skipItems)
+          .limit(pageSize);
 
-      return result;
+        return result;
+      } else {
+        const result = await this._getModel(name)
+          .find(query)
+          .select(selectedFields.join(' '))
+          .skip(skipItems)
+          .limit(pageSize);
+
+        return result;
+      }
+
+      // return result;
     } catch (error) {
       return null;
     }

@@ -7,6 +7,7 @@ import { Response, Request } from 'express';
 import { Server } from 'http';
 import sendResponse from './responses/response.helper';
 import { RESPONSE_MESSAGES, STATUS_CODES } from './constants';
+import { log } from './utils/helper.utils';
 
 class App {
   public app: express.Application;
@@ -26,7 +27,7 @@ class App {
    */
   public listen = () => {
     this.server = this.app.listen(process.env.PORT || 7200, () => {
-      console.log('Api is up and listning on port ', process.env.PORT || 7200);
+      log.log('Api is up and listning on port ', process.env.PORT || 7200);
     });
   };
 
