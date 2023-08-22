@@ -106,7 +106,6 @@ class ProjectHelper {
             error: false
           };
         } else {
-          console.log('entered the normal check');
           const projects = await mongoDataHelper.findSelectedDataWithPagination(
             DATA_MODELS.Project,
             {},

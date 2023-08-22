@@ -152,8 +152,6 @@ class MongoDataHelper {
 
         return result;
       } else {
-        console.log('entered the normal check in mongo db');
-
         const result = await this._getModel(name)
           .find(query)
           .select(selectedFields.join(' '))
