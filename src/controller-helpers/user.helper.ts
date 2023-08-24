@@ -139,6 +139,7 @@ class UserHelper {
         }
       }
     } catch (err) {
+      log.red('Error while user signin:\n', err.message);
       return {
         error: true,
         data: { isLogin: false },

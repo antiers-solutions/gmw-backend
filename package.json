@@ -5,10 +5,11 @@
   "main": "server.ts",
   "scripts": {
     "set": "npm install && npm run prepare",
-    "dev": "NODE_ENV=dev nodemon ./src/server.ts",
+    "dev": "NODE_ENV=development nodemon ./src/server.ts",
     "start": "ts-node ./src/server.ts",
     "build": "tsc -p tsconfig.json && cp src/config/prod.env dist/config && cp src/db-dump/*.json dist/db-dump",
-    "prod": "NODE_ENV=prod node ./dist/server",
+    "build-doc": "tsc -p tsconfig.json && cp src/db-dump/*.json dist/db-dump",
+    "prod": "NODE_ENV=production node ./dist/server",
     "docker-services-up": "sudo docker-compose up -d",
     "test": "NODE_ENV=test mocha -r ts-node/register ./src/tests/Unit/index.test.ts",
     "test:coverage": "nyc --reporter=text mocha -r ts-node/register ./src/tests/Unit/index.test.ts",

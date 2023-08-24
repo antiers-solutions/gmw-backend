@@ -23,6 +23,8 @@ services:
   backend-service: 
     container_name: gmw_backend
     network_mode: "host"
+    env_file:
+      - src/config/prod.env
     build: 
       context: .
     restart: always

@@ -1,0 +1,15 @@
+/node_modules
+.eslintcache
+/dist
+.vscode
+**/*.env
+/data
+/coverage
+/.nyc_output
+/migration
+LICENSE.txt
+README.md
+/docs
+env.example
+docker-compose.yml
+Dockerfile

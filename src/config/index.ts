@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import { log } from '../utils/helper.utils';
+import { ENVIROMENTS } from '../constants';
 
 /**
  * load the env for different enviroment
@@ -8,21 +9,30 @@ import { log } from '../utils/helper.utils';
  */
 export const loadEnvs = () => {
   try {
-    const enviroment = process.env.NODE_ENV;
-    if (enviroment === 'local' || enviroment === 'dev') {
-      log.blue('#Development Mode');
+    const enviroment = process.env.NODE_ENV || ENVIROMENTS.DEVELOPMENT;
+    const port = process.env.PORT;
+
+    // check if the port number found in process env then
+    // the env is already loaded using the initial process starting
+    if (Number(port)) {
+      log.green(`#${enviroment} enviroment`);
+      return true;
+    }
+
+    if (enviroment === ENVIROMENTS.DEVELOPMENT) {
+      log.blue(`#${enviroment} enviroment`);
       load('local.env');
-    } else if (enviroment === 'stage') {
-      log.green('#Staging Mode');
+    } else if (enviroment === ENVIROMENTS.STAGE) {
+      log.blue(`#${enviroment} enviroment`);
       load('stage.env');
-    } else if (enviroment === 'prod') {
-      log.green('#Production Mode');
+    } else if (enviroment === ENVIROMENTS.PRODUCTION) {
+      log.green(`#${enviroment} enviroment`);
       load('prod.env');
-    } else if (enviroment === 'qa') {
-      log.green('#QA Mode');
+    } else if (enviroment === ENVIROMENTS.QA) {
+      log.blue(`#${enviroment} enviroment`);
       load('qa.env');
-    } else if (enviroment === 'test') {
-      log.green('#Testing Mode');
+    } else if (enviroment === ENVIROMENTS.TEST) {
+      log.blue(`#${enviroment} enviroment`);
       load('test.env');
     } else {
       // if no NODE_ENV is set then by default load data from local.env file

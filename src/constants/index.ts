@@ -7,6 +7,15 @@ export const DATA_MODELS = {
   Milestone: 'Milestone'
 };
 
+// Enviroments
+export const ENVIROMENTS = {
+  DEVELOPMENT: 'development',
+  PRODUCTION: 'production',
+  QA: 'qa',
+  TEST: 'test',
+  STAGE: 'stage'
+};
+
 export const STATUS = {
   ACCEPTED: 'accepted',
   REJECTED: 'rejected',
