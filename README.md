@@ -19,7 +19,7 @@ Prerequisites:
 - Docker compose: [Installation guide](https://docs.docker.com/compose/install/)
 - Redis: [Installation guide](https://redis.io/docs/getting-started/) (v4.6.7)
 - MongoDB: [Installation guide](https://www.mongodb.com/docs/manual/installation/) (v3.6.8)
-- TypeScript: `npm install typescript -g` (v4.9.5)
+- TypeScript: `npm install -g typescript` (v4.9.5)
 
 #### Clone this repo using:
 ```bash
@@ -70,7 +70,7 @@ docker-compose up -d
 For help in setting up the environment variables refer the [configuration guide](https://github.com/antiers-solutions/gmw-backend/blob/updated/docs/configuration.md).
 #### Run unit tests:
 ```bash
-npm run test 
+npm run test
 ```
 #### Run test cases for APIs:
 ```bash

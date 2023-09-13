@@ -29,6 +29,17 @@ const getPullRequestDetails = async () => {
     const purposals: any[] = [];
     const pages = Number(process.env.GITHUB_PULLREQUEST_PAGES) || 17;
 
+    // get all open pull requests
+    const openRequests = await octoConnectionHelper.octoRequest(
+      'GET /repos/w3f/Grants-Program/pulls',
+      {
+        state: 'open',
+        base: 'master',
+        per_page: 100,
+        page: 1
+      }
+    );
+
     // get all closed pull request and filter the merged only for added new files
     for (let page = 1; page <= pages; page++) {
       // get the all merged data
@@ -80,6 +91,8 @@ const getPullRequestDetails = async () => {
 
         // continue the next iteration if the status of file is not added
         if (fileDetailsResponse?.data[0]?.status !== 'added') continue;
+
+        // console.log("address is here: ", fileDetailsResponse.data);
 
         // add the merged pull request data for further usage
         const fileName = fileDetailsResponse?.data[0]?.filename

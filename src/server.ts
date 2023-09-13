@@ -9,6 +9,7 @@ import ProjectController from './controllers/projects.controller';
 import MilestoneController from './controllers/milestone.controller';
 import GithubHookController from './controllers/githubHook.controller';
 import GraphController from './controllers/graph.controller';
+import ProposalContoller from './controllers/proposal.controller';
 import dbConnectionHandler from './mongoDB/connection';
 import mongoDataHelper from './helpers/mongo.data.helper';
 import loadInitialGrantsData from './helpers/octokit.helper';
@@ -28,7 +29,8 @@ import { loadDataFromJsonFile } from './helpers/jsondata.helper';
         new ProjectController(),
         new MilestoneController(),
         new GithubHookController(),
-        new DynamicCardsController()
+        new DynamicCardsController(),
+        new ProposalContoller()
       ]);
 
       // connect to the mongodb server
@@ -44,8 +46,10 @@ import { loadDataFromJsonFile } from './helpers/jsondata.helper';
       log.log('Projects Count: ', projectCount);
 
       if (!projectCount) {
-        const isDataLoaded = await loadDataFromJsonFile();
-        !isDataLoaded && loadInitialGrantsData();
+        if (!process.env.NO_FILE) {
+          const isDataLoaded = await loadDataFromJsonFile();
+          !isDataLoaded && loadInitialGrantsData();
+        } else loadInitialGrantsData();
       }
 
       // bind the port and listen for requests

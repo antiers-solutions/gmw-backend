@@ -36,6 +36,7 @@ export const loadEnvs = () => {
       load('test.env');
     } else {
       // if no NODE_ENV is set then by default load data from local.env file
+      log.blue(`#${enviroment || ENVIROMENTS.DEVELOPMENT} enviroment`);
       load('local.env');
     }
     return true;
