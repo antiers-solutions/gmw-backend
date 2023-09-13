@@ -3,7 +3,6 @@ import { DATA_MODELS } from '../constants';
 import modelsObejct from '../models/index';
 import { log } from '../utils/helper.utils';
 
-//mongodb curd helper
 class MongoDataHelper {
   static instance: MongoDataHelper = null;
 

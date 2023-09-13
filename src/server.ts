@@ -9,7 +9,7 @@ import ProjectController from './controllers/projects.controller';
 import MilestoneController from './controllers/milestone.controller';
 import GithubHookController from './controllers/githubHook.controller';
 import GraphController from './controllers/graph.controller';
-import ProposalContoller from './controllers/proposal.controller';
+import ProposalContoller from './controllers/grantproposal.controller';
 import dbConnectionHandler from './mongoDB/connection';
 import mongoDataHelper from './helpers/mongo.data.helper';
 import loadInitialGrantsData from './helpers/octokit.helper';
