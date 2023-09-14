@@ -5,6 +5,7 @@ import mongoDataHelper from './mongo.data.helper';
 import { DATA_MODELS, ERROR_MESSAGES, STATUS } from '../constants';
 import { v4 } from 'uuid';
 import { log } from '../utils/helper.utils';
+import MilestoneProposal from 'models/Milestone-Proposal';
 
 /**
  * It extracts the metadata file data
@@ -17,6 +18,156 @@ const reformMDContent = (mdContent: string) => {
     if (item.content && item.content !== '\n') fileData += `${item.content}\n`;
   }
   return fileData;
+};
+
+// is used to parse a table in an .md file into a JSON object
+const parseMarkdownTable = (tableText) => {
+  const lines = tableText.trim().split('\n');
+  const headers = lines[0]
+    .trim()
+    .split('|')
+    .map((header) => header.trim());
+  const rows = [];
+
+  for (let i = 2; i < lines.length; i++) {
+    const rowValues = lines[i]
+      .trim()
+      .split('|')
+      .map((value) => value.trim());
+    const rowObject = {};
+
+    for (let j = 0; j < headers.length; j++) {
+      rowObject[headers[j]] = rowValues[j];
+    }
+
+    rows.push(rowObject);
+  }
+
+  return rows;
+};
+
+export const getMilestoneOpenPullRequests = async () => {
+  try {
+    log.green('This is the pull check section');
+
+    const milstonePurposals: any[] = [];
+
+    // get all open pull requests for the milstones/delivery section
+    const openPullRequetsMilestones = await octoConnectionHelper.octoRequest(
+      'GET /repos/w3f/Grant-Milestone-Delivery/pulls',
+      {
+        state: 'open',
+        per_page: 100
+      }
+    );
+
+    const milestoneRequests = openPullRequetsMilestones?.data;
+
+    for (const item of milestoneRequests) {
+      const prLink = item?.url;
+      const status = item?.state;
+      const userDetails = {
+        git_user_name: item?.user?.login,
+        git_user_id: item?.user?.id
+      };
+
+      const createdAt = item?.created_at;
+      const updatedAt = item?.updated_at;
+      const mergedAt = item?.merged_at;
+      const assigneeDetails = {
+        git_user_name: item?.assignee?.login,
+        git_user_id: item?.assignee?.id
+      };
+
+      // get the file data for pull request using the pull request number
+      const MilestonefileDetailsResponse =
+        await octoConnectionHelper.octoRequest(
+          `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/files`,
+          {
+            state: 'closed',
+            base: 'master',
+            direction: 'desc',
+            head: `w3f:${''}`
+          }
+        );
+
+      const fileName = MilestonefileDetailsResponse?.data[0]?.filename
+        .replace('deliveries/', '')
+        .toLowerCase();
+
+      // Extract and parse the table content from the Markdown content
+
+      const res = await axios.get(MilestonefileDetailsResponse.data[0].raw_url);
+      const projectLink = res.data
+        .split('\n')
+        .filter(
+          (item: any) =>
+            (item.startsWith('* **') || item.startsWith('- **')) &&
+            item.includes(':**')
+        )
+        .map((item: any) =>
+          item
+            .replace('* **Application Document:** ', '')
+            .replace('- **Application Document:** ', '')
+            .replace('(', '')
+            .replace(')', '')
+            .replace(/\[[A-za-z0-9 -_&$]*\]/g, '')
+            .trim()
+        )
+        .find((item) => item.startsWith('https://'));
+
+      console.log('here is data: ', projectLink);
+
+      const tableRegex = /\|(.+)\|\s*\n\|(.+)\|/s;
+      const match = res.data.match(tableRegex);
+
+      if (match) {
+        const tableText = match[0];
+        const tableData = parseMarkdownTable(tableText);
+        const repo = tableData
+          .filter((item) => {
+            return (
+              item?.Deliverable?.includes('https://github.com') ||
+              item?.Link?.includes('https://github.com')
+            );
+          })
+          .map((item) => {
+            const Deliverable =
+              item?.Deliverable?.match(/https?:\/\/[^\s]+/) || '';
+            const Link = item?.Link?.match(/https?:\/\/[^\s]+/) || '';
+
+            // Extract GitHub links from the field
+            return {
+              Deliverable: Deliverable[0],
+              Link: Link[0],
+              Notes: item?.Notes
+            };
+          });
+
+        const application = {
+          id: v4(),
+          pr_link: prLink,
+          status: status,
+          file_name: fileName,
+          user_github_details: userDetails,
+          project_md_link: projectLink ? projectLink : '',
+          md_link: null,
+          created_at: createdAt,
+          updated_at: updatedAt,
+          merged_at: mergedAt,
+          repos: repo,
+          assignee_details: assigneeDetails
+        };
+
+        // console.log(application, 'applications');
+        milstonePurposals.push(application);
+      }
+    }
+
+    return milstonePurposals;
+  } catch (error) {
+    log.red(error);
+  }
 };
 
 /**

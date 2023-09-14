@@ -11,7 +11,9 @@ import GithubHookController from './controllers/githubHook.controller';
 import GraphController from './controllers/graph.controller';
 import dbConnectionHandler from './mongoDB/connection';
 import mongoDataHelper from './helpers/mongo.data.helper';
-import loadInitialGrantsData from './helpers/octokit.helper';
+import loadInitialGrantsData, {
+  getMilestoneOpenPullRequests
+} from './helpers/octokit.helper';
 import redisHelper from './helpers/redis.helper';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import { log } from './utils/helper.utils';
@@ -48,6 +50,8 @@ import { loadDataFromJsonFile } from './helpers/jsondata.helper';
         !isDataLoaded && loadInitialGrantsData();
       }
 
+      //just for code perpose ##REMOVE
+      getMilestoneOpenPullRequests();
       // bind the port and listen for requests
       app.listen();
     } else throw new Error("Env's not loaded correctly");
