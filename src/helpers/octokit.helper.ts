@@ -46,7 +46,7 @@ const parseMarkdownTable = (tableText) => {
   return rows;
 };
 
-export const getMilestoneOpenPullRequests = async () => {
+const getMilestoneOpenPullRequests = async () => {
   try {
     log.green('This is the pull check section');
 
@@ -116,8 +116,6 @@ export const getMilestoneOpenPullRequests = async () => {
         )
         .find((item) => item.startsWith('https://'));
 
-      console.log('here is data: ', projectLink);
-
       const tableRegex = /\|(.+)\|\s*\n\|(.+)\|/s;
       const match = res.data.match(tableRegex);
 
@@ -138,13 +136,14 @@ export const getMilestoneOpenPullRequests = async () => {
 
             // Extract GitHub links from the field
             return {
-              Deliverable: Deliverable[0],
-              Link: Link[0],
-              Notes: item?.Notes
+              Deliverable:
+                Deliverable[0] === undefined ? Deliverable : Deliverable[0],
+              Link: Link[0] === undefined ? Link : Link[0],
+              Notes: item?.Notes === undefined ? '' : item?.Notes
             };
           });
 
-        const application = {
+        const milestoneApplication = {
           id: v4(),
           pr_link: prLink,
           status: status,
@@ -159,8 +158,8 @@ export const getMilestoneOpenPullRequests = async () => {
           assignee_details: assigneeDetails
         };
 
-        // console.log(application, 'applications');
-        milstonePurposals.push(application);
+        console.log(milestoneApplication, 'applications');
+        milstonePurposals.push(milestoneApplication);
       }
     }
 
@@ -308,6 +307,9 @@ const loadInitialGrantsData = async () => {
 
     const extractedData: any = { team: [], project: [], milestone: [] };
 
+    // this is the data for the open pull requests of the milestones repo
+    const proposalMilestone = await getMilestoneOpenPullRequests();
+
     // get all merged pull request data
     const mergedPullRequests = await getPullRequestDetails();
 
@@ -381,6 +383,13 @@ const loadInitialGrantsData = async () => {
     await mongoDataHelper.bulkSaveData(
       DATA_MODELS.Proposal,
       mergedPullRequests.purposals
+    );
+
+    // save the milstone proposals data
+
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.MilestoneProposal,
+      proposalMilestone
     );
 
     log.green('Data Successfully Stored');
