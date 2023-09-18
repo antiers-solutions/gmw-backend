@@ -29,17 +29,6 @@ const getPullRequestDetails = async () => {
     const purposals: any[] = [];
     const pages = Number(process.env.GITHUB_PULLREQUEST_PAGES) || 17;
 
-    // get all open pull requests
-    const openRequests = await octoConnectionHelper.octoRequest(
-      'GET /repos/w3f/Grants-Program/pulls',
-      {
-        state: 'open',
-        base: 'master',
-        per_page: 100,
-        page: 1
-      }
-    );
-
     // get all closed pull request and filter the merged only for added new files
     for (let page = 1; page <= pages; page++) {
       // get the all merged data
@@ -145,6 +134,103 @@ const getPullRequestDetails = async () => {
 };
 
 /**
+ * It gets all the open pull request data and parse it
+ * @returns
+ */
+const openPullRequestDetails = async () => {
+  try {
+    const purposals: any[] = [];
+    const pullRequestsResponse = await octoConnectionHelper.octoRequest(
+      'GET /repos/w3f/Grants-Program/pulls',
+      {
+        state: 'open',
+        base: 'master',
+        per_page: 2,
+        page: 1
+      }
+    );
+
+    const pullRequests = pullRequestsResponse?.data;
+
+    // get the pull request file data using the pull request number
+    for (const item of pullRequests) {
+      const repoPath =
+        process.env.GITHUB_REPO_PATH || '/repos/w3f/Grants-Program/pulls';
+
+      // get the file data for pull request using the pull request number
+      const fileDetailsResponse = await octoConnectionHelper.octoRequest(
+        `GET ${repoPath}/${item.number}/files`,
+        {
+          state: 'open',
+          base: 'master',
+          direction: 'desc',
+          head: `w3f:${''}`
+        }
+      );
+      const contentUrl = fileDetailsResponse.data[0].contents_url;
+      console.log('fileDetailsResponse : ', fileDetailsResponse.data[0]);
+
+      // get the reviews details
+      const reviews = await octoConnectionHelper.octoRequest(
+        `GET ${repoPath}/${item.number}/reviews`,
+        {
+          state: 'open',
+          base: 'master',
+          direction: 'desc',
+          head: `w3f:${''}`
+        }
+      );
+      const approvals = reviews?.data?.filter(
+        (reviwer: any) => reviwer.state === 'APPROVED'
+      ).length;
+
+      const fileName = fileDetailsResponse?.data[0]?.filename
+        .replace('applications/', '')
+        .toLowerCase();
+
+      const responseData: any = await axios.get(`${contentUrl}`);
+      const dataRes = await parseMetaDataFile(responseData?.data, {
+        [fileName]: { merged_at: item?.merged_at }
+      });
+      const { proposal } = dataRes;
+      const assignees = item?.assignees.map((data: any) => ({
+        id: data?.id || '',
+        login: data?.login || ''
+      }));
+
+      const proposalData = {
+        id: proposal?.id,
+        assignees,
+        approvals,
+        pr_link: item.url,
+        status: STATUS.OPEN,
+        file_name: fileName,
+        repos: proposal.repos,
+        md_link: proposal?.md_link,
+        updated_at: item?.updated_at,
+        created_at: item?.created_at,
+        team_name: proposal?.team_name,
+        proposal_name: proposal.proposal_name,
+        extrected_proposal_data: JSON.stringify(dataRes),
+        user_github_details: {
+          id: item?.user?.id || '',
+          login: item?.user?.login
+        }
+      };
+      purposals.push(proposalData);
+    }
+
+    return { purposals };
+  } catch (err) {
+    log.red(
+      'Error while getting and formatting the all open pull request data:\n',
+      err
+    );
+    return null;
+  }
+};
+
+/**
  * It loads the data of all the already merged metedata project files to database
  * this function only run when there is no project data found in database
  * @returns
@@ -169,19 +255,21 @@ const loadInitialGrantsData = async () => {
     }
 
     const extractedData: any = { team: [], project: [], milestone: [] };
-
     // get all merged pull request data
     const mergedPullRequests = await getPullRequestDetails();
 
-    //if merge request data not found then throw error
-    if (!mergedPullRequests)
+    //get all opened pull request data
+    const openPullRequests = await openPullRequestDetails();
+
+    //if merge request or open pull request data not found then throw error
+    if (!openPullRequests || !mergedPullRequests)
       throw new Error(ERROR_MESSAGES.ERROR_WHILE_EXTRACTING_PULL_REQUEST_DATA);
 
     // extract the data from each md
     for (const file of files.data) {
       if (
-        file.name === 'index.md' &&
-        file.name === 'maintenance' &&
+        file.name === 'index.md' ||
+        file.name === 'maintenance' ||
         file.name === '_category_.yml'
       )
         continue;
@@ -224,7 +312,12 @@ const loadInitialGrantsData = async () => {
       extractedData.milestone.push(...milestones.milestoneFileData);
     }
 
-    // save the bulk data into db
+    // save the purposal data in bulk
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.Proposal,
+      openPullRequests.purposals
+    );
+
     // save the project data in bulk
     await mongoDataHelper.bulkSaveData(
       DATA_MODELS.Project,
@@ -336,6 +429,8 @@ export const parseMetaDataFile = async (
     // reform data for loading it into db
     const teamId = v4();
     const projectId = v4();
+    const proposalId = v4();
+
     const team: any = {
       id: teamId,
       name: pairData['team name'] || pairData['purposer'] || '',
@@ -392,7 +487,26 @@ export const parseMetaDataFile = async (
       milestones: []
     };
 
-    return { project, team, milestones };
+    const teamCodeRepos = [];
+    //Exterecting Teams Code Repos Urls
+    const teamCodeRepoIndex = splitDataArray.indexOf('Team Code Repos');
+    for (let i = teamCodeRepoIndex + 1; i < splitDataArray.length; i++) {
+      const element = splitDataArray[i];
+      if (element.includes('https://github.com')) teamCodeRepos.push(element);
+      else break;
+    }
+
+    const proposal = {
+      id: proposalId,
+      repos: teamCodeRepos,
+      md_link: mdDetails?.download_url,
+      proposal_name: pairData['project name']
+        ? pairData['project name'].toLowerCase()
+        : '',
+      team_name: pairData['team name'] || pairData['purposer'] || ''
+    };
+
+    return { project, team, milestones, proposal };
   } catch (err) {
     log.red('Error while parsing the metadata files: ', err);
     return { project: null, team: null, milestones: null };

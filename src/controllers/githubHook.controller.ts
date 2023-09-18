@@ -25,6 +25,8 @@ class GithubHookController implements Controller {
    */
   private saveGithubData = async (req: Request, res: Response) => {
     try {
+      const event = req.get('X-GitHub-Event');
+
       const secret = process.env.WEBHOOK_REQUEST_SECRET;
       const signature = req.headers['x-hub-signature-256'];
 
@@ -35,7 +37,7 @@ class GithubHookController implements Controller {
       const calculatedSignature = `sha256=${hmac.digest('hex')}`;
 
       if (signature === calculatedSignature) {
-        const result = await GithubHookHelper.saveGithubData(req.body);
+        const result = await GithubHookHelper.saveGithubData(event, req.body);
         if (result?.error) throw new Error('Github Error');
         else res.status(200);
       } else {

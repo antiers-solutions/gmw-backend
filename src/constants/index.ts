@@ -17,6 +17,7 @@ export const ENVIROMENTS = {
 };
 
 export const STATUS = {
+  OPEN: 'open',
   ACCEPTED: 'accepted',
   REJECTED: 'rejected',
   INREVIEW: 'in-review',
@@ -75,7 +76,7 @@ export const RESPONSE_MESSAGES = {
 // Error messages
 export const ERROR_MESSAGES = {
   ERROR_WHILE_EXTRACTING_PULL_REQUEST_DATA:
-    'Something went wrong while extracting the closed pull request data',
+    'Something went wrong while extracting the pull request data',
   ERROR_WHILE_READING_DATA_FROM_FILE:
     'Error while reading grant data from json file',
   ERROR_WHILE_SAVING_DATA_FROM_FILE:
