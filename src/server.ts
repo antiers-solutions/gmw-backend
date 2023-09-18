@@ -16,6 +16,7 @@ import redisHelper from './helpers/redis.helper';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import { log } from './utils/helper.utils';
 import { loadDataFromJsonFile } from './helpers/jsondata.helper';
+import MilestoneProposalsController from './controllers/milestone-proposals.controller';
 
 // start the service
 (async () => {
@@ -28,7 +29,8 @@ import { loadDataFromJsonFile } from './helpers/jsondata.helper';
         new ProjectController(),
         new MilestoneController(),
         new GithubHookController(),
-        new DynamicCardsController()
+        new DynamicCardsController(),
+        new MilestoneProposalsController()
       ]);
 
       // connect to the mongodb server

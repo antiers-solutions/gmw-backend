@@ -8,8 +8,9 @@ export const getGrantData = () => {
     const Project = transformJson('./w3f.projects.json');
     const Proposal = transformJson('./w3f.proposals.json');
     const Team = transformJson('./w3f.teams.json');
+    const MilestoneProposal = transformJson('./w3f.milestoneproposals.json');
 
-    return { Team, Project, Proposal, Milestone };
+    return { Team, Project, Proposal, Milestone, MilestoneProposal };
   } catch (err) {
     log.red(
       'Error while getting the grant data from json file:\n',
@@ -24,8 +25,13 @@ const transformJson = (jsonModule: string) => {
     if (key === '_id' && typeof value === 'object') {
       return new ObjectId(value.$oid);
     }
-    if (key === 'start_date' && typeof value === 'object') {
-      return new Date(value.$date);
+    if (
+      key === 'start_date' ||
+      key === 'created_at' ||
+      key === 'updated_at' ||
+      (key === 'merged_at' && typeof value === 'object')
+    ) {
+      return new Date(value?.$date) || '';
     }
     return value;
   });

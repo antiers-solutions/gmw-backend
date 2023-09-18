@@ -10,7 +10,7 @@ export interface IMilestoneProposal extends Document {
   md_link: string;
   created_at: Date;
   updated_at: Date;
-  merged_at: Date;
+  // merged_at: string;
   repos: any[];
   assignee_details: object;
 }
@@ -25,7 +25,7 @@ const milestoneProposalSchema: Schema<IMilestoneProposal> = new Schema({
   md_link: { type: String },
   created_at: { type: Date },
   updated_at: { type: Date },
-  merged_at: { type: Date },
+  // merged_at: { type: String },
   repos: { type: [Object] },
   assignee_details: { type: Object }
 });

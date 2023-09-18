@@ -5,7 +5,6 @@ import mongoDataHelper from './mongo.data.helper';
 import { DATA_MODELS, ERROR_MESSAGES, STATUS } from '../constants';
 import { v4 } from 'uuid';
 import { log } from '../utils/helper.utils';
-import MilestoneProposal from 'models/Milestone-Proposal';
 
 /**
  * It extracts the metadata file data
@@ -153,7 +152,7 @@ const getMilestoneOpenPullRequests = async () => {
           md_link: null,
           created_at: createdAt,
           updated_at: updatedAt,
-          merged_at: mergedAt,
+          // merged_at: mergedAt,
           repos: repo,
           assignee_details: assigneeDetails
         };
@@ -289,6 +288,15 @@ const getPullRequestDetails = async () => {
 const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
+    // console.log('working');
+    // const proposalMilestone1 = await getMilestoneOpenPullRequests();
+    // await mongoDataHelper.bulkSaveData(
+    //   DATA_MODELS.MilestoneProposal,
+    //   proposalMilestone1
+    // );
+
+    // return;
+
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
       `GET ${process.env.APPLICATIONS_REPO}`
