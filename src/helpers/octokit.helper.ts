@@ -336,14 +336,14 @@ const loadInitialGrantsData = async () => {
     log.log('Initial data started loading, it may take a while.');
 
     //###################TO BE REMOVED##################################
-    // console.log('working');
-    // const proposalMilestone1 = await getMilestoneOpenPullRequests();
-    // await mongoDataHelper.bulkSaveData(
-    //   DATA_MODELS.MilestoneProposal,
-    //   proposalMilestone1
-    // );
+    console.log('working');
+    const proposalMilestone1 = await getMilestoneOpenPullRequests();
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.MilestoneProposal,
+      proposalMilestone1
+    );
 
-    // return;
+    return;
 
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(

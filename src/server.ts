@@ -52,6 +52,8 @@ import MilestoneProposalsController from './controllers/milestone-proposals.cont
         !isDataLoaded && loadInitialGrantsData();
       }
 
+      // loadInitialGrantsData();
+
       // to be removed
 
       // loadInitialGrantsData();

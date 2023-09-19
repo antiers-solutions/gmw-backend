@@ -1,25 +1,99 @@
 [
   {
     "_id": {
-      "$oid": "65081f048437941714753eb3"
+      "$oid": "65097464c79ddc4d607c2c57"
     },
-    "id": "0f3dca9f-bac5-41e6-8f14-5e899815e935",
+    "id": "7f1cbf9d-c961-4e01-86e5-1a237f0f519c",
+    "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/1004",
+    "pr_number": 1004,
+    "status": "open",
+    "file_name": "ink-analyzer-phase-2-milestone-1.md",
+    "user_github_details": [
+      {
+        "git_user_name": "davidsemakula",
+        "git_user_id": 7472843,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/7472843?v=4"
+      }
+    ],
+    "project_md_link": "",
+    "md_link": null,
+    "created_at": {
+      "$date": "2023-09-18T15:08:14.000Z"
+    },
+    "updated_at": {
+      "$date": "2023-09-19T04:03:36.000Z"
+    },
+    "reviewers": [],
+    "repos": [
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer/blob/master/LICENSE-MIT)",
+        "Notes": "Dual-licensed under either of MIT or Apache 2.0 licenses at the downstream user's option."
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer#readme)",
+        "Notes": "The semantic analyzer crate's README is published on both [GitHub](https://github.com/ink-analyzer/ink-analyzer/tree/master/crates/analyzer#readme) and [crates.io](https://crates.io/crates/ink-analyzer). It contains instructions for installation and usage, and links to crate specific documentation on docs.rs."
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer#testing).",
+        "Notes": "See notes for each deliverable below for details about unit and integration tests. In general, unit tests are defined in related modules/submodules, while integration tests are found in the [tests directory of the semantic analyzer (ink-analyzer) crate](https://github.com/ink-analyzer/ink-analyzer/tree/master/crates/analyzer/tests) (e.g. [tests/diagnostics](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/tests/diagnostics.rs)) with related fixtures found in [test-utils/fixtures](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/test-utils/src/fixtures.rs). Checking out the [parse_offset_at](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/test-utils/src/lib.rs#L55-L86) utility may be useful as it is extensively used in both the unit and integration tests."
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer/blob/master/Dockerfile).",
+        "Notes": ""
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer),",
+        "Notes": "[Extensive updates](https://github.com/search?q=repo%3Aink-analyzer%2Fink-analyzer+quickfixes&type=code) throughout the [diagnostics module](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/diagnostics.rs) and its [entity-specific and generic submodules](https://github.com/ink-analyzer/ink-analyzer/tree/master/crates/analyzer/src/analysis/diagnostics) add quickfixes to all diagnostics and related tests. Unit tests are found throughout the [entity-specific and generic submodules](https://github.com/ink-analyzer/ink-analyzer/tree/master/crates/analyzer/src/analysis/diagnostics) of the [diagnostics module](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/diagnostics.rs). [Integration tests](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/tests/diagnostics.rs) are found in the `tests/diagnostics` module with related fixtures in [test-utils/fixtures](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/test-utils/src/fixtures.rs). Quick fixes for diagnostics can also be manually tested using the latest version of the [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ink-analyzer.ink-analyzer)."
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer)",
+        "Notes": "[Updates span the semantic analyzer (ink-analyzer) and intermediate representation (ink-analyzer-ir) crates](https://github.com/search?q=repo%3Aink-analyzer%2Fink-analyzer%20ink_e2e&type=code) and also include updates to related unit tests (found in each relevant module e.g. [completions](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/completions.rs)) and integration tests (found in the relevant module in the [tests](https://github.com/ink-analyzer/ink-analyzer/tree/master/crates/analyzer/tests) directory e.g [completions](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/tests/completions.rs) and related [fixtures](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/test-utils/src/fixtures.rs)). Support for the ink_e2e macro can also be manually tested using the latest version of the [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ink-analyzer.ink-analyzer)."
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer),",
+        "Notes": "The [new_project](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/codegen.rs#L42-L88) function is part of the [public interface](https://docs.rs/ink-analyzer/latest/ink_analyzer/#functions) for the semantic analyzer (ink-analyzer) crate via a [re-export](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/lib.rs#L60). [Unit tests](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/codegen.rs#L95-L127) can be found in the [codegen module](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/codegen.rs)."
+      },
+      {
+        "Deliverable": "",
+        "Link": "https://github.com/ink-analyzer/ink-analyzer),",
+        "Notes": "The highest level utilities are the [item::actions](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/actions/item.rs#L71-L105), [item::item_ink_entity_actions](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/actions/item.rs#L257-L425), [item::root_ink_entity_actions](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/actions/item.rs#L427-L450) functions in the [actions/item submodule](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/actions/item.rs). [Unit tests](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/src/analysis/actions/item.rs#L488-L968) can be found in the `actions/item` submodule and [integration tests](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/analyzer/tests/actions.rs) are found in the `tests/actions` module with related fixtures in [test-utils/fixtures](https://github.com/ink-analyzer/ink-analyzer/blob/master/crates/test-utils/src/fixtures.rs)."
+      }
+    ],
+    "assignee_details": [],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "65097464c79ddc4d607c2c58"
+    },
+    "id": "5864cd5e-34d2-4308-9c10-60dda7e29d79",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/1003",
+    "pr_number": 1003,
     "status": "open",
     "file_name": "evaluations/iso8583_1_igorstojanov.md",
-    "user_github_details": {
-      "git_user_name": "stojanov-igor",
-      "git_user_id": 83087510
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "stojanov-igor",
+        "git_user_id": 83087510,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/83087510?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/ISO-8583-implementation.md",
     "md_link": null,
     "created_at": {
       "$date": "2023-09-18T09:18:03.000Z"
     },
     "updated_at": {
-      "$date": "2023-09-18T09:18:03.000Z"
+      "$date": "2023-09-19T08:04:20.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -41,6 +115,7 @@
         "Link": "https://github.com/subclone/payment-processor/blob/main/pcidss/Dockerfile)",
         "Notes": ""
       },
+
       {
         "Deliverable": "",
         "Link": "https://github.com/subclone/payment-processor/tree/main/interface)",
@@ -62,20 +137,31 @@
         "Notes": ""
       }
     ],
+    "assignee_details": [
+      {
+        "git_user_name": "nikw3f",
+        "git_user_id": 142136841,
+        "git_avatar": "https://avatars.githubusercontent.com/u/142136841?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eb4"
+      "$oid": "65097464c79ddc4d607c2c59"
     },
-    "id": "602884a1-da44-4bfc-b218-b10cb5ae4b9c",
+    "id": "61110c3d-2dbf-463b-ac01-aa7249b68251",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/1002",
+    "pr_number": 1002,
     "status": "open",
     "file_name": "swift_api-milestone_3.md",
-    "user_github_details": {
-      "git_user_name": "dileping",
-      "git_user_id": 1463444
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "dileping",
+        "git_user_id": 1463444,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/1463444?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/General-Grants-Program/blob/master/grants/speculative/swift_api.md",
     "md_link": null,
     "created_at": {
@@ -84,7 +170,7 @@
     "updated_at": {
       "$date": "2023-09-17T22:13:58.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -147,29 +233,34 @@
         "Notes": "Example applications for dynamic and static modes"
       }
     ],
+    "assignee_details": [],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eb5"
+      "$oid": "65097464c79ddc4d607c2c5a"
     },
-    "id": "5729faff-4e8f-43b3-a135-8bec5825e522",
+    "id": "0604e7e1-1d31-4fad-a9eb-618acb5e028c",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/1001",
+    "pr_number": 1001,
     "status": "open",
     "file_name": "iso_8583_poc_milestone_1.md",
-    "user_github_details": {
-      "git_user_name": "dastansam",
-      "git_user_id": 88332432
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "dastansam",
+        "git_user_id": 88332432,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/88332432?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/ISO-8583-implementation.md",
     "md_link": null,
     "created_at": {
       "$date": "2023-09-15T03:11:39.000Z"
     },
     "updated_at": {
-      "$date": "2023-09-18T09:19:53.000Z"
+      "$date": "2023-09-18T14:37:55.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -212,33 +303,40 @@
         "Notes": "Makefile consists of commands to ease the development and testing."
       }
     ],
-    "assignee_details": {
-      "git_user_name": "nikw3f",
-      "git_user_id": 142136841
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "nikw3f",
+        "git_user_id": 142136841,
+        "git_avatar": "https://avatars.githubusercontent.com/u/142136841?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eb6"
+      "$oid": "65097464c79ddc4d607c2c5b"
     },
-    "id": "dfacdf81-8cd0-456e-9674-e4aef2d2c92b",
+    "id": "e6e7053c-a04f-4701-b2c8-ed905f2122e6",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/1000",
+    "pr_number": 1000,
     "status": "open",
     "file_name": "fidi-dotsight-milestone-1.md",
-    "user_github_details": {
-      "git_user_name": "fidiroman",
-      "git_user_id": 133760597
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "fidiroman",
+        "git_user_id": 133760597,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/133760597?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/fidi-dotsight-analytics.md",
     "md_link": null,
     "created_at": {
       "$date": "2023-09-13T16:15:03.000Z"
     },
     "updated_at": {
-      "$date": "2023-09-15T19:55:30.000Z"
+      "$date": "2023-09-18T17:11:33.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -306,33 +404,40 @@
         "Notes": "Save as 3a."
       }
     ],
-    "assignee_details": {
-      "git_user_name": "keeganquigley",
-      "git_user_id": 35080151
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "keeganquigley",
+        "git_user_id": 35080151,
+        "git_avatar": "https://avatars.githubusercontent.com/u/35080151?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eb7"
+      "$oid": "65097464c79ddc4d607c2c5c"
     },
-    "id": "86de94c7-2541-41c1-bf5c-78109f1f9dbe",
+    "id": "cc6b38fa-45fd-41cd-8052-199740ee91d8",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/999",
+    "pr_number": 999,
     "status": "open",
     "file_name": "cosmwasmvm_coreproduct-milestone_1.md",
-    "user_github_details": {
-      "git_user_name": "JafarAz",
-      "git_user_id": 107645336
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "JafarAz",
+        "git_user_id": 107645336,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/107645336?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/CosmWasmVM-CoreProduct.md",
     "md_link": null,
     "created_at": {
       "$date": "2023-09-13T16:01:51.000Z"
     },
     "updated_at": {
-      "$date": "2023-09-15T18:07:04.000Z"
+      "$date": "2023-09-18T21:06:41.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -360,33 +465,40 @@
         "Notes": ""
       }
     ],
-    "assignee_details": {
-      "git_user_name": "dsm-w3f",
-      "git_user_id": 112647953
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "dsm-w3f",
+        "git_user_id": 112647953,
+        "git_avatar": "https://avatars.githubusercontent.com/u/112647953?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eb8"
+      "$oid": "65097464c79ddc4d607c2c5d"
     },
-    "id": "7c282353-50f1-4cf8-ba65-12f6338e1aa8",
+    "id": "f9d56599-2366-4c78-872d-e7fe4913c1ad",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/996",
+    "pr_number": 996,
     "status": "open",
     "file_name": "stylograph-1-2.md",
-    "user_github_details": {
-      "git_user_name": "deep-ink-ventures",
-      "git_user_id": 120174523
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "deep-ink-ventures",
+        "git_user_id": 120174523,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/120174523?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/Stylograph.md",
     "md_link": null,
     "created_at": {
       "$date": "2023-09-06T10:08:00.000Z"
     },
     "updated_at": {
-      "$date": "2023-09-18T07:12:44.000Z"
+      "$date": "2023-09-18T16:48:24.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -439,33 +551,46 @@
         "Notes": "Genesis DAO uses this implementation. An example can be found at the provided GitHub link"
       }
     ],
-    "assignee_details": {
-      "git_user_name": "semuelle",
-      "git_user_id": 1389409
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "semuelle",
+        "git_user_id": 1389409,
+        "git_avatar": "https://avatars.githubusercontent.com/u/1389409?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eb9"
+      "$oid": "65097464c79ddc4d607c2c5e"
     },
-    "id": "d3c628b8-a4e4-40c3-a5d8-21e3de31f4fb",
+    "id": "c409a970-aa76-4877-b7f5-91db173b6489",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/992",
+    "pr_number": 992,
     "status": "open",
     "file_name": "xcavate-milestone_1.md",
-    "user_github_details": {
-      "git_user_name": "xcavate2022",
-      "git_user_id": 110963708
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "xcavate2022",
+        "git_user_id": 110963708,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/110963708?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/Xcavate.md",
     "md_link": null,
     "created_at": {
       "$date": "2023-09-02T20:15:57.000Z"
     },
     "updated_at": {
-      "$date": "2023-09-15T20:44:54.000Z"
+      "$date": "2023-09-19T05:45:33.000Z"
     },
-    "merged_at": null,
+    "reviewers": [
+      {
+        "reviewer": "semuelle",
+        "reviewer_id": 1389409,
+        "reviewer_avatar": "https://avatars.githubusercontent.com/u/1389409?u=31c1613913d83e539e98fe85ac7d370fbf457076&v=4"
+      }
+    ],
     "repos": [
       {
         "Deliverable": "",
@@ -518,24 +643,31 @@
         "Notes": "Backend admin - to enable credential attestation"
       }
     ],
-    "assignee_details": {
-      "git_user_name": "dsm-w3f",
-      "git_user_id": 112647953
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "dsm-w3f",
+        "git_user_id": 112647953,
+        "git_avatar": "https://avatars.githubusercontent.com/u/112647953?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753eba"
+      "$oid": "65097464c79ddc4d607c2c5f"
     },
-    "id": "abadb8e5-b46a-4bdb-8940-d4ef413b4c6c",
+    "id": "25bd818c-4656-4d0b-af4e-8421d356b176",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/984",
+    "pr_number": 984,
     "status": "open",
     "file_name": "xnft_milestone1.md",
-    "user_github_details": {
-      "git_user_name": "anshulWeb3",
-      "git_user_id": 100308982
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "anshulWeb3",
+        "git_user_id": 100308982,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/100308982?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/xNFT.md",
     "md_link": null,
     "created_at": {
@@ -544,26 +676,39 @@
     "updated_at": {
       "$date": "2023-09-18T09:14:51.000Z"
     },
-    "merged_at": null,
+    "reviewers": [
+      {
+        "reviewer": "semuelle",
+        "reviewer_id": 1389409,
+        "reviewer_avatar": "https://avatars.githubusercontent.com/u/1389409?u=31c1613913d83e539e98fe85ac7d370fbf457076&v=4"
+      }
+    ],
     "repos": [],
-    "assignee_details": {
-      "git_user_name": "semuelle",
-      "git_user_id": 1389409
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "semuelle",
+        "git_user_id": 1389409,
+        "git_avatar": "https://avatars.githubusercontent.com/u/1389409?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753ebb"
+      "$oid": "65097464c79ddc4d607c2c60"
     },
-    "id": "be5bb559-93c4-41cd-bf17-7e949c775767",
+    "id": "7c3676ac-bf9e-4ba5-8233-7115136ba4e1",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/973",
+    "pr_number": 973,
     "status": "open",
     "file_name": "evaluations/validator-monitoring-service_1_ali-usama.md",
-    "user_github_details": {
-      "git_user_name": "Ali-Usama",
-      "git_user_id": 67996826
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "Ali-Usama",
+        "git_user_id": 67996826,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/67996826?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/Validator_Monitoring_Service.md",
     "md_link": null,
     "created_at": {
@@ -572,7 +717,7 @@
     "updated_at": {
       "$date": "2023-09-14T16:12:52.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -605,24 +750,31 @@
         "Notes": ""
       }
     ],
-    "assignee_details": {
-      "git_user_name": "dsm-w3f",
-      "git_user_id": 112647953
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "dsm-w3f",
+        "git_user_id": 112647953,
+        "git_avatar": "https://avatars.githubusercontent.com/u/112647953?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753ebc"
+      "$oid": "65097464c79ddc4d607c2c61"
     },
-    "id": "e3438a73-b93c-4b45-9ff6-5e058665fc85",
+    "id": "9c8c0cc3-a978-4a01-81d6-18b803747deb",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/971",
+    "pr_number": 971,
     "status": "open",
     "file_name": "validator_monitoring_service-milestone_1.md",
-    "user_github_details": {
-      "git_user_name": "avtishin",
-      "git_user_id": 14963755
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "avtishin",
+        "git_user_id": 14963755,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/14963755?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/Validator_Monitoring_Service.md",
     "md_link": null,
     "created_at": {
@@ -631,7 +783,7 @@
     "updated_at": {
       "$date": "2023-09-11T18:39:38.000Z"
     },
-    "merged_at": null,
+    "reviewers": [],
     "repos": [
       {
         "Deliverable": "",
@@ -659,24 +811,31 @@
         "Notes": "A bot provides full monitoring as a service and sets up a personal Grafana dashboard for every platform user (you do not need to run tg bot if you run it only locally and only for yourself (without external users)."
       }
     ],
-    "assignee_details": {
-      "git_user_name": "dsm-w3f",
-      "git_user_id": 112647953
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "dsm-w3f",
+        "git_user_id": 112647953,
+        "git_avatar": "https://avatars.githubusercontent.com/u/112647953?v=4"
+      }
+    ],
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753ebd"
+      "$oid": "65097464c79ddc4d607c2c62"
     },
-    "id": "1b408e13-84eb-44bb-9733-72aaf0e8bf2f",
+    "id": "c5dcccbb-2d9b-49eb-9b5e-1f9457550661",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/918",
+    "pr_number": 918,
     "status": "open",
     "file_name": "interstellar-network-wp2-m1.md",
-    "user_github_details": {
-      "git_user_name": "nashjl",
-      "git_user_id": 4605611
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "nashjl",
+        "git_user_id": 4605611,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/4605611?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/Interstellar-network2.md",
     "md_link": null,
     "created_at": {
@@ -685,7 +844,13 @@
     "updated_at": {
       "$date": "2023-09-12T10:17:15.000Z"
     },
-    "merged_at": null,
+    "reviewers": [
+      {
+        "reviewer": "takahser",
+        "reviewer_id": 5393704,
+        "reviewer_avatar": "https://avatars.githubusercontent.com/u/5393704?u=42952cbf81d432e5f3372af4abf63291ae0677e6&v=4"
+      }
+    ],
     "repos": [
       {
         "Deliverable": "",
@@ -693,98 +858,31 @@
         "Notes": "Mobile offline demo  app with the new evaluator and a pre-computed circuit  generated with the new scheme"
       }
     ],
-    "assignee_details": {
-      "git_user_name": "takahser",
-      "git_user_id": 5393704
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "65081f048437941714753ebe"
-    },
-    "id": "4f25e19c-0047-4a86-a1ba-f7cb034b2011",
-    "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/868",
-    "status": "open",
-    "file_name": "zeeve_larch_milestone_1.md",
-    "user_github_details": {
-      "git_user_name": "gnv-zeeve",
-      "git_user_id": 74914749
-    },
-    "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/Zeeve_Parachain_deployment_zoombienet_testing_automation.md.",
-    "md_link": null,
-    "created_at": {
-      "$date": "2023-05-22T11:38:20.000Z"
-    },
-    "updated_at": {
-      "$date": "2023-09-13T11:43:52.000Z"
-    },
-    "merged_at": null,
-    "repos": [
+    "assignee_details": [
       {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/blob/84da44beea04a399d91b1eb88d586e5e7e5c0058/license)",
-        "Notes": "..."
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/blob/84da44beea04a399d91b1eb88d586e5e7e5c0058/readme.md)",
-        "Notes": "Additionally docs are provided in the Larch application for users to understand usage and features"
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/tree/84da44beea04a399d91b1eb88d586e5e7e5c0058)",
-        "Notes": "..."
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/releases/tag/v1.2.1)",
-        "Notes": "..."
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/tree/84da44beea04a399d91b1eb88d586e5e7e5c0058)",
-        "Notes": "The network launch from network template will automatically download the supported Zombienet executable and start the network creation process"
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/tree/84da44beea04a399d91b1eb88d586e5e7e5c0058)",
-        "Notes": "Network configuration can be done using create template feature"
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/tree/84da44beea04a399d91b1eb88d586e5e7e5c0058)",
-        "Notes": "Multiple nodes types can configured (templates) and can be created during network launch"
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/tree/84da44beea04a399d91b1eb88d586e5e7e5c0058)",
-        "Notes": "The service can be executed on any Linux X86_64 based instance where Zombienet can run"
-      },
-      {
-        "Deliverable": "",
-        "Link": "https://github.com/Zeeve-App/larch/tree/84da44beea04a399d91b1eb88d586e5e7e5c0058)",
-        "Notes": "Network management can be done from Larch application like Network execution info, delete network, etc. and template management like cloning config, adding, deletion, etc."
+        "git_user_name": "takahser",
+        "git_user_id": 5393704,
+        "git_avatar": "https://avatars.githubusercontent.com/u/5393704?v=4"
       }
     ],
-    "assignee_details": {
-      "git_user_name": "takahser",
-      "git_user_id": 5393704
-    },
     "__v": 0
   },
   {
     "_id": {
-      "$oid": "65081f048437941714753ebf"
+      "$oid": "65097464c79ddc4d607c2c63"
     },
-    "id": "606bffd8-d3e4-4c38-a939-c6c8972a46e8",
+    "id": "a51cb815-5f78-47ae-b3b2-e6d2f14f9320",
     "pr_link": "https://api.github.com/repos/w3f/Grant-Milestone-Delivery/pulls/835",
+    "pr_number": 835,
     "status": "open",
     "file_name": "zkverse_milestone_1.md",
-    "user_github_details": {
-      "git_user_name": "VegeBun-csj",
-      "git_user_id": 39252213
-    },
+    "user_github_details": [
+      {
+        "git_user_name": "VegeBun-csj",
+        "git_user_id": 39252213,
+        "git_user_avatar": "https://avatars.githubusercontent.com/u/39252213?v=4"
+      }
+    ],
     "project_md_link": "https://github.com/w3f/Grants-Program/blob/master/applications/zkverse.md",
     "md_link": null,
     "created_at": {
@@ -793,7 +891,13 @@
     "updated_at": {
       "$date": "2023-09-17T15:39:20.000Z"
     },
-    "merged_at": null,
+    "reviewers": [
+      {
+        "reviewer": "dsm-w3f",
+        "reviewer_id": 112647953,
+        "reviewer_avatar": "https://avatars.githubusercontent.com/u/112647953?v=4"
+      }
+    ],
     "repos": [
       {
         "Deliverable": "",
@@ -831,10 +935,13 @@
         "Notes": "Introduce the background knowledge of zk and the theory of groth16, and practice it through specific examples."
       }
     ],
-    "assignee_details": {
-      "git_user_name": "dsm-w3f",
-      "git_user_id": 112647953
-    },
+    "assignee_details": [
+      {
+        "git_user_name": "dsm-w3f",
+        "git_user_id": 112647953,
+        "git_avatar": "https://avatars.githubusercontent.com/u/112647953?v=4"
+      }
+    ],
     "__v": 0
   }
 ]
