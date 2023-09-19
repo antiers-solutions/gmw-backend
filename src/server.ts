@@ -11,7 +11,9 @@ import GithubHookController from './controllers/githubHook.controller';
 import GraphController from './controllers/graph.controller';
 import dbConnectionHandler from './mongoDB/connection';
 import mongoDataHelper from './helpers/mongo.data.helper';
-import loadInitialGrantsData from './helpers/octokit.helper';
+import loadInitialGrantsData, {
+  getMilestoneOpenPullRequests
+} from './helpers/octokit.helper';
 import redisHelper from './helpers/redis.helper';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import { log } from './utils/helper.utils';
@@ -49,6 +51,11 @@ import MilestoneProposalsController from './controllers/milestone-proposals.cont
         const isDataLoaded = await loadDataFromJsonFile();
         !isDataLoaded && loadInitialGrantsData();
       }
+
+      // to be removed
+
+      // loadInitialGrantsData();
+      // getMilestoneOpenPullRequests();
 
       // bind the port and listen for requests
       app.listen();

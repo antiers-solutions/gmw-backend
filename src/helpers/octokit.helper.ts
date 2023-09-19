@@ -11,6 +11,22 @@ import { log } from '../utils/helper.utils';
  * @param mdContent
  * @returns
  */
+
+function removeDuplicateObjects(arr) {
+  const uniqueArray = [];
+  const seenObjects = new Set();
+
+  for (const obj of arr) {
+    const objString = JSON.stringify(obj);
+    if (!seenObjects.has(objString)) {
+      seenObjects.add(objString);
+      uniqueArray.push(obj);
+    }
+  }
+
+  return uniqueArray;
+}
+
 const reformMDContent = (mdContent: string) => {
   let fileData = '';
   for (const item of parsedMdFile(mdContent)) {
@@ -45,7 +61,7 @@ const parseMarkdownTable = (tableText) => {
   return rows;
 };
 
-const getMilestoneOpenPullRequests = async () => {
+export const getMilestoneOpenPullRequests = async () => {
   try {
     log.green('This is the pull check section');
 
@@ -67,26 +83,55 @@ const getMilestoneOpenPullRequests = async () => {
       const status = item?.state;
       const userDetails = {
         git_user_name: item?.user?.login,
-        git_user_id: item?.user?.id
+        git_user_id: item?.user?.id,
+        git_user_avatar: item?.user?.avatar_url
       };
+
+      const reviews = await octoConnectionHelper.octoRequest(
+        `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/reviews`,
+        {
+          state: 'open',
+          per_page: 100
+        }
+      );
+
+      const reviewers = reviews.data
+        .filter((review: any) => {
+          return (
+            review?.state === 'CHANGES_REQUESTED' ||
+            review?.state === 'APPROVED'
+          );
+        })
+        .map((review) => {
+          return {
+            reviewer: review?.user?.login,
+            reviewer_id: review?.user?.id,
+            reviewer_avatar: review?.user?.avatar_url || ''
+          };
+        });
+
+      const finalreviewers = removeDuplicateObjects(reviewers);
 
       const createdAt = item?.created_at;
       const updatedAt = item?.updated_at;
-      const mergedAt = item?.merged_at;
-      const assigneeDetails = {
-        git_user_name: item?.assignee?.login,
-        git_user_id: item?.assignee?.id
-      };
+      const assigneeDetails: any[] = [];
+
+      for (const assignee of item?.assignees || []) {
+        const assigneeObject = {
+          git_user_name: assignee?.login,
+          git_user_id: assignee?.id,
+          git_avatar: assignee?.avatar_url
+        };
+
+        assigneeDetails.push(assigneeObject);
+      }
 
       // get the file data for pull request using the pull request number
       const MilestonefileDetailsResponse =
         await octoConnectionHelper.octoRequest(
           `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/files`,
           {
-            state: 'closed',
-            base: 'master',
-            direction: 'desc',
-            head: `w3f:${''}`
+            state: 'open'
           }
         );
 
@@ -145,6 +190,7 @@ const getMilestoneOpenPullRequests = async () => {
         const milestoneApplication = {
           id: v4(),
           pr_link: prLink,
+          pr_number: item.number,
           status: status,
           file_name: fileName,
           user_github_details: userDetails,
@@ -152,9 +198,9 @@ const getMilestoneOpenPullRequests = async () => {
           md_link: null,
           created_at: createdAt,
           updated_at: updatedAt,
-          // merged_at: mergedAt,
+          reviewers: finalreviewers,
           repos: repo,
-          assignee_details: assigneeDetails
+          assignee_details: assigneeDetails || ''
         };
 
         console.log(milestoneApplication, 'applications');
@@ -288,6 +334,8 @@ const getPullRequestDetails = async () => {
 const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
+
+    //###################TO BE REMOVED##################################
     // console.log('working');
     // const proposalMilestone1 = await getMilestoneOpenPullRequests();
     // await mongoDataHelper.bulkSaveData(
