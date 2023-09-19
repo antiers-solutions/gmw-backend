@@ -11,12 +11,207 @@ import { log } from '../utils/helper.utils';
  * @param mdContent
  * @returns
  */
+
+function removeDuplicateObjects(arr) {
+  const uniqueArray = [];
+  const seenObjects = new Set();
+
+  for (const obj of arr) {
+    const objString = JSON.stringify(obj);
+    if (!seenObjects.has(objString)) {
+      seenObjects.add(objString);
+      uniqueArray.push(obj);
+    }
+  }
+
+  return uniqueArray;
+}
+
 const reformMDContent = (mdContent: string) => {
   let fileData = '';
   for (const item of parsedMdFile(mdContent)) {
     if (item.content && item.content !== '\n') fileData += `${item.content}\n`;
   }
   return fileData;
+};
+
+// is used to parse a table in an .md file into a JSON object
+const parseMarkdownTable = (tableText) => {
+  const lines = tableText.trim().split('\n');
+  const headers = lines[0]
+    .trim()
+    .split('|')
+    .map((header) => header.trim());
+  const rows = [];
+
+  for (let i = 2; i < lines.length; i++) {
+    const rowValues = lines[i]
+      .trim()
+      .split('|')
+      .map((value) => value.trim());
+    const rowObject = {};
+
+    for (let j = 0; j < headers.length; j++) {
+      rowObject[headers[j]] = rowValues[j];
+    }
+
+    rows.push(rowObject);
+  }
+
+  return rows;
+};
+
+export const getMilestoneOpenPullRequests = async () => {
+  try {
+    log.green('This is the pull check section');
+
+    const milstonePurposals: any[] = [];
+
+    // get all open pull requests for the milstones/delivery section
+    const openPullRequetsMilestones = await octoConnectionHelper.octoRequest(
+      'GET /repos/w3f/Grant-Milestone-Delivery/pulls',
+      {
+        state: 'open',
+        per_page: 100
+      }
+    );
+
+    const milestoneRequests = openPullRequetsMilestones?.data;
+
+    for (const item of milestoneRequests) {
+      const prLink = item?.url;
+      const status = item?.state;
+      const userDetails = {
+        git_user_name: item?.user?.login,
+        git_user_id: item?.user?.id,
+        git_user_avatar: item?.user?.avatar_url
+      };
+
+      const reviews = await octoConnectionHelper.octoRequest(
+        `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/reviews`,
+        {
+          state: 'open',
+          per_page: 100
+        }
+      );
+
+      const reviewers = reviews.data
+        .filter((review: any) => {
+          return (
+            review?.state === 'CHANGES_REQUESTED' ||
+            review?.state === 'APPROVED'
+          );
+        })
+        .map((review) => {
+          return {
+            reviewer: review?.user?.login,
+            reviewer_id: review?.user?.id,
+            reviewer_avatar: review?.user?.avatar_url || ''
+          };
+        });
+
+      const finalreviewers = removeDuplicateObjects(reviewers);
+
+      const createdAt = item?.created_at;
+      const updatedAt = item?.updated_at;
+      const assigneeDetails: any[] = [];
+
+      for (const assignee of item?.assignees || []) {
+        const assigneeObject = {
+          git_user_name: assignee?.login,
+          git_user_id: assignee?.id,
+          git_avatar: assignee?.avatar_url
+        };
+
+        assigneeDetails.push(assigneeObject);
+      }
+
+      // get the file data for pull request using the pull request number
+      const MilestonefileDetailsResponse =
+        await octoConnectionHelper.octoRequest(
+          `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/files`,
+          {
+            state: 'open'
+          }
+        );
+
+      const fileName = MilestonefileDetailsResponse?.data[0]?.filename
+        .replace('deliveries/', '')
+        .toLowerCase();
+
+      // Extract and parse the table content from the Markdown content
+
+      const res = await axios.get(MilestonefileDetailsResponse.data[0].raw_url);
+      const projectLink = res.data
+        .split('\n')
+        .filter(
+          (item: any) =>
+            (item.startsWith('* **') || item.startsWith('- **')) &&
+            item.includes(':**')
+        )
+        .map((item: any) =>
+          item
+            .replace('* **Application Document:** ', '')
+            .replace('- **Application Document:** ', '')
+            .replace('(', '')
+            .replace(')', '')
+            .replace(/\[[A-za-z0-9 -_&$]*\]/g, '')
+            .trim()
+        )
+        .find((item) => item.startsWith('https://'));
+
+      const tableRegex = /\|(.+)\|\s*\n\|(.+)\|/s;
+      const match = res.data.match(tableRegex);
+
+      if (match) {
+        const tableText = match[0];
+        const tableData = parseMarkdownTable(tableText);
+        const repo = tableData
+          .filter((item) => {
+            return (
+              item?.Deliverable?.includes('https://github.com') ||
+              item?.Link?.includes('https://github.com')
+            );
+          })
+          .map((item) => {
+            const Deliverable =
+              item?.Deliverable?.match(/https?:\/\/[^\s]+/) || '';
+            const Link = item?.Link?.match(/https?:\/\/[^\s]+/) || '';
+
+            // Extract GitHub links from the field
+            return {
+              Deliverable:
+                Deliverable[0] === undefined ? Deliverable : Deliverable[0],
+              Link: Link[0] === undefined ? Link : Link[0],
+              Notes: item?.Notes === undefined ? '' : item?.Notes
+            };
+          });
+
+        const milestoneApplication = {
+          id: v4(),
+          pr_link: prLink,
+          pr_number: item.number,
+          status: status,
+          file_name: fileName,
+          user_github_details: userDetails,
+          project_md_link: projectLink ? projectLink : '',
+          md_link: null,
+          created_at: createdAt,
+          updated_at: updatedAt,
+          reviewers: finalreviewers,
+          repos: repo,
+          assignee_details: assigneeDetails || ''
+        };
+
+        console.log(milestoneApplication, 'applications');
+        milstonePurposals.push(milestoneApplication);
+      }
+    }
+
+    return milstonePurposals;
+  } catch (error) {
+    log.red(error);
+  }
 };
 
 /**
@@ -238,6 +433,17 @@ const openPullRequestDetails = async () => {
 const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
+
+    //###################TO BE REMOVED##################################
+    console.log('working');
+    const proposalMilestone1 = await getMilestoneOpenPullRequests();
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.MilestoneProposal,
+      proposalMilestone1
+    );
+
+    return;
+
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
       `GET ${process.env.APPLICATIONS_REPO}`
@@ -255,6 +461,10 @@ const loadInitialGrantsData = async () => {
     }
 
     const extractedData: any = { team: [], project: [], milestone: [] };
+
+    // this is the data for the open pull requests of the milestones repo
+    const proposalMilestone = await getMilestoneOpenPullRequests();
+
     // get all merged pull request data
     const mergedPullRequests = await getPullRequestDetails();
 
@@ -262,7 +472,7 @@ const loadInitialGrantsData = async () => {
     const openPullRequests = await openPullRequestDetails();
 
     //if merge request or open pull request data not found then throw error
-    if (!openPullRequests || !mergedPullRequests)
+    if (!openPullRequests || !mergedPullRequests || !proposalMilestone)
       throw new Error(ERROR_MESSAGES.ERROR_WHILE_EXTRACTING_PULL_REQUEST_DATA);
 
     // extract the data from each md
@@ -336,6 +546,13 @@ const loadInitialGrantsData = async () => {
     await mongoDataHelper.bulkSaveData(
       DATA_MODELS.Proposal,
       mergedPullRequests.purposals
+    );
+
+    // save the milstone proposals data
+
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.MilestoneProposal,
+      proposalMilestone
     );
 
     log.green('Data Successfully Stored');
