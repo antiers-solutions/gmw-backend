@@ -4,7 +4,8 @@ export const DATA_MODELS = {
   Team: 'Team',
   Proposal: 'Proposal',
   Project: 'Project',
-  Milestone: 'Milestone'
+  Milestone: 'Milestone',
+  MilestoneProposal: 'MilestoneProposal'
 };
 
 export const PAGE_LIMIT = 100;

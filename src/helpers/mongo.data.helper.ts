@@ -67,6 +67,7 @@ class MongoDataHelper {
     try {
       this._checkModel(name);
       const Model = this._getModel(name);
+
       // inserts multiple data in the db collection at a specific time
       const result = await Model.insertMany(data);
       return result;
@@ -315,6 +316,9 @@ class MongoDataHelper {
         return modelsObejct.User;
       case DATA_MODELS.Proposal:
         return modelsObejct.Proposal;
+
+      case DATA_MODELS.MilestoneProposal:
+        return modelsObejct.MilestoneProposal;
 
       default:
         return null;

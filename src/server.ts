@@ -12,11 +12,14 @@ import GraphController from './controllers/graph.controller';
 import ProposalContoller from './controllers/grantproposal.controller';
 import dbConnectionHandler from './mongoDB/connection';
 import mongoDataHelper from './helpers/mongo.data.helper';
-import loadInitialGrantsData from './helpers/octokit.helper';
+import loadInitialGrantsData, {
+  getMilestoneOpenPullRequests
+} from './helpers/octokit.helper';
 import redisHelper from './helpers/redis.helper';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import { log } from './utils/helper.utils';
 import { loadDataFromJsonFile } from './helpers/jsondata.helper';
+import MilestoneProposalsController from './controllers/milestone-proposals.controller';
 
 // start the service
 (async () => {
@@ -30,7 +33,8 @@ import { loadDataFromJsonFile } from './helpers/jsondata.helper';
         new MilestoneController(),
         new GithubHookController(),
         new DynamicCardsController(),
-        new ProposalContoller()
+        new ProposalContoller(),
+        new MilestoneProposalsController()
       ]);
 
       // connect to the mongodb server
@@ -51,6 +55,13 @@ import { loadDataFromJsonFile } from './helpers/jsondata.helper';
           !isDataLoaded && loadInitialGrantsData();
         } else loadInitialGrantsData();
       }
+
+      // loadInitialGrantsData();
+
+      // to be removed
+
+      // loadInitialGrantsData();
+      // getMilestoneOpenPullRequests();
 
       // bind the port and listen for requests
       app.listen();
