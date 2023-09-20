@@ -1,10 +1,10 @@
+import crypto from 'crypto';
 import * as express from 'express';
 import { ERR } from '../constants';
-import crypto from 'crypto';
+import { Octokit } from '@octokit/rest';
 import { Controller } from '../interfaces';
 import { Request, Response } from 'express';
 import GithubHookHelper from '../controller-helpers/githubHook.helper';
-import { Octokit } from '@octokit/rest';
 
 class GithubHookController implements Controller {
   public path = '/github';
@@ -83,6 +83,8 @@ class GithubHookController implements Controller {
    */
   private saveGithubData = async (req: Request, res: Response) => {
     try {
+      const event = req.get('X-GitHub-Event');
+
       const secret = process.env.WEBHOOK_REQUEST_SECRET;
       const signature = req.headers['x-hub-signature-256'];
 
@@ -92,12 +94,8 @@ class GithubHookController implements Controller {
 
       const calculatedSignature = `sha256=${hmac.digest('hex')}`;
 
-      //changes made by me
-      const eventType = req.headers['x-github-event'];
-      console.log(eventType, 'this is new');
-
       if (signature === calculatedSignature) {
-        const result = await GithubHookHelper.saveGithubData(req.body);
+        const result = await GithubHookHelper.saveGithubData(event, req.body);
         if (result?.error) throw new Error('Github Error');
         else res.status(200);
       } else {

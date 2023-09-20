@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { v4 } from 'uuid';
 import { STATUS } from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
@@ -21,85 +20,144 @@ class GithubHookHelper {
    * @param requestBody
    * @returns
    */
-  public saveGithubData = async (requestBody: any) => {
+  public saveGithubData = async (event: string, requestBody: any) => {
     try {
-      if (requestBody?.pull_request) {
-        const { pull_request } = requestBody;
-        const { url } = pull_request;
+      const { pull_request } = requestBody;
+      const { url } = pull_request;
 
-        const response: any = await axios.get(`${url}/files`);
-        const element = response?.data[0];
+      console.log('requestedReviewers: ', pull_request.requested_reviewers);
 
-        if (element?.filename.search('applications/') !== -1) {
-          const fileName = element.filename.split('/')[1];
+      const response: any = await axios.get(`${url}/files`);
+      const element = response?.data[0];
 
-          //check if data is for merged request
-          if (pull_request?.merged) {
-            console.log('saving merged pull request data into Db..');
-            const dataRes: any = await MongoDataHelper.findAndQueryData(
-              DATA_MODELS.Proposal,
-              { file_name: fileName }
+      if (element?.filename.search('applications/') !== -1) {
+        const fileName = element.filename.split('/')[1];
+
+        //check if data is for merged request
+        if (pull_request?.merged) {
+          console.log('saving merged pull request data into Db..');
+
+          const dataRes: any = await MongoDataHelper.findAndQueryData(
+            DATA_MODELS.Proposal,
+            { file_name: fileName }
+          );
+
+          if (dataRes.length > 0) {
+            const { project, team } = JSON.parse(
+              dataRes[0]?.extrected_proposal_data
             );
 
-            if (dataRes.length > 0) {
-              const { project, team } = JSON.parse(
-                dataRes[0]?.extrected_proposal_data
-              );
+            project.merged_at = pull_request.merged_at;
 
-              project.merged_at = pull_request.merged_at;
+            //save or update the saved Project data
+            await MongoDataHelper.findOneAndUpdate(
+              DATA_MODELS.Project,
+              { file_name: project.file_name },
+              project
+            );
 
-              //save or update the saved Project data
-              await MongoDataHelper.findOneAndUpdate(
-                DATA_MODELS.Project,
-                { file_name: project.file_name },
-                project
-              );
+            //save or update the saved Team data
+            await MongoDataHelper.findOneAndUpdate(
+              DATA_MODELS.Team,
+              { name: team.name },
+              team
+            );
 
-              //save or update the saved Team data
-              await MongoDataHelper.findOneAndUpdate(
-                DATA_MODELS.Team,
-                { name: team.name },
-                team
-              );
+            // change status of project
+            await MongoDataHelper.findOneAndUpdate(
+              DATA_MODELS.Proposal,
+              { file_name: fileName },
+              { status: STATUS.ACCEPTED }
+            );
 
-              // change status of project
-              await MongoDataHelper.findOneAndUpdate(
-                DATA_MODELS.Proposal,
-                { file_name: fileName },
-                { status: STATUS.ACCEPTED }
-              );
-
-              return {
-                error: false,
-                data: 'success'
-              };
-            } else {
-              throw new Error('Proposal in not present in the collection');
-            }
+            return {
+              error: false,
+              data: 'success'
+            };
           } else {
-            console.log('saving pull request data into Db..');
+            throw new Error('Proposal in not present in the collection');
+          }
+        } else {
+          console.log('saving pull request data into Db..');
 
-            let dataRes: { team: any; project: any; milestones?: any };
-            const response2: any = await axios.get(`${element?.contents_url}`);
-            dataRes = await parseMetaDataFile(response2?.data, {
+          // if (event === 'pull_request_review') {
+          //   const dataRes: any = await MongoDataHelper.findAndQueryData(
+          //     DATA_MODELS.Proposal,
+          //     { pr_link: pull_request?.html_url }
+          //   );
+          //   dataRes[0].approvals = dataRes[0].approvals + 1;
+
+          //   await MongoDataHelper.updateData(
+          //     DATA_MODELS.Proposal,
+          //     { pr_link: pull_request?.html_url },
+          //     { approvals: dataRes[0].approvals }
+          //   );
+          // }
+          if (requestBody.action === 'review_requested') {
+            console.log('pull_request?.html_url  ', pull_request?.html_url);
+            console.log('review_requested  ', pull_request.requested_reviewers);
+
+            const reviewers = pull_request.requested_reviewers.map(
+              (review: any) => ({
+                reviewer_user_name: review?.login,
+                reviewer_id: review?.id,
+                reviewer_avatar_url: review?.avatar_url || ''
+              })
+            );
+            console.log('review_requested  ', reviewers);
+
+            // const dataRes: any = await MongoDataHelper.findAndQueryData(
+            //   DATA_MODELS.Proposal,
+            //   { pr_link: pull_request?.html_url }
+            // );
+
+            await MongoDataHelper.updateData(
+              DATA_MODELS.Proposal,
+              { pr_link: pull_request?.html_url },
+              { reviewers }
+            );
+          } else {
+            console.log('pull_request :: ', pull_request);
+
+            const responseData: any = await axios.get(
+              `${element?.contents_url}`
+            );
+            let dataRes = await parseMetaDataFile(responseData?.data, {
               [fileName]: { mergedAt: null }
             });
 
+            const assignees = pull_request?.assignees.map((data: any) => ({
+              git_user_id: data?.id || '',
+              git_user_name: data?.login || '',
+              git_avatar_url: data?.avatar_url || ''
+            }));
             // save the purposal data
             const dataToSave: any = {
-              id: v4(),
-              sha: element?.sha,
-              approvals: null,
-              team_name: dataRes?.team?.name,
-              status: dataRes?.project?.status,
+              assignees,
+              status: STATUS.OPEN,
+              id: dataRes?.proposal?.id,
               pr_link: pull_request?.html_url,
+              updated_at: pull_request?.updated_at,
+              created_at: pull_request?.created_at,
+              team_name: dataRes?.proposal?.team_name,
+              reviewers: pull_request.requested_reviewers,
+              proposal_name: dataRes?.proposal?.proposal_name,
               file_name: dataRes?.project?.file_name,
-              proposal_name: dataRes?.project?.project_name,
               extrected_proposal_data: JSON.stringify(dataRes),
-              branch_name: pull_request?.head.ref //The source branch i.e the branch from where the changes are coming.
+              md_link: dataRes?.proposal?.md_link,
+              repos: dataRes?.proposal?.repos,
+              user_github_details: {
+                git_user_id: pull_request?.id || '',
+                git_user_name: pull_request?.login || '',
+                git_avatar_url: pull_request?.avatar_url || ''
+              }
             };
 
-            await MongoDataHelper.savaData(DATA_MODELS.Proposal, dataToSave);
+            await MongoDataHelper.findOneAndUpdate(
+              DATA_MODELS.Proposal,
+              { pr_link: dataToSave.pr_link },
+              dataToSave
+            );
             dataRes = null;
 
             return {
@@ -107,9 +165,9 @@ class GithubHookHelper {
               data: null
             };
           }
-        } else {
-          throw new Error('Changes are not in the applications/ directory');
         }
+      } else {
+        throw new Error('Changes are not in the applications/ directory');
       }
     } catch (error) {
       console.error(

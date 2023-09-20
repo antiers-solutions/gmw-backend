@@ -116,7 +116,7 @@ export const getMilestoneOpenPullRequests = async () => {
             review?.state === 'APPROVED'
           );
         })
-        .map((review) => {
+        .map((review: any) => {
           return {
             reviewer: review?.user?.login,
             reviewer_id: review?.user?.id,
@@ -349,6 +349,119 @@ const getPullRequestDetails = async () => {
 };
 
 /**
+ * It gets all the open pull request data and parse it
+ * @returns
+ */
+const openPullRequestDetails = async () => {
+  try {
+    let page = 1;
+    const purposals: any[] = [];
+
+    for (;;) {
+      const pullRequestsResponse = await octoConnectionHelper.octoRequest(
+        'GET /repos/w3f/Grants-Program/pulls',
+        {
+          state: 'open',
+          base: 'master',
+          per_page: PAGE_LIMIT,
+          page
+        }
+      );
+
+      const pullRequests = pullRequestsResponse?.data;
+      if (!pullRequests?.length) break;
+
+      // get the pull request file data using the pull request number
+      for (const item of pullRequests) {
+        const repoPath =
+          process.env.GITHUB_REPO_PATH || '/repos/w3f/Grants-Program/pulls';
+
+        // get the file data for pull request using the pull request number
+        const fileDetailsResponse = await octoConnectionHelper.octoRequest(
+          `GET ${repoPath}/${item.number}/files`,
+          {
+            state: 'open',
+            base: 'master',
+            direction: 'desc',
+            head: `w3f:${''}`
+          }
+        );
+
+        const contentUrl = fileDetailsResponse.data[0].contents_url;
+
+        // get the reviews details
+        const reviews = await octoConnectionHelper.octoRequest(
+          `GET ${repoPath}/${item.number}/reviews`,
+          {
+            state: 'open',
+            base: 'master',
+            direction: 'desc',
+            head: `w3f:${''}`
+          }
+        );
+        const approvals = reviews?.data
+          ?.filter(
+            (reviewer: any) =>
+              reviewer.state === 'APPROVED' || 'CHANGES_REQUESTED'
+          )
+          .map((review: any) => ({
+            reviewer_user_name: review?.user?.login,
+            reviewer_id: review?.user?.id,
+            reviewer_avatar_url: review?.user?.avatar_url || ''
+          }));
+
+        const finalreviewers = removeDuplicateObjects(approvals);
+
+        const fileName = fileDetailsResponse?.data[0]?.filename
+          .replace('applications/', '')
+          .toLowerCase();
+
+        const responseData: any = await axios.get(`${contentUrl}`);
+        const parsedData = await parseMetaDataFile(responseData?.data, {
+          [fileName]: { merged_at: item?.merged_at }
+        });
+
+        const assignees = item?.assignees.map((data: any) => ({
+          git_user_id: data?.id || '',
+          git_user_name: data?.login || '',
+          git_avatar_url: data?.avatar_url || ''
+        }));
+
+        const proposalData = {
+          assignees,
+          pr_link: item.url,
+          file_name: fileName,
+          status: STATUS.OPEN,
+          updated_at: item?.updated_at,
+          created_at: item?.created_at,
+          reviewers: finalreviewers || [],
+          id: parsedData?.proposal?.id || v4(),
+          repos: parsedData?.proposal?.repos || [],
+          md_link: parsedData?.proposal?.md_link || '',
+          team_name: parsedData?.proposal?.team_name || '',
+          proposal_name: parsedData?.proposal?.proposal_name || '',
+          user_github_details: {
+            git_user_id: item?.user?.id || '',
+            git_user_name: item?.user?.login || '',
+            git_avatar_url: item?.user?.avatar_url || ''
+          },
+          extrected_proposal_data: JSON.stringify(parsedData)
+        };
+        purposals.push(proposalData);
+
+        console.log('proposalData : ', proposalData);
+      }
+      page++;
+    }
+
+    return { purposals };
+  } catch (err) {
+    log.red('Error while getting the all open pull request data:\n', err);
+    return null;
+  }
+};
+
+/**
  * It loads the data of all the already merged metedata project files to database
  * this function only run when there is no project data found in database
  * @returns
@@ -356,16 +469,6 @@ const getPullRequestDetails = async () => {
 const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
-
-    //###################TO BE REMOVED##################################
-    console.log('working');
-    const proposalMilestone1 = await getMilestoneOpenPullRequests();
-    await mongoDataHelper.bulkSaveData(
-      DATA_MODELS.MilestoneProposal,
-      proposalMilestone1
-    );
-
-    return;
 
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
@@ -385,21 +488,30 @@ const loadInitialGrantsData = async () => {
 
     const extractedData: any = { team: [], project: [], milestone: [] };
 
+    //get all opened pull request data
+    const openPullRequests = await openPullRequestDetails();
+
+    // save the purposal data in bulk
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.Proposal,
+      openPullRequests.purposals
+    );
+
     // this is the data for the open pull requests of the milestones repo
     const proposalMilestone = await getMilestoneOpenPullRequests();
 
     // get all merged pull request data
     const mergedPullRequests = await getPullRequestDetails();
 
-    //if merge request data not found then throw error
-    if (!mergedPullRequests)
+    //if merge request or open pull request data not found then throw error
+    if (!openPullRequests || !mergedPullRequests || !proposalMilestone)
       throw new Error(ERROR_MESSAGES.ERROR_WHILE_EXTRACTING_PULL_REQUEST_DATA);
 
     // extract the data from each md
     for (const file of files.data) {
       if (
-        file.name === 'index.md' &&
-        file.name === 'maintenance' &&
+        file.name === 'index.md' ||
+        file.name === 'maintenance' ||
         file.name === '_category_.yml'
       )
         continue;
@@ -442,7 +554,12 @@ const loadInitialGrantsData = async () => {
       extractedData.milestone.push(...milestones.milestoneFileData);
     }
 
-    // save the bulk data into db
+    // save the purposal data in bulk
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.Proposal,
+      openPullRequests.purposals
+    );
+
     // save the project data in bulk
     await mongoDataHelper.bulkSaveData(
       DATA_MODELS.Project,
@@ -464,7 +581,6 @@ const loadInitialGrantsData = async () => {
     );
 
     // save the milstone proposals data
-
     await mongoDataHelper.bulkSaveData(
       DATA_MODELS.MilestoneProposal,
       proposalMilestone
@@ -564,6 +680,8 @@ export const parseMetaDataFile = async (
     // reform data for loading it into db
     const teamId = v4();
     const projectId = v4();
+    const proposalId = v4();
+
     const team: any = {
       id: teamId,
       name:
@@ -633,7 +751,26 @@ export const parseMetaDataFile = async (
       milestones: []
     };
 
-    return { project, team, milestones };
+    const teamCodeRepos = [];
+    //Exterecting Teams Code Repos Urls
+    const teamCodeRepoIndex = splitDataArray.indexOf('Team Code Repos');
+    for (let i = teamCodeRepoIndex + 1; i < splitDataArray.length; i++) {
+      const element = splitDataArray[i];
+      if (element.includes('https://github.com')) teamCodeRepos.push(element);
+      else break;
+    }
+
+    const proposal = {
+      id: proposalId,
+      repos: teamCodeRepos,
+      md_link: mdDetails?.download_url,
+      proposal_name: pairData['project name']
+        ? pairData['project name'].toLowerCase()
+        : '',
+      team_name: pairData['team name'] || pairData['purposer'] || ''
+    };
+
+    return { project, team, milestones, proposal };
   } catch (err) {
     log.red(`${ERROR_MESSAGES.ERROR_WHILE_PARSING_METADATA_FILE}`, err);
     return { project: null, team: null, milestones: null };
