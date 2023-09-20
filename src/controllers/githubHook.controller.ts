@@ -1,10 +1,10 @@
+import crypto from 'crypto';
 import * as express from 'express';
 import { ERR } from '../constants';
-import crypto from 'crypto';
+import { Octokit } from '@octokit/rest';
 import { Controller } from '../interfaces';
 import { Request, Response } from 'express';
 import GithubHookHelper from '../controller-helpers/githubHook.helper';
-import { Octokit } from '@octokit/rest';
 
 class GithubHookController implements Controller {
   public path = '/github';
@@ -93,10 +93,6 @@ class GithubHookController implements Controller {
       hmac.update(body);
 
       const calculatedSignature = `sha256=${hmac.digest('hex')}`;
-
-      //changes made by me
-      const eventType = req.headers['x-github-event'];
-      console.log(eventType, 'this is new');
 
       if (signature === calculatedSignature) {
         const result = await GithubHookHelper.saveGithubData(event, req.body);

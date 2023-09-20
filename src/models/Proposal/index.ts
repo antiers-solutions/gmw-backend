@@ -8,7 +8,7 @@ export interface IProposal extends Document {
   md_link: string;
   assignees: string[];
   team_name: string;
-  approvals: number;
+  reviewers: string[];
   file_name: string;
   created_at: string;
   updated_at: string;
@@ -23,15 +23,31 @@ const projectSchema: Schema<IProposal> = new Schema({
   repos: { type: [String] },
   md_link: { type: String },
   team_name: { type: String },
-  approvals: { type: Number },
   file_name: { type: String },
   created_at: { type: String },
   updated_at: { type: String },
   proposal_name: { type: String },
   pr_link: { type: String, unique: true },
   extrected_proposal_data: { type: String },
-  assignees: { type: [{ id: Number, login: String }] },
-  user_github_details: { type: [{ id: Number, login: String }] }
+  assignees: {
+    type: [
+      { git_user_id: String, git_user_name: String, git_avatar_url: String }
+    ]
+  },
+  user_github_details: {
+    type: [
+      { git_user_id: String, git_user_name: String, git_avatar_url: String }
+    ]
+  },
+  reviewers: {
+    type: [
+      {
+        reviewer_user_name: String,
+        reviewer_id: String,
+        reviewer_avatar_url: String
+      }
+    ]
+  }
 });
 
 const Proposal = mongoose.model<IProposal>('Proposal', projectSchema);

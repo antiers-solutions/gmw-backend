@@ -17,6 +17,8 @@ export const ENVIROMENTS = {
   STAGE: 'stage'
 };
 
+export const PAGE_LIMIT = 100;
+
 export const STATUS = {
   OPEN: 'open',
   ACCEPTED: 'accepted',
