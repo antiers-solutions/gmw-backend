@@ -2,7 +2,21 @@ import parsedMdFile from './mdParse.helper';
 import axios from 'axios';
 import octoConnectionHelper from './octoConnection.helper';
 import mongoDataHelper from './mongo.data.helper';
-import { DATA_MODELS, ERROR_MESSAGES, STATUS } from '../constants';
+import {
+  BRANCHS,
+  DATA_MODELS,
+  ERROR_MESSAGES,
+  GRANT_REPO_PATH,
+  PULLS,
+  HTTP_METHODS,
+  ORDERS,
+  PAGE_LIMIT,
+  PULL_REQUEST_TYPE,
+  STATUS,
+  USED_STRINGS,
+  LEVELS,
+  BUDGETS
+} from '../constants';
 import { v4 } from 'uuid';
 import { log } from '../utils/helper.utils';
 
@@ -27,31 +41,27 @@ const getPullRequestDetails = async () => {
   try {
     const mergedPullRequestsForAddedFiles: any = {};
     const purposals: any[] = [];
-    const pages = Number(process.env.GITHUB_PULLREQUEST_PAGES) || 17;
 
-    // get all open pull requests
-    const openRequests = await octoConnectionHelper.octoRequest(
-      'GET /repos/w3f/Grants-Program/pulls',
-      {
-        state: 'open',
-        base: 'master',
-        per_page: 100,
-        page: 1
-      }
-    );
+    let page = 1;
+    const grantRepoPullsPath = `${
+      process.env.GITHUB_REPO_PATH || GRANT_REPO_PATH
+    }${PULLS}`;
 
-    // get all closed pull request and filter the merged only for added new files
-    for (let page = 1; page <= pages; page++) {
+    // get the all closed pull requests
+    for (;;) {
       // get the all merged data
       const pullRequestsResponse = await octoConnectionHelper.octoRequest(
-        'GET /repos/w3f/Grants-Program/pulls',
+        `${HTTP_METHODS.GET} ${grantRepoPullsPath}`,
         {
-          state: 'closed',
-          base: 'master',
-          per_page: 100,
+          state: PULL_REQUEST_TYPE.CLOSED,
+          base: BRANCHS.MASTER,
+          per_page: PAGE_LIMIT,
           page
         }
       );
+
+      // break if the data not found on next page
+      if (!pullRequestsResponse.data?.length) break;
 
       const pullRequests = pullRequestsResponse?.data;
       if (!pullRequests) continue;
@@ -60,44 +70,40 @@ const getPullRequestDetails = async () => {
       for (const item of pullRequests) {
         //if pull is not merged then skip it
 
-        const repoPath =
-          process.env.GITHUB_REPO_PATH || '/repos/w3f/Grants-Program/pulls';
-
         // get the file data for pull request using the pull request number
         const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-          `GET ${repoPath}/${item.number}/files`,
+          `${HTTP_METHODS.GET} ${grantRepoPullsPath}/${item.number}/files`,
           {
-            state: 'closed',
-            base: 'master',
-            direction: 'desc',
+            state: PULL_REQUEST_TYPE.CLOSED,
+            base: BRANCHS.MASTER,
+            direction: ORDERS.ASEC,
             head: `w3f:${''}`
           }
         );
 
         // get the reviwers details
         const reviwers = await octoConnectionHelper.octoRequest(
-          `GET ${repoPath}/${item.number}/reviews`,
+          `${HTTP_METHODS.GET} ${grantRepoPullsPath}/${item.number}/reviews`,
           {
-            state: 'closed',
-            base: 'master',
-            direction: 'desc',
+            state: PULL_REQUEST_TYPE.CLOSED,
+            base: BRANCHS.MASTER,
+            direction: ORDERS.DESC,
             head: `w3f:${''}`
           }
         );
 
         const approvals = reviwers?.data?.filter(
-          (reviwer: any) => reviwer.state === 'APPROVED'
+          (reviewer: any) => reviewer.state === 'APPROVED'
         ).length;
 
         // continue the next iteration if the status of file is not added
         if (fileDetailsResponse?.data[0]?.status !== 'added') continue;
 
-        // console.log("address is here: ", fileDetailsResponse.data);
-
         // add the merged pull request data for further usage
         const fileName = fileDetailsResponse?.data[0]?.filename
           .replace('applications/', '')
           .toLowerCase();
+
         const application = {
           id: v4(),
           status: '',
@@ -132,6 +138,9 @@ const getPullRequestDetails = async () => {
         // collect the all closed purposals
         purposals.push(application);
       }
+
+      // check the next page
+      page++;
     }
 
     return { mergedPullRequestsForAddedFiles, purposals };
@@ -271,10 +280,10 @@ export const parseMetaDataFile = async (
     const projectName = splitDataArray[0];
     const teamMember = fileData
       .slice(
-        fileData.indexOf('Team members'),
-        fileData.indexOf('Contact') > 0
-          ? fileData.indexOf('Contact')
-          : fileData.indexOf('Team Website')
+        fileData.indexOf(USED_STRINGS.TEAM_MEMBERS),
+        fileData.indexOf(USED_STRINGS.CONTACT) > 0
+          ? fileData.indexOf(USED_STRINGS.CONTACT)
+          : fileData.indexOf(USED_STRINGS.TEAM_WEBSITE)
       )
       .split('\n');
     teamMember.shift();
@@ -283,8 +292,8 @@ export const parseMetaDataFile = async (
     // extract the milestone data
     const mileStoneTable = [];
     for (let i = 1; i <= 10; i++) {
-      const start = fileData.indexOf(`Milestone ${i} `);
-      const end = fileData.indexOf(`Milestone ${i + 1} `);
+      const start = fileData.indexOf(`${USED_STRINGS.MILESTONE} ${i} `);
+      const end = fileData.indexOf(`${USED_STRINGS.MILESTONE} ${i + 1} `);
 
       if (start < 0 && end < 0) break;
 
@@ -301,12 +310,15 @@ export const parseMetaDataFile = async (
     mileStoneTable.forEach((item, index) => {
       const tempMilestoneStore: any = {};
       item.forEach((innerItem) => {
-        if (innerItem[0] === 'estimated duration')
+        if (innerItem[0] === USED_STRINGS.ESTIMATED_DURATION)
           tempMilestoneStore[innerItem[0]] = innerItem[1];
-        if (innerItem[0] === 'fte')
+        if (innerItem[0] === USED_STRINGS.FTE)
           tempMilestoneStore[innerItem[0]] = innerItem[1];
-        if (innerItem[0] === 'costs' || innerItem[0] === 'cost')
-          tempMilestoneStore['costs'] = innerItem[1];
+        if (
+          innerItem[0] === USED_STRINGS.COSTS ||
+          innerItem[0] === USED_STRINGS.COST
+        )
+          tempMilestoneStore[USED_STRINGS.COSTS] = innerItem[1];
       });
       milestones[index] = tempMilestoneStore;
     });
@@ -318,7 +330,7 @@ export const parseMetaDataFile = async (
       .split('\n');
 
     const pairData: any = {};
-    pairData['project name'] = projectName;
+    pairData[USED_STRINGS.PROJECT_NAME] = projectName;
     tempProjectData.forEach((item, index) => {
       const splitData = item.trim().toLowerCase().split(': ');
 
@@ -326,7 +338,7 @@ export const parseMetaDataFile = async (
         pairData[splitData[0]] = `${splitData[1]} ${splitData[2] || ''}`.trim();
         return;
       } else if (index === 2) {
-        pairData['level'] =
+        pairData[USED_STRINGS.LEVEL] =
           `${splitData[1]} ${splitData[2] || ''}`.trim() || '';
         return;
       }
@@ -338,33 +350,43 @@ export const parseMetaDataFile = async (
     const projectId = v4();
     const team: any = {
       id: teamId,
-      name: pairData['team name'] || pairData['purposer'] || '',
+      name:
+        pairData[USED_STRINGS.TEAM_NAME] ||
+        pairData[USED_STRINGS.PROPOSER] ||
+        '',
       members: teamMember,
       projects: [{ projectId, status: null }]
     };
 
     // extract the currency and amount from joint string
-    let [amount, currency] = pairData['total costs']
-      ? pairData['total costs'].split(' ')
-      : pairData['total cost']
-      ? pairData['total cost'].split(' ')
+    let [amount, currency] = pairData[USED_STRINGS.TOTAL_COSTS]
+      ? pairData[USED_STRINGS.TOTAL_COSTS].split(' ')
+      : pairData[USED_STRINGS.TOTAL_COST]
+      ? pairData[USED_STRINGS.TOTAL_COST].split(' ')
       : ['', ''];
-    currency = amount ? (amount.includes('$') ? 'usd' : currency) : '';
+    currency = amount
+      ? amount.includes('$')
+        ? USED_STRINGS.USD
+        : currency
+      : '';
     amount = amount
       ? amount.replace(/[$,]/g, '')
-      : pairData['total costs']
-      ? pairData['total cost']
+      : pairData[USED_STRINGS.TOTAL_COSTS]
+      ? pairData[USED_STRINGS.TOTAL_COST]
       : '';
 
     const amountNum = Number(amount);
     if (
-      (amountNum && currency !== 'btc' && Number(pairData['level']) > 3) ||
-      !Number(pairData['level'])
+      (amountNum &&
+        currency !== USED_STRINGS.BTC &&
+        Number(pairData[USED_STRINGS.LEVEL]) > 3) ||
+      !Number(pairData[USED_STRINGS.LEVEL])
     ) {
-      if (amountNum <= 10000) pairData['level'] = '1';
-      else if (amountNum <= 50000) pairData['level'] = '2';
-      else if (amountNum > 50000) pairData['level'] = '3';
-      else pairData['level'] = '';
+      if (amountNum <= BUDGETS.L1) pairData[USED_STRINGS.LEVEL] = LEVELS.L1;
+      else if (amountNum <= BUDGETS.L2)
+        pairData[USED_STRINGS.LEVEL] = LEVELS.L2;
+      else if (amountNum > BUDGETS.L2) pairData[USED_STRINGS.LEVEL] = LEVELS.L3;
+      else pairData[USED_STRINGS.LEVEL] = '';
     }
 
     const project: any = {
@@ -372,21 +394,24 @@ export const parseMetaDataFile = async (
       user_github_id: null,
       start_date: mergedPullRequests[mdDetails?.name?.toLowerCase()]?.mergedAt,
       file_name: mdDetails?.name?.toLowerCase(),
-      payment_details: pairData['payment address'],
+      payment_details: pairData[USED_STRINGS.PAYMENT_ADDRESS],
       md_content: res?.data,
       md_link: mdDetails?.download_url,
-      project_name: pairData['project name']
-        ? pairData['project name'].toLowerCase()
+      project_name: pairData[USED_STRINGS.PROJECT_NAME]
+        ? pairData[USED_STRINGS.PROJECT_NAME].toLowerCase()
         : '',
       status: null,
       total_cost: { amount, currency },
-      total_duration: pairData['total estimated duration'] || '',
+      total_duration: pairData[USED_STRINGS.TOTAL_ESTIMATED_DURATION] || '',
       team_id: teamId,
-      level: pairData['level'],
+      level: pairData[USED_STRINGS.LEVEL],
       html_url: mdDetails?.html_url,
       legal_structure: {
-        registered_address: pairData['registered address'] || '',
-        registered_legal_entity: pairData['registered legal entity'] || ''
+        registered_address:
+          pairData[`${USED_STRINGS.REGISTERED} ${USED_STRINGS.ADDRESS}`] || '',
+        registered_legal_entity:
+          pairData[`${USED_STRINGS.REGISTERED} ${USED_STRINGS.LEGAL_ENTITY}`] ||
+          ''
       },
       totalMilestones: milestones.length,
       milestones: []
@@ -394,7 +419,7 @@ export const parseMetaDataFile = async (
 
     return { project, team, milestones };
   } catch (err) {
-    log.red('Error while parsing the metadata files: ', err);
+    log.red(`${ERROR_MESSAGES.ERROR_WHILE_PARSING_METADATA_FILE}`, err);
     return { project: null, team: null, milestones: null };
   }
 };

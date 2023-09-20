@@ -7,6 +7,55 @@ export const DATA_MODELS = {
   Milestone: 'Milestone'
 };
 
+export const PAGE_LIMIT = 100;
+export const GRANT_REPO_PATH = '/repos/w3f/Grants-Program';
+export const PULLS = '/pulls';
+
+export const ORDERS = {
+  DESC: 'desc',
+  ASEC: 'asec'
+};
+
+export const USED_STRINGS = {
+  TEAM_MEMBERS: 'Team members',
+  CONTACT: 'Contact',
+  TEAM_WEBSITE: 'Team Website',
+  MILESTONE: 'Milestone',
+  ESTIMATED_DURATION: 'estimated duration',
+  FTE: 'fte',
+  COSTS: 'costs',
+  COST: 'cost',
+  PROJECT_NAME: 'project name',
+  LEVEL: 'level',
+  TEAM_NAME: 'team name',
+  PROPOSER: 'proposer',
+  TOTAL_COSTS: 'total costs',
+  TOTAL_COST: 'total cost',
+  USD: 'usd',
+  BTC: 'btc',
+  PAYMENT_ADDRESS: 'payment address',
+  TOTAL_ESTIMATED_DURATION: 'total estimated duration',
+  REGISTERED: 'registered',
+  ADDRESS: 'address',
+  LEGAL_ENTITY: 'legal entity'
+};
+
+export const LEVELS = { L1: '1', L2: '2', L3: '3' };
+export const BUDGETS = { L1: 10000, L2: 5000 };
+
+export const HTTP_METHODS = {
+  GET: 'GET'
+};
+
+export const BRANCHS = {
+  MASTER: 'master'
+};
+
+export const PULL_REQUEST_TYPE = {
+  CLOSED: 'closed',
+  OPEN: 'open'
+};
+
 // Enviroments
 export const ENVIROMENTS = {
   DEVELOPMENT: 'development',
@@ -79,7 +128,8 @@ export const ERROR_MESSAGES = {
   ERROR_WHILE_READING_DATA_FROM_FILE:
     'Error while reading grant data from json file',
   ERROR_WHILE_SAVING_DATA_FROM_FILE:
-    'Error while saving grant data from json file'
+    'Error while saving grant data from json file',
+  ERROR_WHILE_PARSING_METADATA_FILE: 'Error while parsing the metadata files'
 };
 
 export const MONTHS = [
