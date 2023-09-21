@@ -11,6 +11,7 @@ export const DATA_MODELS = {
 export const PAGE_LIMIT = 100;
 export const GRANT_REPO_PATH = '/repos/w3f/Grants-Program';
 export const PULLS = '/pulls';
+export const GITHUB_URL = 'https://github.com';
 
 export const ORDERS = {
   DESC: 'desc',
@@ -38,7 +39,8 @@ export const USED_STRINGS = {
   TOTAL_ESTIMATED_DURATION: 'total estimated duration',
   REGISTERED: 'registered',
   ADDRESS: 'address',
-  LEGAL_ENTITY: 'legal entity'
+  LEGAL_ENTITY: 'legal entity',
+  TEAM_CODE_REPOS: 'Team Code Repos'
 };
 
 export const LEVELS = { L1: '1', L2: '2', L3: '3' };

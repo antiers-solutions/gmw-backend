@@ -15,7 +15,8 @@ import {
   STATUS,
   USED_STRINGS,
   LEVELS,
-  BUDGETS
+  BUDGETS,
+  GITHUB_URL
 } from '../constants';
 import { v4 } from 'uuid';
 import { log } from '../utils/helper.utils';
@@ -50,7 +51,7 @@ const reformMDContent = (mdContent: string) => {
 };
 
 // is used to parse a table in an .md file into a JSON object
-const parseMarkdownTable = (tableText) => {
+const parseMarkdownTable = (tableText: string) => {
   const lines = tableText.trim().split('\n');
   const headers = lines[0]
     .trim()
@@ -753,10 +754,12 @@ export const parseMetaDataFile = async (
 
     const teamCodeRepos = [];
     //Exterecting Teams Code Repos Urls
-    const teamCodeRepoIndex = splitDataArray.indexOf('Team Code Repos');
+    const teamCodeRepoIndex = splitDataArray.indexOf(
+      USED_STRINGS.TEAM_CODE_REPOS
+    );
     for (let i = teamCodeRepoIndex + 1; i < splitDataArray.length; i++) {
       const element = splitDataArray[i];
-      if (element.includes('https://github.com')) teamCodeRepos.push(element);
+      if (element.includes(GITHUB_URL)) teamCodeRepos.push(element);
       else break;
     }
 
@@ -764,10 +767,13 @@ export const parseMetaDataFile = async (
       id: proposalId,
       repos: teamCodeRepos,
       md_link: mdDetails?.download_url,
-      proposal_name: pairData['project name']
-        ? pairData['project name'].toLowerCase()
+      proposal_name: pairData[USED_STRINGS.PROJECT_NAME]
+        ? pairData[USED_STRINGS.PROJECT_NAME].toLowerCase()
         : '',
-      team_name: pairData['team name'] || pairData['purposer'] || ''
+      team_name:
+        pairData[USED_STRINGS.TEAM_NAME] ||
+        pairData[USED_STRINGS.PROPOSER] ||
+        ''
     };
 
     return { project, team, milestones, proposal };
