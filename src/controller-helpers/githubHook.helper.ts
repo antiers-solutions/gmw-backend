@@ -94,9 +94,6 @@ class GithubHookHelper {
           //   );
           // }
           if (requestBody.action === 'review_requested') {
-            console.log('pull_request?.html_url  ', pull_request?.html_url);
-            console.log('review_requested  ', pull_request.requested_reviewers);
-
             const reviewers = pull_request.requested_reviewers.map(
               (review: any) => ({
                 reviewer_user_name: review?.login,
@@ -104,7 +101,6 @@ class GithubHookHelper {
                 reviewer_avatar_url: review?.avatar_url || ''
               })
             );
-            console.log('review_requested  ', reviewers);
 
             // const dataRes: any = await MongoDataHelper.findAndQueryData(
             //   DATA_MODELS.Proposal,
@@ -117,8 +113,6 @@ class GithubHookHelper {
               { reviewers }
             );
           } else {
-            console.log('pull_request :: ', pull_request);
-
             const responseData: any = await axios.get(
               `${element?.contents_url}`
             );
@@ -131,6 +125,7 @@ class GithubHookHelper {
               git_user_name: data?.login || '',
               git_avatar_url: data?.avatar_url || ''
             }));
+
             // save the purposal data
             const dataToSave: any = {
               assignees,
