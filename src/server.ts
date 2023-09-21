@@ -13,7 +13,7 @@ import GraphController from './controllers/graph.controller';
 import loadInitialGrantsData from './helpers/octokit.helper';
 import { loadDataFromJsonFile } from './helpers/jsondata.helper';
 import ProjectController from './controllers/projects.controller';
-import ProposalContoller from './controllers/proposal.controller';
+import ProposalController from './controllers/proposal.controller';
 import MilestoneController from './controllers/milestone.controller';
 import GithubHookController from './controllers/githubHook.controller';
 import DynamicCardsController from './controllers/dynamicCards.controller';
@@ -27,8 +27,8 @@ import MilestoneProposalsController from './controllers/milestone-proposals.cont
         new UserController(),
         new TeamsController(),
         new GraphController(),
-        new ProposalContoller(),
         new ProjectController(),
+        new ProposalController(),
         new MilestoneController(),
         new GithubHookController(),
         new DynamicCardsController(),
