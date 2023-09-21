@@ -11,7 +11,13 @@ export const DATA_MODELS = {
 export const PAGE_LIMIT = 100;
 export const GRANT_REPO_PATH = '/repos/w3f/Grants-Program';
 export const PULLS = '/pulls';
+export const REVIEWS_PATH = '/reviews';
+export const FILES_PATH = '/files';
 export const GITHUB_URL = 'https://github.com';
+export const REVIEWS_STATUS = {
+  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+  APPROVED: 'APPROVED'
+};
 
 export const ORDERS = {
   DESC: 'desc',
@@ -133,7 +139,10 @@ export const ERROR_MESSAGES = {
     'Error while reading grant data from json file',
   ERROR_WHILE_SAVING_DATA_FROM_FILE:
     'Error while saving grant data from json file',
-  ERROR_WHILE_PARSING_METADATA_FILE: 'Error while parsing the metadata files'
+  ERROR_WHILE_PARSING_METADATA_FILE: 'Error while parsing the metadata files',
+  MONGODB_CONNECTION: 'Unable to connect to mongodb server',
+  REDIS_CONNECTION: 'Unable to connect to redis server',
+  ENVIROMENT_VARS_LOAD: 'Env vars not loaded correctly'
 };
 
 export const MONTHS = [

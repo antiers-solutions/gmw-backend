@@ -16,7 +16,10 @@ import {
   USED_STRINGS,
   LEVELS,
   BUDGETS,
-  GITHUB_URL
+  GITHUB_URL,
+  REVIEWS_PATH,
+  REVIEWS_STATUS,
+  FILES_PATH
 } from '../constants';
 import { v4 } from 'uuid';
 import { log } from '../utils/helper.utils';
@@ -27,7 +30,7 @@ import { log } from '../utils/helper.utils';
  * @returns
  */
 
-function removeDuplicateObjects(arr) {
+function removeDuplicateObjects(arr: any[]) {
   const uniqueArray = [];
   const seenObjects = new Set();
 
@@ -76,18 +79,23 @@ const parseMarkdownTable = (tableText: string) => {
   return rows;
 };
 
+/**
+ * get and load milestone open pull requests
+ * @returns
+ */
 export const getMilestoneOpenPullRequests = async () => {
   try {
-    log.green('This is the pull check section');
+    log.green('Loading milestone open pull requests');
 
     const milstonePurposals: any[] = [];
+    const pullRequestUrl = `${HTTP_METHODS.GET} ${GRANT_REPO_PATH}${PULLS}`;
 
     // get all open pull requests for the milstones/delivery section
     const openPullRequetsMilestones = await octoConnectionHelper.octoRequest(
-      'GET /repos/w3f/Grant-Milestone-Delivery/pulls',
+      pullRequestUrl,
       {
-        state: 'open',
-        per_page: 100
+        state: PULL_REQUEST_TYPE.OPEN,
+        per_page: PAGE_LIMIT
       }
     );
 
@@ -103,18 +111,19 @@ export const getMilestoneOpenPullRequests = async () => {
       };
 
       const reviews = await octoConnectionHelper.octoRequest(
-        `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/reviews`,
+        `${pullRequestUrl}/${item.number}${REVIEWS_PATH}`,
         {
-          state: 'open',
-          per_page: 100
+          state: PULL_REQUEST_TYPE.OPEN,
+          per_page: PAGE_LIMIT
         }
       );
 
+      // get the reviewer's details and store them in array
       const reviewers = reviews.data
         .filter((review: any) => {
           return (
-            review?.state === 'CHANGES_REQUESTED' ||
-            review?.state === 'APPROVED'
+            review?.state === REVIEWS_STATUS.CHANGES_REQUESTED ||
+            review?.state === REVIEWS_STATUS.APPROVED
           );
         })
         .map((review: any) => {
@@ -144,9 +153,9 @@ export const getMilestoneOpenPullRequests = async () => {
       // get the file data for pull request using the pull request number
       const MilestonefileDetailsResponse =
         await octoConnectionHelper.octoRequest(
-          `GET /repos/w3f/Grant-Milestone-Delivery/pulls/${item.number}/files`,
+          `${pullRequestUrl}/${item.number}${FILES_PATH}`,
           {
-            state: 'open'
+            state: PULL_REQUEST_TYPE.OPEN
           }
         );
 
@@ -160,11 +169,11 @@ export const getMilestoneOpenPullRequests = async () => {
       const projectLink = res.data
         .split('\n')
         .filter(
-          (item: any) =>
+          (item: string) =>
             (item.startsWith('* **') || item.startsWith('- **')) &&
             item.includes(':**')
         )
-        .map((item: any) =>
+        .map((item: string) =>
           item
             .replace('* **Application Document:** ', '')
             .replace('- **Application Document:** ', '')
@@ -173,7 +182,7 @@ export const getMilestoneOpenPullRequests = async () => {
             .replace(/\[[A-za-z0-9 -_&$]*\]/g, '')
             .trim()
         )
-        .find((item) => item.startsWith('https://'));
+        .find((item: string) => item.startsWith('https://'));
 
       const tableRegex = /\|(.+)\|\s*\n\|(.+)\|/s;
       const match = res.data.match(tableRegex);
@@ -184,8 +193,8 @@ export const getMilestoneOpenPullRequests = async () => {
         const repo = tableData
           .filter((item) => {
             return (
-              item?.Deliverable?.includes('https://github.com') ||
-              item?.Link?.includes('https://github.com')
+              item?.Deliverable?.includes(GITHUB_URL) ||
+              item?.Link?.includes(GITHUB_URL)
             );
           })
           .map((item) => {
@@ -218,7 +227,8 @@ export const getMilestoneOpenPullRequests = async () => {
           assignee_details: assigneeDetails || ''
         };
 
-        console.log(milestoneApplication, 'applications');
+        // to be remove
+        log.log(milestoneApplication, 'applications');
         milstonePurposals.push(milestoneApplication);
       }
     }
@@ -289,7 +299,7 @@ const getPullRequestDetails = async () => {
         );
 
         const approvals = reviwers?.data?.filter(
-          (reviewer: any) => reviewer.state === 'APPROVED'
+          (reviewer: any) => reviewer.state === REVIEWS_STATUS.APPROVED
         ).length;
 
         // continue the next iteration if the status of file is not added
@@ -357,13 +367,16 @@ const openPullRequestDetails = async () => {
   try {
     let page = 1;
     const purposals: any[] = [];
+    const grantRepoPullsPath = `${HTTP_METHODS.GET} ${
+      process.env.GITHUB_REPO_PATH || GRANT_REPO_PATH
+    }${PULLS}`;
 
     for (;;) {
       const pullRequestsResponse = await octoConnectionHelper.octoRequest(
-        'GET /repos/w3f/Grants-Program/pulls',
+        grantRepoPullsPath,
         {
-          state: 'open',
-          base: 'master',
+          state: PULL_REQUEST_TYPE.OPEN,
+          base: BRANCHS.MASTER,
           per_page: PAGE_LIMIT,
           page
         }
@@ -374,16 +387,13 @@ const openPullRequestDetails = async () => {
 
       // get the pull request file data using the pull request number
       for (const item of pullRequests) {
-        const repoPath =
-          process.env.GITHUB_REPO_PATH || '/repos/w3f/Grants-Program/pulls';
-
         // get the file data for pull request using the pull request number
         const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-          `GET ${repoPath}/${item.number}/files`,
+          `${grantRepoPullsPath}/${item.number}${FILES_PATH}`,
           {
-            state: 'open',
-            base: 'master',
-            direction: 'desc',
+            state: PULL_REQUEST_TYPE.OPEN,
+            base: BRANCHS.MASTER,
+            direction: ORDERS.DESC,
             head: `w3f:${''}`
           }
         );
@@ -392,18 +402,19 @@ const openPullRequestDetails = async () => {
 
         // get the reviews details
         const reviews = await octoConnectionHelper.octoRequest(
-          `GET ${repoPath}/${item.number}/reviews`,
+          `${grantRepoPullsPath}/${item.number}${REVIEWS_PATH}`,
           {
-            state: 'open',
-            base: 'master',
-            direction: 'desc',
+            state: PULL_REQUEST_TYPE.OPEN,
+            base: BRANCHS.MASTER,
+            direction: ORDERS.DESC,
             head: `w3f:${''}`
           }
         );
         const approvals = reviews?.data
           ?.filter(
             (reviewer: any) =>
-              reviewer.state === 'APPROVED' || 'CHANGES_REQUESTED'
+              reviewer.state === REVIEWS_STATUS.APPROVED ||
+              reviewer.state === REVIEWS_STATUS.CHANGES_REQUESTED
           )
           .map((review: any) => ({
             reviewer_user_name: review?.user?.login,

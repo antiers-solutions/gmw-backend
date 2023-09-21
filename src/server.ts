@@ -2,7 +2,7 @@ import * as config from './config';
 const isLoaded = config.loadEnvs();
 
 import App from './app';
-import { DATA_MODELS } from './constants';
+import { DATA_MODELS, ERROR_MESSAGES } from './constants';
 import { log } from './utils/helper.utils';
 import redisHelper from './helpers/redis.helper';
 import dbConnectionHandler from './mongoDB/connection';
@@ -37,11 +37,11 @@ import MilestoneProposalsController from './controllers/milestone-proposals.cont
 
       // connect to the mongodb server
       const isDBconnected = await dbConnectionHandler.createDBConnection();
-      if (!isDBconnected) throw new Error('Unable to connect mongodb');
+      if (!isDBconnected) throw new Error(ERROR_MESSAGES.MONGODB_CONNECTION);
 
       // connect to the redis server
       const isRedisConnected = await redisHelper.connectRedis();
-      if (!isRedisConnected) throw new Error('Unable to connect redis');
+      if (!isRedisConnected) throw new Error(ERROR_MESSAGES.REDIS_CONNECTION);
 
       //check if there is already data loaded inside mongo
       const projectCount = await mongoDataHelper.getCount(DATA_MODELS.Project);
@@ -56,7 +56,7 @@ import MilestoneProposalsController from './controllers/milestone-proposals.cont
 
       // bind the port and listen for requests
       app.listen();
-    } else throw new Error("Env's not loaded correctly");
+    } else throw new Error(ERROR_MESSAGES.ENVIROMENT_VARS_LOAD);
   } catch (err) {
     log.red('Error while starting the service: ', err.message);
   }
