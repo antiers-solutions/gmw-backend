@@ -6,7 +6,6 @@ import {
   SORT_NAME,
   STATUS_CODES
 } from '../constants';
-mongoDataHelper;
 
 class ProjectHelper {
   static instance: ProjectHelper = null;

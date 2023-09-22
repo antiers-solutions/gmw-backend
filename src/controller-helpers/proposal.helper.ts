@@ -1,6 +1,11 @@
 import mongoDataHelper from '../helpers/mongo.data.helper';
 import { ESResponse } from '../interfaces/responses.interface';
-import { DATA_MODELS, RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
+import {
+  DATA_MODELS,
+  RESPONSE_MESSAGES,
+  STATUS,
+  STATUS_CODES
+} from '../constants';
 
 class ProposalHelper {
   static instance: ProposalHelper = null;
@@ -33,6 +38,54 @@ class ProposalHelper {
         const proposals = await mongoDataHelper.findAndQueryDataWithPagination(
           DATA_MODELS.Proposal,
           {},
+          pageNumber,
+          pageSize
+        );
+
+        if (!proposals.length || !totalCount) {
+          return {
+            message: RESPONSE_MESSAGES.NOT_FOUND,
+            status: STATUS_CODES.BADREQUEST
+          };
+        }
+
+        return {
+          data: { proposals, totalCount },
+          error: false
+        };
+      } else {
+        return {
+          message: RESPONSE_MESSAGES.Max_LIMIT,
+          status: STATUS_CODES.UNPROCESSABLE
+        };
+      }
+    } catch (error) {
+      console.log('error while getAllProposalData ', error.message);
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
+    }
+  };
+
+  /**
+   * handler gets all the proposals data from the database
+   * @param pageNumber
+   * @param pageSize
+   * @returns
+   */
+  getOpenProposalData = async (pageNumber: number, pageSize: number) => {
+    try {
+      const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Proposal);
+
+      if (pageSize <= 40) {
+        // getting data of all the proposals with filtered column and pagination
+
+        const proposals = await mongoDataHelper.findAndQueryDataWithPagination(
+          DATA_MODELS.Proposal,
+          { status: STATUS.OPEN },
           pageNumber,
           pageSize
         );

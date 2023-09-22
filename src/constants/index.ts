@@ -8,6 +8,11 @@ export const DATA_MODELS = {
   MilestoneProposal: 'MilestoneProposal'
 };
 
+export const PROJECT_STATUS = {
+  Active: 'active',
+  Complete: 'complete'
+};
+
 export const PAGE_LIMIT = 100;
 export const GRANT_REPO_PATH = '/repos/w3f/Grants-Program';
 export const PULLS = '/pulls';

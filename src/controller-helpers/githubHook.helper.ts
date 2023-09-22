@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { STATUS } from '../constants';
+import { PROJECT_STATUS, STATUS } from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
 import { parseMetaDataFile } from '../helpers/octokit.helper';
@@ -25,8 +25,6 @@ class GithubHookHelper {
       const { pull_request } = requestBody;
       const { url } = pull_request;
 
-      console.log('requestedReviewers: ', pull_request.requested_reviewers);
-
       const response: any = await axios.get(`${url}/files`);
       const element = response?.data[0];
 
@@ -34,12 +32,12 @@ class GithubHookHelper {
         const fileName = element.filename.split('/')[1];
 
         //check if data is for merged request
-        if (pull_request?.merged) {
+        if (pull_request?.merged && requestBody.action === 'closed') {
           console.log('saving merged pull request data into Db..');
 
           const dataRes: any = await MongoDataHelper.findAndQueryData(
             DATA_MODELS.Proposal,
-            { file_name: fileName }
+            { pr_link: pull_request.html_url }
           );
 
           if (dataRes.length > 0) {
@@ -47,26 +45,23 @@ class GithubHookHelper {
               dataRes[0]?.extrected_proposal_data
             );
 
-            project.merged_at = pull_request.merged_at;
+            project.start_date = pull_request.merged_at;
+            project.status = PROJECT_STATUS.Active;
+            project.user_github_details = {
+              git_user_id: pull_request?.id || '',
+              git_user_name: pull_request?.login || '',
+              git_avatar_url: pull_request?.avatar_url || ''
+            };
 
-            //save or update the saved Project data
-            await MongoDataHelper.findOneAndUpdate(
-              DATA_MODELS.Project,
-              { file_name: project.file_name },
-              project
-            );
+            await MongoDataHelper.savaData(DATA_MODELS.Project, project);
 
             //save or update the saved Team data
-            await MongoDataHelper.findOneAndUpdate(
-              DATA_MODELS.Team,
-              { name: team.name },
-              team
-            );
+            await MongoDataHelper.savaData(DATA_MODELS.Team, team);
 
             // change status of project
-            await MongoDataHelper.findOneAndUpdate(
+            await MongoDataHelper.updateData(
               DATA_MODELS.Proposal,
-              { file_name: fileName },
+              { pr_link: pull_request.html_url },
               { status: STATUS.ACCEPTED }
             );
 
@@ -77,95 +72,126 @@ class GithubHookHelper {
           } else {
             throw new Error('Proposal in not present in the collection');
           }
-        } else {
-          console.log('saving pull request data into Db..');
+        } else if (
+          requestBody.action === 'review_requested' ||
+          requestBody.action === 'review_request_removed'
+        ) {
+          console.log('reviewer added or removed....');
+          const reviewers = pull_request.requested_reviewers.map(
+            (review: any) => ({
+              reviewer_user_name: review?.login,
+              reviewer_id: review?.id,
+              reviewer_avatar_url: review?.avatar_url || ''
+            })
+          );
 
-          // if (event === 'pull_request_review') {
-          //   const dataRes: any = await MongoDataHelper.findAndQueryData(
-          //     DATA_MODELS.Proposal,
-          //     { pr_link: pull_request?.html_url }
-          //   );
-          //   dataRes[0].approvals = dataRes[0].approvals + 1;
+          await MongoDataHelper.updateData(
+            DATA_MODELS.Proposal,
+            { pr_link: pull_request?.html_url },
+            { reviewers }
+          );
+        } else if (requestBody.action === 'opened') {
+          console.log('new Pull request ..... ');
+          const responseData: any = await axios.get(`${element?.contents_url}`);
+          let dataRes = await parseMetaDataFile(responseData?.data, {
+            [fileName]: { mergedAt: null }
+          });
 
-          //   await MongoDataHelper.updateData(
-          //     DATA_MODELS.Proposal,
-          //     { pr_link: pull_request?.html_url },
-          //     { approvals: dataRes[0].approvals }
-          //   );
-          // }
-          if (requestBody.action === 'review_requested') {
-            console.log('pull_request?.html_url  ', pull_request?.html_url);
-            console.log('review_requested  ', pull_request.requested_reviewers);
+          const assignees = pull_request?.assignees.map((data: any) => ({
+            git_user_id: data?.id || '',
+            git_user_name: data?.login || '',
+            git_avatar_url: data?.avatar_url || ''
+          }));
 
-            const reviewers = pull_request.requested_reviewers.map(
-              (review: any) => ({
-                reviewer_user_name: review?.login,
-                reviewer_id: review?.id,
-                reviewer_avatar_url: review?.avatar_url || ''
-              })
-            );
-            console.log('review_requested  ', reviewers);
+          // save the purposal data
+          const dataToSave: any = {
+            assignees,
+            status: STATUS.OPEN,
+            id: dataRes?.proposal?.id,
+            pr_link: pull_request?.html_url,
+            updated_at: pull_request?.updated_at,
+            created_at: pull_request?.created_at,
+            team_name: dataRes?.proposal?.team_name,
+            reviewers: pull_request.requested_reviewers,
+            proposal_name: dataRes?.proposal?.proposal_name,
+            file_name: dataRes?.project?.file_name,
+            extrected_proposal_data: JSON.stringify(dataRes),
+            md_link: dataRes?.proposal?.md_link,
+            repos: dataRes?.proposal?.repos,
+            user_github_details: {
+              git_user_id: pull_request?.id || '',
+              git_user_name: pull_request?.login || '',
+              git_avatar_url: pull_request?.avatar_url || ''
+            }
+          };
 
-            // const dataRes: any = await MongoDataHelper.findAndQueryData(
-            //   DATA_MODELS.Proposal,
-            //   { pr_link: pull_request?.html_url }
-            // );
+          await MongoDataHelper.savaData(DATA_MODELS.Proposal, dataToSave);
+          dataRes = null;
 
-            await MongoDataHelper.updateData(
-              DATA_MODELS.Proposal,
-              { pr_link: pull_request?.html_url },
-              { reviewers }
-            );
-          } else {
-            console.log('pull_request :: ', pull_request);
+          return {
+            error: false,
+            data: null
+          };
+        } else if (
+          requestBody.action === 'synchronize' ||
+          requestBody.action === 'edited'
+        ) {
+          console.log('new Pull request edited or synchronized ..... ');
 
-            const responseData: any = await axios.get(
-              `${element?.contents_url}`
-            );
+          const responseData: any = await axios.get(`${element?.contents_url}`);
+          const dataRes = await parseMetaDataFile(responseData?.data, {
+            [fileName]: { mergedAt: null }
+          });
 
-            let dataRes = await parseMetaDataFile(responseData?.data, {
-              [fileName]: { mergedAt: null }
-            });
+          const dataToUpdate = {
+            repos: dataRes?.proposal?.repos,
+            updated_at: pull_request?.updated_at,
+            team_name: dataRes?.proposal?.team_name,
+            proposal_name: dataRes?.proposal?.proposal_name,
+            extrected_proposal_data: JSON.stringify(dataRes)
+          };
 
-            const assignees = pull_request?.assignees.map((data: any) => ({
-              git_user_id: data?.id || '',
-              git_user_name: data?.login || '',
-              git_avatar_url: data?.avatar_url || ''
-            }));
-            // save the purposal data
-            const dataToSave: any = {
-              assignees,
-              status: STATUS.OPEN,
-              id: dataRes?.proposal?.id,
-              pr_link: pull_request?.html_url,
-              updated_at: pull_request?.updated_at,
-              created_at: pull_request?.created_at,
-              team_name: dataRes?.proposal?.team_name,
-              reviewers: pull_request.requested_reviewers,
-              proposal_name: dataRes?.proposal?.proposal_name,
-              file_name: dataRes?.project?.file_name,
-              extrected_proposal_data: JSON.stringify(dataRes),
-              md_link: dataRes?.proposal?.md_link,
-              repos: dataRes?.proposal?.repos,
-              user_github_details: {
-                git_user_id: pull_request?.id || '',
-                git_user_name: pull_request?.login || '',
-                git_avatar_url: pull_request?.avatar_url || ''
-              }
-            };
+          await MongoDataHelper.updateData(
+            DATA_MODELS.Proposal,
+            { pr_link: pull_request?.html_url },
+            dataToUpdate
+          );
+        } else if (
+          requestBody.action === 'assigned' ||
+          requestBody.action === 'unassigned'
+        ) {
+          console.log('assignees  added or removed ... ');
 
-            await MongoDataHelper.findOneAndUpdate(
-              DATA_MODELS.Proposal,
-              { pr_link: dataToSave.pr_link },
-              dataToSave
-            );
-            dataRes = null;
+          const assignees = pull_request?.assignees.map((data: any) => ({
+            git_user_id: data?.id || '',
+            git_user_name: data?.login || '',
+            git_avatar_url: data?.avatar_url || ''
+          }));
 
-            return {
-              error: false,
-              data: null
-            };
-          }
+          await MongoDataHelper.updateData(
+            DATA_MODELS.Proposal,
+            { pr_link: pull_request?.html_url },
+            { assignees }
+          );
+        } else if (requestBody.action === 'reopened') {
+          console.log('Pull request Reopened ... ');
+
+          await MongoDataHelper.updateData(
+            DATA_MODELS.Proposal,
+            { pr_link: pull_request?.html_url },
+            { status: STATUS.OPEN }
+          );
+        } else if (
+          requestBody.action === 'closed' &&
+          pull_request.merged === false
+        ) {
+          console.log('Pull request Closed ... ');
+
+          await MongoDataHelper.updateData(
+            DATA_MODELS.Proposal,
+            { pr_link: pull_request?.html_url },
+            { status: STATUS.REJECTED }
+          );
         }
       } else {
         throw new Error('Changes are not in the applications/ directory');
