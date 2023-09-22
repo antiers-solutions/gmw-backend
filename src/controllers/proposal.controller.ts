@@ -41,6 +41,7 @@ class ProposalContoller implements Controller {
   };
 
   getProposalById = async (req: Request, res: Response) => {
+    console.log('entered');
     const searchID = req.params?.proposalId;
     const getsearchedByID = await proposalHelper.getProposalDataById(searchID);
     sendResponse(res, getsearchedByID);

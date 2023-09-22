@@ -10,7 +10,9 @@ import mongoDataHelper from './helpers/mongo.data.helper';
 import UserController from './controllers/user.controller';
 import TeamsController from './controllers/teams.controller';
 import GraphController from './controllers/graph.controller';
-import loadInitialGrantsData from './helpers/octokit.helper';
+import loadInitialGrantsData, {
+  getMilestoneOpenPullRequests
+} from './helpers/octokit.helper';
 import { loadDataFromJsonFile } from './helpers/jsondata.helper';
 import ProjectController from './controllers/projects.controller';
 import ProposalController from './controllers/proposal.controller';
@@ -18,6 +20,7 @@ import MilestoneController from './controllers/milestone.controller';
 import GithubHookController from './controllers/githubHook.controller';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import MilestoneProposalsController from './controllers/milestone-proposals.controller';
+import MilestoneGithubHookController from './controllers/milestone-githubHook.controller';
 
 // start the service
 (async () => {
@@ -32,7 +35,8 @@ import MilestoneProposalsController from './controllers/milestone-proposals.cont
         new MilestoneController(),
         new GithubHookController(),
         new DynamicCardsController(),
-        new MilestoneProposalsController()
+        new MilestoneProposalsController(),
+        new MilestoneGithubHookController()
       ]);
 
       // connect to the mongodb server
