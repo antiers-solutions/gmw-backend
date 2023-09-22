@@ -18,6 +18,11 @@ class ProposalContoller implements Controller {
   initRoutes = () => {
     this.router.get(`${this.path}/get-all`, sessionCheck, this.getAllProposals);
     this.router.get(
+      `${this.path}/get-open-proposals`,
+      sessionCheck,
+      this.getOpenProposals
+    );
+    this.router.get(
       `${this.path}/get-by-id/:proposalId`,
       sessionCheck,
       this.getProposalById
@@ -34,6 +39,17 @@ class ProposalContoller implements Controller {
     const pageNo = Number(req.query.pageNo) || 1;
 
     const getAllProject = await proposalHelper.getAllProposalData(
+      pageNo,
+      pageLimit
+    );
+    sendResponse(res, getAllProject);
+  };
+
+  getOpenProposals = async (req: Request, res: Response) => {
+    const pageLimit = Number(req.query.pageLimit) || 10;
+    const pageNo = Number(req.query.pageNo) || 1;
+
+    const getAllProject = await proposalHelper.getOpenProposalData(
       pageNo,
       pageLimit
     );

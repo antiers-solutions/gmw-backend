@@ -365,6 +365,105 @@ mocha.describe('GET /api/project/filter', async () => {
   });
 });
 
+// ************************Proposal Related Tests******************************
+
+mocha.describe('GET /api/proposal/get-all', async () => {
+  it('It should return all Proposal data', async () => {
+    const headers = {
+      'user-agent': 'js-client',
+      Cookie: `token=${authToken}`
+    };
+    const response = await request(app)
+      .get(`/api/project/get-all?pageLimit=10&pageNo=1`)
+      .set(headers);
+
+    expect(response?.status).to.equal(200);
+    expect(Number(response?.body?.data?.totalCount)).to.be.an('number');
+    expect(response?.body?.data.projects).to.be.an('array');
+    projecIdForGet = response?.body?.data.projects[0].id;
+    projecNameForGet = response?.body?.data.projects[0].project_name;
+
+    response?.body?.data.projects.forEach((e: unknown) => {
+      expect(e).to.have.property('id');
+      expect(e).to.have.property('level');
+      expect(e).to.have.property('status');
+      expect(e).to.have.property('team_id');
+      expect(e).to.have.property('start_date');
+      expect(e).to.have.property('total_cost');
+      expect(e).to.have.property('milestones');
+      expect(e).to.have.property('project_name');
+      expect(e).to.have.property('total_duration');
+      expect(e).to.have.property('totalMilestones');
+    });
+  });
+});
+
+mocha.describe('GET /api/proposal/get-by-id/:proposalId', async () => {
+  it('It should return Proposal data by project-id', async () => {
+    const headers = {
+      'user-agent': 'js-client',
+      Cookie: `token=${authToken}`
+    };
+
+    const response = await request(app)
+      .get(`/api/project/get-by-id/${projecIdForGet}`)
+      .set(headers);
+
+    expect(response?.status).to.equal(200);
+    expect(response?.body?.data).to.be.an('array');
+    response?.body?.data.forEach((e: any) => {
+      expect(e).to.have.property('id');
+      expect(e).to.have.property('level');
+      expect(e).to.have.property('status');
+      expect(e).to.have.property('md_link');
+      expect(e).to.have.property('team_id');
+      expect(e).to.have.property('file_name');
+      expect(e).to.have.property('html_url');
+      expect(e).to.have.property('total_cost');
+      expect(e).to.have.property('milestones');
+      expect(e).to.have.property('md_content');
+      expect(e).to.have.property('start_date');
+      expect(e).to.have.property('project_name');
+      expect(e).to.have.property('total_duration');
+      expect(e).to.have.property('user_github_id');
+      expect(e).to.have.property('legal_structure');
+      expect(e).to.have.property('totalMilestones');
+      expect(e).to.have.property('payment_details');
+    });
+  });
+});
+
+mocha.describe('GET /api/project/search-by-name ', async () => {
+  it('Ir should return Project data by project-name', async () => {
+    const headers = {
+      'user-agent': 'js-client',
+      Cookie: `token=${authToken}`
+    };
+    const response = await request(app)
+      .get(`/api/project/search-by-name?searchedName=${projecNameForGet}`)
+      .set(headers);
+
+    // projectIdForUpdate = response?.body?.data[0].id;
+    expect(response?.status).to.equal(200);
+    expect(response?.body?.data).to.be.an('array');
+    response?.body?.data?.forEach((e: any) => {
+      expect(e).to.have.property('id');
+      expect(e).to.have.property('level');
+      expect(e).to.have.property('status');
+      expect(e).to.have.property('team_id');
+      expect(e).to.have.property('html_url');
+      expect(e).to.have.property('file_name');
+      expect(e).to.have.property('total_cost');
+      expect(e).to.have.property('milestones');
+      expect(e).to.have.property('start_date');
+      expect(e).to.have.property('project_name');
+      expect(e).to.have.property('total_duration');
+      expect(e).to.have.property('payment_details');
+      expect(e).to.have.property('totalMilestones');
+    });
+  });
+});
+
 //************************MileStone Related Tests******************************
 
 mocha.describe('GET /api/milestone/get-all', async () => {
