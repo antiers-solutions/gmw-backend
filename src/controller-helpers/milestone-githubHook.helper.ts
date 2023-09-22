@@ -27,7 +27,7 @@ class MilestoneGithubHookHelper {
     try {
       if (requestBody?.pull_request) {
         const { pull_request } = requestBody;
-        const repoPath = 'repos/shaurya-ATR940/Grants-Delivery-Repo/pulls';
+        const repoPath = `${process.env.GITHUB_REPO_DELIVERY_MY_TEST}`;
         // console.log(
         //   'this is the open pull request',
         //   requestBody?.pull_request,
@@ -212,14 +212,25 @@ class MilestoneGithubHookHelper {
 
           const projectId = projectsData[0]?.id;
 
+          // const milestoneMerged = {
+          //   id: v4(),
+          //   file_name: data[0]?.fileName,
+          //   user_github_id: null,
+          //   user_github_details: data[0]?.userDetails,
+          //   project_md_link: projectLink ? data[0]?.projectLink : '',
+          //   project_id: projectId,
+          //   md_content_url: data[0]?.mdContentUrl || '',
+          //   merged_at: pull_request?.merged_at || ''
+          // };
+
           const milestoneMerged = {
             id: v4(),
-            file_name: data[0]?.fileName,
+            file_name: fileName,
             user_github_id: null,
-            user_github_details: data[0]?.userDetails,
+            user_github_details: userDetails,
             project_md_link: projectLink ? data[0]?.projectLink : '',
             project_id: projectId,
-            md_content_url: data[0]?.mdContentUrl || '',
+            md_content_url: mdContentUrl || '',
             merged_at: pull_request?.merged_at || ''
           };
 
