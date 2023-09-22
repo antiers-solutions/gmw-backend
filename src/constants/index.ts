@@ -46,7 +46,10 @@ export const USED_STRINGS = {
   REGISTERED: 'registered',
   ADDRESS: 'address',
   LEGAL_ENTITY: 'legal entity',
-  TEAM_CODE_REPOS: 'Team Code Repos'
+  TEAM_CODE_REPOS: 'Team Code Repos',
+  DELIVERIES: 'deliveries',
+  APPLICATION: 'Application',
+  DOCUMENT: 'Document'
 };
 
 export const LEVELS = { L1: '1', L2: '2', L3: '3' };

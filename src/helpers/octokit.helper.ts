@@ -23,28 +23,41 @@ import {
 } from '../constants';
 import { v4 } from 'uuid';
 import { log } from '../utils/helper.utils';
+import { ReviewerDetails, GitHubReview } from 'interfaces/types';
+
+/**
+ * get the reviewer from the reviews
+ * @param reviewsArr reviewer array
+ * @returns
+ */
+function getReviewers(reviewsArr: GitHubReview[]) {
+  const uniqueReviewer = {};
+
+  const reviewers: ReviewerDetails[] = reviewsArr
+    .filter((review: GitHubReview) => {
+      const isAlreadyExist = uniqueReviewer[review.user?.id];
+      if (!isAlreadyExist) uniqueReviewer[review.user?.id] = !isAlreadyExist;
+      return (
+        review?.state === REVIEWS_STATUS.CHANGES_REQUESTED ||
+        (review?.state === REVIEWS_STATUS.APPROVED && !isAlreadyExist)
+      );
+    })
+    .map((review: GitHubReview) => {
+      return {
+        reviewer: review?.user?.login,
+        reviewer_id: review?.user?.id,
+        reviewer_avatar: review?.user?.avatar_url || ''
+      };
+    });
+
+  return reviewers;
+}
 
 /**
  * It extracts the metadata file data
  * @param mdContent
  * @returns
  */
-
-function removeDuplicateObjects(arr: any[]) {
-  const uniqueArray = [];
-  const seenObjects = new Set();
-
-  for (const obj of arr) {
-    const objString = JSON.stringify(obj);
-    if (!seenObjects.has(objString)) {
-      seenObjects.add(objString);
-      uniqueArray.push(obj);
-    }
-  }
-
-  return uniqueArray;
-}
-
 const reformMDContent = (mdContent: string) => {
   let fileData = '';
   for (const item of parsedMdFile(mdContent)) {
@@ -118,23 +131,8 @@ export const getMilestoneOpenPullRequests = async () => {
         }
       );
 
-      // get the reviewer's details and store them in array
-      const reviewers = reviews.data
-        .filter((review: any) => {
-          return (
-            review?.state === REVIEWS_STATUS.CHANGES_REQUESTED ||
-            review?.state === REVIEWS_STATUS.APPROVED
-          );
-        })
-        .map((review: any) => {
-          return {
-            reviewer: review?.user?.login,
-            reviewer_id: review?.user?.id,
-            reviewer_avatar: review?.user?.avatar_url || ''
-          };
-        });
-
-      const finalreviewers = removeDuplicateObjects(reviewers);
+      // reviewers for the current pull request
+      const finalreviewers = getReviewers(reviews.data);
 
       const createdAt = item?.created_at;
       const updatedAt = item?.updated_at;
@@ -160,7 +158,7 @@ export const getMilestoneOpenPullRequests = async () => {
         );
 
       const fileName = MilestonefileDetailsResponse?.data[0]?.filename
-        .replace('deliveries/', '')
+        .replace(USED_STRINGS.DELIVERIES + '/', '')
         .toLowerCase();
 
       // Extract and parse the table content from the Markdown content
@@ -175,8 +173,14 @@ export const getMilestoneOpenPullRequests = async () => {
         )
         .map((item: string) =>
           item
-            .replace('* **Application Document:** ', '')
-            .replace('- **Application Document:** ', '')
+            .replace(
+              `* **${USED_STRINGS.APPLICATION} ${USED_STRINGS.DOCUMENT}:** `,
+              ''
+            )
+            .replace(
+              `- **${USED_STRINGS.APPLICATION} ${USED_STRINGS.DOCUMENT}:** `,
+              ''
+            )
             .replace('(', '')
             .replace(')', '')
             .replace(/\[[A-za-z0-9 -_&$]*\]/g, '')
@@ -240,7 +244,7 @@ export const getMilestoneOpenPullRequests = async () => {
 };
 
 /**
- * It gets all the closed pull request data and parse it
+ * get all the closed pull request data and parse it
  * @returns
  */
 const getPullRequestDetails = async () => {
@@ -278,7 +282,7 @@ const getPullRequestDetails = async () => {
 
         // get the file data for pull request using the pull request number
         const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-          `${HTTP_METHODS.GET} ${grantRepoPullsPath}/${item.number}/files`,
+          `${HTTP_METHODS.GET} ${grantRepoPullsPath}/${item.number}${FILES_PATH}`,
           {
             state: PULL_REQUEST_TYPE.CLOSED,
             base: BRANCHS.MASTER,
@@ -289,7 +293,7 @@ const getPullRequestDetails = async () => {
 
         // get the reviwers details
         const reviwers = await octoConnectionHelper.octoRequest(
-          `${HTTP_METHODS.GET} ${grantRepoPullsPath}/${item.number}/reviews`,
+          `${HTTP_METHODS.GET} ${grantRepoPullsPath}/${item.number}${REVIEWS_PATH}`,
           {
             state: PULL_REQUEST_TYPE.CLOSED,
             base: BRANCHS.MASTER,
@@ -360,7 +364,7 @@ const getPullRequestDetails = async () => {
 };
 
 /**
- * It gets all the open pull request data and parse it
+ * get all the open pull request data and parse it
  * @returns
  */
 const openPullRequestDetails = async () => {
@@ -410,19 +414,9 @@ const openPullRequestDetails = async () => {
             head: `w3f:${''}`
           }
         );
-        const approvals = reviews?.data
-          ?.filter(
-            (reviewer: any) =>
-              reviewer.state === REVIEWS_STATUS.APPROVED ||
-              reviewer.state === REVIEWS_STATUS.CHANGES_REQUESTED
-          )
-          .map((review: any) => ({
-            reviewer_user_name: review?.user?.login,
-            reviewer_id: review?.user?.id,
-            reviewer_avatar_url: review?.user?.avatar_url || ''
-          }));
 
-        const finalreviewers = removeDuplicateObjects(approvals);
+        // reviewers for the current pull request
+        const finalreviewers = getReviewers(reviews?.data);
 
         const fileName = fileDetailsResponse?.data[0]?.filename
           .replace('applications/', '')
@@ -460,8 +454,6 @@ const openPullRequestDetails = async () => {
           extrected_proposal_data: JSON.stringify(parsedData)
         };
         purposals.push(proposalData);
-
-        console.log('proposalData : ', proposalData);
       }
       page++;
     }
