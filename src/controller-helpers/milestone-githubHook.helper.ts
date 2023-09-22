@@ -205,6 +205,8 @@ class MilestoneGithubHookHelper {
             { pr_link: prLink }
           );
 
+          console.log(data, 'this is the data');
+
           const projectsData = await mongoDataHelper.findAndQueryData(
             DATA_MODELS.Project,
             { file_name: data[0]?.application_name }
@@ -229,6 +231,8 @@ class MilestoneGithubHookHelper {
             user_github_id: null,
             user_github_details: userDetails,
             project_md_link: projectLink ? data[0]?.projectLink : '',
+            status: 'complete',
+            milestoneNo: milestoneLevel,
             project_id: projectId,
             md_content_url: mdContentUrl || '',
             merged_at: pull_request?.merged_at || ''
