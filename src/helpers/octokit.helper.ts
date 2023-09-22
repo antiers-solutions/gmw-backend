@@ -161,6 +161,13 @@ export const getMilestoneOpenPullRequests = async () => {
         .replace(USED_STRINGS.DELIVERIES + '/', '')
         .toLowerCase();
 
+      const regex = /(\d+)\.md$/;
+      const matches = fileName.match(regex) ? fileName.match(regex) : 0;
+      const milestoneLevel = matches[1] ? parseInt(matches[1]) : 0;
+
+      // this has the md content
+      const mdContentUrl = MilestonefileDetailsResponse?.data[0]?.raw_url;
+
       // Extract and parse the table content from the Markdown content
 
       const res = await axios.get(MilestonefileDetailsResponse.data[0].raw_url);
@@ -187,6 +194,12 @@ export const getMilestoneOpenPullRequests = async () => {
             .trim()
         )
         .find((item: string) => item.startsWith('https://'));
+
+      const parts = projectLink?.trim()?.length
+        ? projectLink?.split('/')
+        : null;
+
+      const applicationName = parts?.length ? parts[parts?.length - 1] : '';
 
       const tableRegex = /\|(.+)\|\s*\n\|(.+)\|/s;
       const match = res.data.match(tableRegex);
@@ -223,6 +236,9 @@ export const getMilestoneOpenPullRequests = async () => {
           file_name: fileName,
           user_github_details: userDetails,
           project_md_link: projectLink ? projectLink : '',
+          application_name: applicationName || '',
+          md_content_url: mdContentUrl,
+          milestone_level: Number(milestoneLevel),
           md_link: null,
           created_at: createdAt,
           updated_at: updatedAt,
@@ -473,6 +489,16 @@ const openPullRequestDetails = async () => {
 const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
+
+    // // this is the data for the open pull requests of the milestones repo
+    // const proposalMilestone1 = await getMilestoneOpenPullRequests();
+
+    // await mongoDataHelper.bulkSaveData(
+    //   DATA_MODELS.MilestoneProposal,
+    //   proposalMilestone1
+    // );
+
+    // return;
 
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(

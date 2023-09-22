@@ -122,6 +122,7 @@ class GithubHookHelper {
             const responseData: any = await axios.get(
               `${element?.contents_url}`
             );
+
             let dataRes = await parseMetaDataFile(responseData?.data, {
               [fileName]: { mergedAt: null }
             });

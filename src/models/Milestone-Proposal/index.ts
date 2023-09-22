@@ -8,6 +8,9 @@ export interface IMilestoneProposal extends Document {
   file_name: string;
   user_github_details: object[];
   project_md_link: string;
+  application_name: string;
+  md_content_url: string;
+  milestone_level: any;
   md_link: string;
   created_at: Date;
   updated_at: Date;
@@ -25,6 +28,9 @@ const milestoneProposalSchema: Schema<IMilestoneProposal> = new Schema({
   file_name: { type: String },
   user_github_details: { type: [Object] },
   project_md_link: { type: String },
+  application_name: { type: String },
+  md_content_url: { type: String },
+  milestone_level: { type: Schema.Types.Mixed },
   md_link: { type: String },
   created_at: { type: Date },
   updated_at: { type: Date },

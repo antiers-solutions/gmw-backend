@@ -5,8 +5,10 @@ export interface IMilestone extends Document {
   file_name: string;
   project_id: string;
   user_github_id: string;
+  user_github_details: [];
   project_md_link: string;
   md_content: string;
+  md_content_url: string;
   status: string;
   cost: string;
   milestoneNo: number;
@@ -18,8 +20,10 @@ const milestoneSchema: Schema<IMilestone> = new Schema({
   file_name: { type: String },
   project_id: { type: String },
   user_github_id: { type: String },
+  user_github_details: { type: [] },
   project_md_link: { type: String },
   md_content: { type: String },
+  md_content_url: { type: String },
   status: { type: String },
   cost: { type: String },
   milestoneNo: { type: Number },
