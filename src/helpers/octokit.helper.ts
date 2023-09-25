@@ -163,7 +163,7 @@ export const getMilestoneOpenPullRequests = async () => {
 
       const regex = /(\d+)\.md$/;
       const matches = fileName?.trim()?.length ? fileName.match(regex) : 0;
-      const milestoneLevel = matches[1] ? parseInt(matches[1]) : 0;
+      const milestoneLevel = matches?.length ? parseInt(matches[1]) : 0;
 
       // this has the md content
       const mdContentUrl = milestonefileDetailsResponse?.data[0]?.raw_url;
