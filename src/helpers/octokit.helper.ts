@@ -149,7 +149,7 @@ export const getMilestoneOpenPullRequests = async () => {
       }
 
       // get the file data for pull request using the pull request number
-      const MilestonefileDetailsResponse =
+      const milestonefileDetailsResponse =
         await octoConnectionHelper.octoRequest(
           `${pullRequestUrl}/${item.number}${FILES_PATH}`,
           {
@@ -157,20 +157,20 @@ export const getMilestoneOpenPullRequests = async () => {
           }
         );
 
-      const fileName = MilestonefileDetailsResponse?.data[0]?.filename
+      const fileName = milestonefileDetailsResponse?.data[0]?.filename
         .replace(USED_STRINGS.DELIVERIES + '/', '')
         .toLowerCase();
 
       const regex = /(\d+)\.md$/;
-      const matches = fileName.match(regex) ? fileName.match(regex) : 0;
+      const matches = fileName?.trim()?.length ? fileName.match(regex) : 0;
       const milestoneLevel = matches[1] ? parseInt(matches[1]) : 0;
 
       // this has the md content
-      const mdContentUrl = MilestonefileDetailsResponse?.data[0]?.raw_url;
+      const mdContentUrl = milestonefileDetailsResponse?.data[0]?.raw_url;
 
       // Extract and parse the table content from the Markdown content
 
-      const res = await axios.get(MilestonefileDetailsResponse.data[0].raw_url);
+      const res = await axios.get(milestonefileDetailsResponse.data[0].raw_url);
       const projectLink = res.data
         .split('\n')
         .filter(
@@ -248,7 +248,7 @@ export const getMilestoneOpenPullRequests = async () => {
         };
 
         // to be remove
-        log.log(milestoneApplication, 'applications');
+        log.log('Application', item.number);
         milstonePurposals.push(milestoneApplication);
       }
     }
@@ -409,40 +409,28 @@ const openPullRequestDetails = async () => {
       for (const item of pullRequests) {
         // get the file data for pull request using the pull request number
         const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-          `${grantRepoPullsPath}/${item.number}${FILES_PATH}`,
-          {
-            state: PULL_REQUEST_TYPE.OPEN,
-            base: BRANCHS.MASTER,
-            direction: ORDERS.DESC,
-            head: `w3f:${''}`
-          }
+          `${grantRepoPullsPath}/${item.number}${FILES_PATH}`
         );
-
-        const contentUrl = fileDetailsResponse.data[0].contents_url;
 
         // get the reviews details
         const reviews = await octoConnectionHelper.octoRequest(
-          `${grantRepoPullsPath}/${item.number}${REVIEWS_PATH}`,
-          {
-            state: PULL_REQUEST_TYPE.OPEN,
-            base: BRANCHS.MASTER,
-            direction: ORDERS.DESC,
-            head: `w3f:${''}`
-          }
+          `${grantRepoPullsPath}/${item.number}${REVIEWS_PATH}`
         );
-
         // reviewers for the current pull request
         const finalreviewers = getReviewers(reviews?.data);
-
         const fileName = fileDetailsResponse?.data[0]?.filename
           .replace('applications/', '')
           .toLowerCase();
 
-        const responseData: any = await axios.get(`${contentUrl}`);
-        const parsedData = await parseMetaDataFile(responseData?.data, {
-          [fileName]: { merged_at: item?.merged_at }
-        });
+        // parse the content of project proposal metadata file
+        const parsedData = await parseMetaDataFile(
+          { download_url: fileDetailsResponse.data[0].raw_url },
+          {
+            [fileName]: { merged_at: item?.merged_at }
+          }
+        );
 
+        // get assignes
         const assignees = item?.assignees.map((data: any) => ({
           git_user_id: data?.id || '',
           git_user_name: data?.login || '',
@@ -470,13 +458,17 @@ const openPullRequestDetails = async () => {
           extrected_proposal_data: JSON.stringify(parsedData)
         };
         purposals.push(proposalData);
+        log.log('Number: ', item.number);
       }
       page++;
     }
 
     return { purposals };
   } catch (err) {
-    log.red('Error while getting the all open pull request data:\n', err);
+    log.red(
+      'Error while getting the all open pull request data:\n',
+      err.message
+    );
     return null;
   }
 };
@@ -489,16 +481,6 @@ const openPullRequestDetails = async () => {
 const loadInitialGrantsData = async () => {
   try {
     log.log('Initial data started loading, it may take a while.');
-
-    // // this is the data for the open pull requests of the milestones repo
-    // const proposalMilestone1 = await getMilestoneOpenPullRequests();
-
-    // await mongoDataHelper.bulkSaveData(
-    //   DATA_MODELS.MilestoneProposal,
-    //   proposalMilestone1
-    // );
-
-    // return;
 
     // get all purposed md files
     const files: any = await octoConnectionHelper.octoRequest(
@@ -520,12 +502,6 @@ const loadInitialGrantsData = async () => {
 
     //get all opened pull request data
     const openPullRequests = await openPullRequestDetails();
-
-    // save the purposal data in bulk
-    await mongoDataHelper.bulkSaveData(
-      DATA_MODELS.Proposal,
-      openPullRequests.purposals
-    );
 
     // this is the data for the open pull requests of the milestones repo
     const proposalMilestone = await getMilestoneOpenPullRequests();
@@ -583,6 +559,12 @@ const loadInitialGrantsData = async () => {
       extractedData.project.push(mdData.project);
       extractedData.milestone.push(...milestones.milestoneFileData);
     }
+
+    // save the purposal data in bulk
+    await mongoDataHelper.bulkSaveData(
+      DATA_MODELS.Proposal,
+      openPullRequests.purposals
+    );
 
     // save the purposal data in bulk
     await mongoDataHelper.bulkSaveData(
