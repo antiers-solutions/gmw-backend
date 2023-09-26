@@ -13,7 +13,19 @@ export const PROJECT_STATUS = {
   Complete: 'complete'
 };
 
-export const PAGE_LIMIT = 100;
+export const GITHUB_ACTIONS = {
+  edited: 'edited',
+  opened: 'opened',
+  closed: 'closed',
+  assigned: 'assigned',
+  reopened: 'reopened',
+  unassigned: 'unassigned',
+  synchronize: 'synchronize',
+  review_requested: 'review_requested',
+  review_request_removed: 'review_request_removed'
+};
+
+export const PAGE_LIMIT = 10;
 export const GRANT_REPO_PATH = '/repos/w3f/Grants-Program';
 export const PULLS = '/pulls';
 export const REVIEWS_PATH = '/reviews';

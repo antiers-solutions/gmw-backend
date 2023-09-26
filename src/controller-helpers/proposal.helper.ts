@@ -1,10 +1,10 @@
 import mongoDataHelper from '../helpers/mongo.data.helper';
 import { ESResponse } from '../interfaces/responses.interface';
 import {
-  DATA_MODELS,
-  RESPONSE_MESSAGES,
   STATUS,
-  STATUS_CODES
+  DATA_MODELS,
+  STATUS_CODES,
+  RESPONSE_MESSAGES
 } from '../constants';
 
 class ProposalHelper {

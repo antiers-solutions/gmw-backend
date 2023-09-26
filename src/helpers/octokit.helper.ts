@@ -337,6 +337,7 @@ const getPullRequestDetails = async () => {
           approvals,
           team_name: '',
           branch_name: '',
+          milestones: [],
           proposal_name: fileName,
           file_name: fileName,
           created_at: item?.created_at,
@@ -448,6 +449,7 @@ const openPullRequestDetails = async () => {
           id: parsedData?.proposal?.id || v4(),
           repos: parsedData?.proposal?.repos || [],
           md_link: parsedData?.proposal?.md_link || '',
+          milestones: parsedData?.milestones || [],
           team_name: parsedData?.proposal?.team_name || '',
           proposal_name: parsedData?.proposal?.proposal_name || '',
           user_github_details: {
@@ -455,7 +457,10 @@ const openPullRequestDetails = async () => {
             git_user_name: item?.user?.login || '',
             git_avatar_url: item?.user?.avatar_url || ''
           },
-          extrected_proposal_data: JSON.stringify(parsedData)
+          extrected_proposal_data: JSON.stringify({
+            teams: parsedData.team,
+            project: parsedData.project
+          })
         };
         purposals.push(proposalData);
         log.log('Number: ', item.number);
