@@ -528,6 +528,7 @@ const getOldPullRequests = async (breakPoint: number = null) => {
           approvals,
           team_name: '',
           branch_name: '',
+          milestones: [],
           proposal_name: fileName,
           file_name: fileName,
           created_at: item?.created_at,

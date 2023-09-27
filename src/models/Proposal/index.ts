@@ -13,6 +13,7 @@ export interface IProposal extends Document {
   created_at: string;
   updated_at: string;
   proposal_name: string;
+  milestones: object[];
   user_github_details: string[];
   extrected_proposal_data: string;
 }
@@ -27,6 +28,7 @@ const projectSchema: Schema<IProposal> = new Schema({
   created_at: { type: String },
   updated_at: { type: String },
   proposal_name: { type: String },
+  milestones: { type: [Object] },
   pr_link: { type: String, unique: true },
   extrected_proposal_data: { type: String },
   assignees: {

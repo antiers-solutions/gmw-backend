@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { v4 } from 'uuid';
-import { GITHUB_REPO_PATHS, GITHUB_URL, STATUS } from '../constants';
+import { GITHUB_REPO_PATHS, GITHUB_URL, GITHUB_ACTIONS } from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
-import { parseMetaDataFile } from '../helpers/octokit.helper';
 import octoConnectionHelper from '../helpers/octoConnection.helper';
 import mongoDataHelper from '../helpers/mongo.data.helper';
 
@@ -127,7 +126,7 @@ class MilestoneGithubHookHelper {
           milestoneApplication
         );
 
-        if (requestBody.action === 'synchronize') {
+        if (requestBody.action === GITHUB_ACTIONS.synchronize) {
           const fileDetailsResponse = await octoConnectionHelper.octoRequest(
             `GET ${repoPath}/${pull_request?.number}/files`,
             {
@@ -145,8 +144,8 @@ class MilestoneGithubHookHelper {
 
         // handling all the reviewer in this section for the open PRs
         if (
-          requestBody.action === 'review_requested' ||
-          requestBody.action === 'review_requested_removed'
+          requestBody.action === GITHUB_ACTIONS.review_requested ||
+          requestBody.action === GITHUB_ACTIONS.review_request_removed
         ) {
           // store the new reviewers
           // update it in the DB using the pr number or link
@@ -168,8 +167,8 @@ class MilestoneGithubHookHelper {
         }
 
         if (
-          requestBody.action === 'assigned' ||
-          requestBody.action === 'unassigned'
+          requestBody.action === GITHUB_ACTIONS.assigned ||
+          requestBody.action === GITHUB_ACTIONS.unassigned
         ) {
           console.log('this is for the assigness', pull_request?.assignees);
 
@@ -252,7 +251,7 @@ class MilestoneGithubHookHelper {
 
         if (
           pull_request?.merged === false &&
-          pull_request?.status === 'closed'
+          pull_request?.status === GITHUB_ACTIONS.closed
         ) {
           await mongoDataHelper.updateData(
             DATA_MODELS.MilestoneProposal,
