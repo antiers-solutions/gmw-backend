@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { log } from '../utils/helper.utils';
+import { NET_ERROR_CODE } from '../constants';
 
 class OctoHelper {
   static octoConn: Octokit = null;
@@ -41,7 +42,13 @@ class OctoHelper {
       const res: any = await OctoHelper.octoConn.request(route, options);
       return res;
     } catch (err) {
-      log.error('Error while fething data from github api: ', err);
+      // if error is DNS lookup error then try again
+      if (err.message?.includes(NET_ERROR_CODE.EAI_AGAIN)) {
+        log.blue('DNS lookup error, Trying again...');
+        const res: any = this.octoRequest(route, options);
+        return res;
+      }
+      log.error('Error while fething data from github api:\n', err.message);
       return null;
     }
   };

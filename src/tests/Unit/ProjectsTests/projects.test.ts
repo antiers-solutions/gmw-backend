@@ -56,7 +56,6 @@ export const runProjectTests = () => {
         expect(e).to.have.property('status');
         expect(e).to.have.property('team_id');
         expect(e).to.have.property('md_link');
-        expect(e).to.have.property('html_url');
         expect(e).to.have.property('file_name');
         expect(e).to.have.property('total_cost');
         expect(e).to.have.property('md_content');
@@ -109,7 +108,6 @@ export const runProjectTests = () => {
         expect(e).to.have.property('level');
         expect(e).to.have.property('status');
         expect(e).to.have.property('team_id');
-        expect(e).to.have.property('html_url');
         expect(e).to.have.property('file_name');
         expect(e).to.have.property('total_cost');
         expect(e).to.have.property('milestones');

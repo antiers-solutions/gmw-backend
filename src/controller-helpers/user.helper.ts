@@ -3,7 +3,10 @@ import {
   STATUS_CODES,
   RESPONSE_MESSAGES,
   DATA_MODELS,
-  REDIS_VARIABLES
+  REDIS_VARIABLES,
+  GITHUB_URL,
+  GITHUB_REPO_PATHS,
+  GITHUB_API_URL
 } from '../constants';
 import { ESResponse } from '@interfaces';
 import axios from 'axios';
@@ -35,7 +38,7 @@ class UserHelper {
   }> => {
     try {
       const response = await axios.post(
-        process.env.GITHUB_VERIFY_ACCESS_TOKEN_URL,
+        `${GITHUB_URL}${GITHUB_REPO_PATHS.GITHUB_VERIFY_ACCESS_TOKEN_PATH}`,
         {
           client_id: process.env.GITHUB_CLIENT_ID,
           client_secret: process.env.GITHUB_CLIENT_SECRET,
@@ -156,11 +159,14 @@ class UserHelper {
    */
   private userSigninData = async (access_token: string) => {
     try {
-      const response = await axios.get(process.env.GIT_USER_DETAILS_URL, {
-        headers: {
-          Authorization: `token ${access_token}`
+      const response = await axios.get(
+        `${GITHUB_API_URL}${GITHUB_REPO_PATHS.USER_PATH}`,
+        {
+          headers: {
+            Authorization: `token ${access_token}`
+          }
         }
-      });
+      );
 
       return {
         id: response.data?.id,

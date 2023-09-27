@@ -92,7 +92,6 @@ class TeamsHelper {
           [
             'id',
             'start_date',
-            'html_url',
             'payment_details',
             'project_name',
             'status',

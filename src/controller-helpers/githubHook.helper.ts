@@ -1,8 +1,14 @@
 import axios from 'axios';
-import { PROJECT_STATUS, STATUS } from '../constants';
+import {
+  GITHUB_REPO_PATHS,
+  GITHUB_URL,
+  PROJECT_STATUS,
+  STATUS
+} from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
 import { parseMetaDataFile } from '../helpers/octokit.helper';
+import { log } from '../utils/helper.utils';
 
 class GithubHookHelper {
   static instance: GithubHookHelper = null;
@@ -209,17 +215,19 @@ class GithubHookHelper {
   };
 
   /**
-   * It merges the open pull requests
+   * merge the open pull request
    * @param pullRequestNumber
    * @returns
    */
   public mergePullRequest = async (pullRequestNumber: string) => {
     try {
+      //Need to change the process of authorization
       const headers = {
         Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN_CLASSIC}`
       };
-      const apiUrl = `${process.env.GITHUB_PULL_REQUEST_URL}/pulls/${pullRequestNumber}/merge`;
-      await axios.put(apiUrl, {}, { headers });
+      const mergeUrl = `${GITHUB_URL}${GITHUB_REPO_PATHS.GRANT_REPO}${GITHUB_REPO_PATHS.PULLS_PATH}/${pullRequestNumber}${GITHUB_REPO_PATHS.MERGE_PATH}`;
+      await axios.put(mergeUrl, {}, { headers });
+
       const searchResult = await MongoDataHelper.findAndQueryData(
         DATA_MODELS.Proposal,
         {}
@@ -230,9 +238,9 @@ class GithubHookHelper {
         data: searchResult
       };
     } catch (error) {
-      console.error(
-        'error while getting github pull or merge request data : ',
-        error
+      log.error(
+        'error while getting github pull or merge request data: ',
+        error.message
       );
       return {
         error: true,

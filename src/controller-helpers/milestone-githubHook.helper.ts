@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { v4 } from 'uuid';
-import { STATUS } from '../constants';
+import { GITHUB_REPO_PATHS, GITHUB_URL, STATUS } from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
 import { parseMetaDataFile } from '../helpers/octokit.helper';
@@ -286,17 +286,18 @@ class MilestoneGithubHookHelper {
   };
 
   /**
-   * It merges the open pull requests
+   * merge the pull request of milestones repo
    * @param pullRequestNumber
    * @returns
    */
   public mergePullRequest = async (pullRequestNumber: string) => {
     try {
+      //Need to change the process of authorization
       const headers = {
         Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN_CLASSIC}`
       };
-      const apiUrl = `${process.env.GITHUB_PULL_REQUEST_URL}/pulls/${pullRequestNumber}/merge`;
-      await axios.put(apiUrl, {}, { headers });
+      const mergeUrl = `${GITHUB_URL}${GITHUB_REPO_PATHS.DELIVERIES_REPO}${GITHUB_REPO_PATHS.PULLS_PATH}/${pullRequestNumber}${GITHUB_REPO_PATHS.MERGE_PATH}`;
+      await axios.put(mergeUrl, {}, { headers });
       const searchResult = await MongoDataHelper.findAndQueryData(
         DATA_MODELS.Proposal,
         {}

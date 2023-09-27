@@ -1,3 +1,35 @@
+export const PAGE_LIMIT = 100;
+export const GITHUB_URL = 'https://github.com';
+export const GITHUB_API_URL = 'https://api.github.com';
+
+// Github repo helper paths
+export const GITHUB_REPO_PATHS = {
+  // default path to used for repos
+  DEFAULT_PATH: '/repos/w3f',
+
+  //repos paths
+  DELIVERIES_REPO: '/Grant-Milestone-Delivery',
+  GRANT_REPO: '/Grants-Program',
+
+  // helper paths
+  APPLICATION_PATH: '/applications',
+  DELIVERIES_PATH: '/deliveries',
+  CONTENT_PATH: '/contents',
+  PULLS_PATH: '/pulls',
+  REVIEWS_PATH: '/reviews',
+  FILES_PATH: '/files',
+  MERGE_PATH: '/merge',
+  USER_PATH: '/user',
+
+  // full paths
+  GITHUB_VERIFY_ACCESS_TOKEN_PATH: '/login/oauth/access_token'
+};
+
+// network error codes
+export const NET_ERROR_CODE = {
+  EAI_AGAIN: 'EAI_AGAIN'
+};
+
 // DB data models
 export const DATA_MODELS = {
   User: 'User',
@@ -13,12 +45,6 @@ export const PROJECT_STATUS = {
   Complete: 'complete'
 };
 
-export const PAGE_LIMIT = 100;
-export const GRANT_REPO_PATH = '/repos/w3f/Grants-Program';
-export const PULLS = '/pulls';
-export const REVIEWS_PATH = '/reviews';
-export const FILES_PATH = '/files';
-export const GITHUB_URL = 'https://github.com';
 export const REVIEWS_STATUS = {
   CHANGES_REQUESTED: 'CHANGES_REQUESTED',
   APPROVED: 'APPROVED'
@@ -141,8 +167,8 @@ export const RESPONSE_MESSAGES = {
 
 // Error messages
 export const ERROR_MESSAGES = {
-  ERROR_WHILE_EXTRACTING_PULL_REQUEST_DATA:
-    'Something went wrong while extracting the pull request data',
+  WHILE_EXTRACTING_PULL_REQUEST_DATA:
+    'Something went wrong while extracting the grant pulls request data',
   ERROR_WHILE_READING_DATA_FROM_FILE:
     'Error while reading grant data from json file',
   ERROR_WHILE_SAVING_DATA_FROM_FILE:
@@ -150,7 +176,9 @@ export const ERROR_MESSAGES = {
   ERROR_WHILE_PARSING_METADATA_FILE: 'Error while parsing the metadata files',
   MONGODB_CONNECTION: 'Unable to connect to mongodb server',
   REDIS_CONNECTION: 'Unable to connect to redis server',
-  ENVIROMENT_VARS_LOAD: 'Env vars not loaded correctly'
+  ENVIROMENT_VARS_LOAD: 'Env vars not loaded correctly',
+  WHILE_LOADING_OPEN_PULLS: 'Error while loading the open pull requests',
+  WHILE_LOADING_INITIAL_DATA: 'Error while loading the initial grants data'
 };
 
 export const MONTHS = [

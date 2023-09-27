@@ -147,7 +147,6 @@ mocha.describe('GET /api/teams/get-by-id/:teamId', async () => {
       expect(e).to.have.property('level');
       expect(e).to.have.property('status');
       expect(e).to.have.property('team_id');
-      expect(e).to.have.property('html_url');
       expect(e).to.have.property('start_date');
       expect(e).to.have.property('total_cost');
       expect(e).to.have.property('milestones');
@@ -292,7 +291,6 @@ mocha.describe('GET /api/project/get-by-id/:projectId', async () => {
       expect(e).to.have.property('md_link');
       expect(e).to.have.property('team_id');
       expect(e).to.have.property('file_name');
-      expect(e).to.have.property('html_url');
       expect(e).to.have.property('total_cost');
       expect(e).to.have.property('milestones');
       expect(e).to.have.property('md_content');
@@ -325,7 +323,6 @@ mocha.describe('GET /api/project/search-by-name ', async () => {
       expect(e).to.have.property('level');
       expect(e).to.have.property('status');
       expect(e).to.have.property('team_id');
-      expect(e).to.have.property('html_url');
       expect(e).to.have.property('file_name');
       expect(e).to.have.property('total_cost');
       expect(e).to.have.property('milestones');
@@ -418,7 +415,6 @@ mocha.describe('GET /api/proposal/get-by-id/:proposalId', async () => {
       expect(e).to.have.property('md_link');
       expect(e).to.have.property('team_id');
       expect(e).to.have.property('file_name');
-      expect(e).to.have.property('html_url');
       expect(e).to.have.property('total_cost');
       expect(e).to.have.property('milestones');
       expect(e).to.have.property('md_content');
@@ -451,7 +447,6 @@ mocha.describe('GET /api/project/search-by-name ', async () => {
       expect(e).to.have.property('level');
       expect(e).to.have.property('status');
       expect(e).to.have.property('team_id');
-      expect(e).to.have.property('html_url');
       expect(e).to.have.property('file_name');
       expect(e).to.have.property('total_cost');
       expect(e).to.have.property('milestones');

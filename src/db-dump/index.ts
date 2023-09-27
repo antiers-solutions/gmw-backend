@@ -8,9 +8,8 @@ export const getGrantData = () => {
     const Project = transformJson('./w3f.projects.json');
     const Proposal = transformJson('./w3f.proposals.json');
     const Team = transformJson('./w3f.teams.json');
-    const MilestoneProposal = transformJson('./w3f.milestoneproposals.json');
 
-    return { Team, Project, Proposal, Milestone, MilestoneProposal };
+    return { Team, Project, Proposal, Milestone };
   } catch (err) {
     log.red(
       'Error while getting the grant data from json file:\n',

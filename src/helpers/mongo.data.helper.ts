@@ -271,11 +271,21 @@ class MongoDataHelper {
   };
 
   /**
-   * clear the all collections except users collection
+   * without any argument clear all collections except user or spefic collection
+   * if collection name is passed
    * @returns boolean
    */
-  public clearCollectionsData = async () => {
+  public clearCollectionsData = async (
+    collectionName: string = null,
+    query: any = null
+  ) => {
     try {
+      if (collectionName) {
+        const model = this._getModel(collectionName);
+        await model.deleteMany(query ? query : {});
+        return true;
+      }
+
       for (const modelKey in DATA_MODELS) {
         if (modelKey === DATA_MODELS.User) continue;
         const model = this._getModel(modelKey);

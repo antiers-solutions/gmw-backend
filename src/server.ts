@@ -2,18 +2,14 @@ import * as config from './config';
 const isLoaded = config.loadEnvs();
 
 import App from './app';
-import { DATA_MODELS, ERROR_MESSAGES } from './constants';
+import { ERROR_MESSAGES } from './constants';
 import { log } from './utils/helper.utils';
 import redisHelper from './helpers/redis.helper';
 import dbConnectionHandler from './mongoDB/connection';
-import mongoDataHelper from './helpers/mongo.data.helper';
 import UserController from './controllers/user.controller';
 import TeamsController from './controllers/teams.controller';
 import GraphController from './controllers/graph.controller';
-import loadInitialGrantsData, {
-  getMilestoneOpenPullRequests
-} from './helpers/octokit.helper';
-import { loadDataFromJsonFile } from './helpers/jsondata.helper';
+import { loadInitialData } from './helpers/octokit.helper';
 import ProjectController from './controllers/projects.controller';
 import ProposalController from './controllers/proposal.controller';
 import MilestoneController from './controllers/milestone.controller';
@@ -47,16 +43,8 @@ import MilestoneGithubHookController from './controllers/milestone-githubHook.co
       const isRedisConnected = await redisHelper.connectRedis();
       if (!isRedisConnected) throw new Error(ERROR_MESSAGES.REDIS_CONNECTION);
 
-      //check if there is already data loaded inside mongo
-      const projectCount = await mongoDataHelper.getCount(DATA_MODELS.Project);
-      log.log('Projects Count: ', projectCount);
-
-      if (!projectCount) {
-        if (!process.env.NO_FILE) {
-          const isDataLoaded = await loadDataFromJsonFile();
-          !isDataLoaded && loadInitialGrantsData();
-        } else loadInitialGrantsData();
-      }
+      // start initial data loading
+      await loadInitialData();
 
       // bind the port and listen for requests
       app.listen();
