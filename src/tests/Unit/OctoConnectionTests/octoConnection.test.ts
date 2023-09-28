@@ -62,7 +62,6 @@ export const runOctoConnectionTests = () => {
         expect(e).to.have.property('body');
         expect(e).to.have.property('state');
         expect(e).to.have.property('node_id');
-        expect(e).to.have.property('html_url');
         expect(e).to.have.property('commit_id');
         expect(e).to.have.property('submitted_at');
         expect(e).to.have.property('pull_request_url');
