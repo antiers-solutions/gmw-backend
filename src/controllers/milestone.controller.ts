@@ -36,7 +36,7 @@ class MilestoneController implements Controller {
     const pageLimit = Number(req.query.pageLimit) || 10;
     const pageNo = Number(req.query.pageNo) || 1;
 
-    const getAllMilestone = await milestoneHelper.getMilstonesData(
+    const getAllMilestone = await milestoneHelper.getMilestonesData(
       pageNo,
       pageLimit
     );

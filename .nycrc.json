@@ -11,7 +11,6 @@
         "src/helpers/octokit.helper.ts",
         "src/helpers/mongo.data.helper.ts",
         "src/responses/response.helper.ts",
-        "src/helpers/githubHook.helper.ts",
         "src/interfaces/request.interface.ts",
         "src/interfaces/responses.interface.ts",
         "src/interfaces/controller.interfaces.ts",
