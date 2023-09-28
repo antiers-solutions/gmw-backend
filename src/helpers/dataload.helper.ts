@@ -840,7 +840,7 @@ const getGrantOpenPullsReq = async () => {
         // parse the content of project proposal metadata file
         const parsedData = await parseMetaDataFile(
           {
-            mdData: resData.patch,
+            downloadUrl: resData.raw_url,
             name: fileName
           },
           {
