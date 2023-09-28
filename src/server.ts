@@ -9,7 +9,7 @@ import dbConnectionHandler from './mongoDB/connection';
 import UserController from './controllers/user.controller';
 import TeamsController from './controllers/teams.controller';
 import GraphController from './controllers/graph.controller';
-import { loadInitialData } from './helpers/octokit.helper';
+import { loadInitialData } from './helpers/dataload.helper';
 import ProjectController from './controllers/projects.controller';
 import ProposalController from './controllers/proposal.controller';
 import MilestoneController from './controllers/milestone.controller';

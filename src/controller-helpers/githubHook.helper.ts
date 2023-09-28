@@ -8,7 +8,7 @@ import {
 } from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
-import { parseMetaDataFile } from '../helpers/octokit.helper';
+import { parseMetaDataFile } from '../helpers/dataload.helper';
 import { log } from '../utils/helper.utils';
 
 class GithubHookHelper {
@@ -61,10 +61,10 @@ class GithubHookHelper {
                   git_avatar_url: pull_request?.avatar_url || ''
                 };
 
-                await MongoDataHelper.savaData(DATA_MODELS.Project, project);
+                await MongoDataHelper.saveData(DATA_MODELS.Project, project);
 
                 //save or update the saved Team data
-                await MongoDataHelper.savaData(DATA_MODELS.Team, team);
+                await MongoDataHelper.saveData(DATA_MODELS.Team, team);
 
                 // change status of project
                 await MongoDataHelper.updateData(
@@ -149,7 +149,7 @@ class GithubHookHelper {
               }
             };
 
-            await MongoDataHelper.savaData(DATA_MODELS.Proposal, dataToSave);
+            await MongoDataHelper.saveData(DATA_MODELS.Proposal, dataToSave);
             dataRes = null;
             break;
           }

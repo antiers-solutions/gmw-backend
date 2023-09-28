@@ -106,7 +106,7 @@ class UserHelper {
           };
         } else {
           // saving information of the user if the user is not already present in the db
-          await mongoDataHelper.savaData(DATA_MODELS.User, {
+          await mongoDataHelper.saveData(DATA_MODELS.User, {
             id: resUser?.id,
             git_id: resUser?.git_id,
             name: resUser?.name,

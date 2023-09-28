@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { v4 } from 'uuid';
-import { GITHUB_REPO_PATHS, GITHUB_URL, GITHUB_ACTIONS } from '../constants';
+import { GITHUB_REPO_PATHS, GITHUB_URL } from '../constants';
 import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
 import octoConnectionHelper from '../helpers/octoConnection.helper';
@@ -130,7 +130,7 @@ class MilestoneGithubHookHelper {
             assignee_details: []
           };
 
-          await mongoDataHelper.savaData(
+          await mongoDataHelper.saveData(
             DATA_MODELS.MilestoneProposal,
             milestoneApplication
           );
@@ -143,16 +143,15 @@ class MilestoneGithubHookHelper {
             { status: 'open' }
           );
           if (requestBody.action === 'synchronize') {
-            const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-              `GET ${repoPath}/${pull_request?.number}/files`,
-              {
-                state: 'open',
-                base: 'master',
-                direction: 'desc',
-                head: `w3f:${''}`
-              }
-            );
-
+            // const fileDetailsResponse = await octoConnectionHelper.octoRequest(
+            //   `GET ${repoPath}/${pull_request?.number}/files`,
+            //   {
+            //     state: 'open',
+            //     base: 'master',
+            //     direction: 'desc',
+            //     head: `w3f:${''}`
+            //   }
+            // );
             // extract the url
             // update it in the DB using the pr number or link
           }
@@ -263,7 +262,7 @@ class MilestoneGithubHookHelper {
               merged_at: pull_request?.merged_at || ''
             };
 
-            await mongoDataHelper.savaData(
+            await mongoDataHelper.saveData(
               DATA_MODELS.Milestone,
               milestoneMerged
             );

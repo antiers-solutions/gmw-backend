@@ -16,7 +16,8 @@ import {
   GITHUB_URL,
   REVIEWS_STATUS,
   GITHUB_REPO_PATHS,
-  PROJECT_STATUS
+  PROJECT_STATUS,
+  GITHUB_USER_DATA_URL
 } from '../constants';
 import { v4 } from 'uuid';
 import { get, log } from '../utils/helper.utils';
@@ -839,7 +840,7 @@ const getGrantOpenPullsReq = async () => {
         // parse the content of project proposal metadata file
         const parsedData = await parseMetaDataFile(
           {
-            mdData: resData.patch,
+            downloadUrl: resData.raw_url,
             name: fileName
           },
           {
@@ -959,7 +960,9 @@ const getMilestoneOpenPullsReq = async () => {
       const milestoneLevel = matches?.length ? parseInt(matches[1]) : 0;
 
       // this has the md content
-      const mdContentUrl = milestonefileDetailsResponse?.data[0]?.raw_url;
+      const mdContentUrl = milestonefileDetailsResponse?.data[0]?.raw_url
+        ?.replace(GITHUB_REPO_PATHS.RAW_PATH, '')
+        .replace(GITHUB_URL, GITHUB_USER_DATA_URL);
 
       // Extract and parse the table content from the Markdown content
 
@@ -1061,7 +1064,11 @@ const getMilestoneOpenPullsReq = async () => {
 const openPullsLoader = async () => {
   // for stop loading open pull requests
   const loadOpenPulls = !!Number(process.env.NOT_LOAD_OPEN_PULLS);
-  if (loadOpenPulls) return;
+  const loadOpenPullsOnce = !!Number(process.env.LOAD_OP_ONCE);
+  const milestoneProposalCount = mongoDataHelper.getCount(
+    DATA_MODELS.MilestoneProposal
+  );
+  if (loadOpenPulls && !loadOpenPullsOnce && milestoneProposalCount) return;
 
   // load the open pulls data
   const isOpenPullsLoaded = await loadOpenPullRequests();

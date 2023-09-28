@@ -45,7 +45,7 @@ class MongoDataHelper {
    * @param data
    * @returns
    */
-  public savaData = async (name: string, data: object) => {
+  public saveData = async (name: string, data: object) => {
     try {
       this._checkModel(name);
       const Model = this._getModel(name);
