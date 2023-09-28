@@ -191,7 +191,7 @@ class TeamsHelper {
       const newTeamId = v4();
 
       //save the new merged team
-      await mongoDataHelper.savaData(DATA_MODELS.Team, {
+      await mongoDataHelper.saveData(DATA_MODELS.Team, {
         id: newTeamId,
         name: newName.toLowerCase(),
         ...newData

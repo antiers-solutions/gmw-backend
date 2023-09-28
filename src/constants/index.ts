@@ -1,6 +1,7 @@
 export const PAGE_LIMIT = 100;
 export const GITHUB_URL = 'https://github.com';
 export const GITHUB_API_URL = 'https://api.github.com';
+export const GITHUB_USER_DATA_URL = 'https://raw.githubusercontent.com';
 
 // Github repo helper paths
 export const GITHUB_REPO_PATHS = {
@@ -20,6 +21,7 @@ export const GITHUB_REPO_PATHS = {
   FILES_PATH: '/files',
   MERGE_PATH: '/merge',
   USER_PATH: '/user',
+  RAW_PATH: '/raw',
 
   // full paths
   GITHUB_VERIFY_ACCESS_TOKEN_PATH: '/login/oauth/access_token'
