@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 import GithubHookHelper from '../controller-helpers/githubHook.helper';
 import { Octokit } from '@octokit/rest';
 import milestoneGithubHookHelper from '../controller-helpers/milestone-githubHook.helper';
+import { log } from '../utils/helper.utils';
 
 class MilestoneGithubHookController implements Controller {
   public path = '/milestone-github';
@@ -26,17 +27,18 @@ class MilestoneGithubHookController implements Controller {
    * @param req
    * @param res
    */
-  private handleWebhook = async (req: Request, res: Response) => {
+  private handleWebhook = async (req: Request) => {
     try {
       const octokit = new Octokit({
         auth: process.env.GITHUB_ACCESS_TOKEN_CLASSIC
       });
       const payload = req.body;
       const eventType = req.headers['x-github-event'];
-      console.log(eventType, 'event type');
+      log.log(eventType, 'event type');
 
       if (eventType == 'pull_request') {
-        const repositoryName = payload.repository.full_name;
+        // for later usage
+        // const repositoryName = payload.repository.full_name;
         const commitHash = payload.after;
 
         // Use the GitHub API to fetch the list of files changed in the commit
@@ -47,19 +49,20 @@ class MilestoneGithubHookController implements Controller {
         });
 
         const filesChanged = response.data.files;
-        console.log('Files changed in the push event:', filesChanged);
+        log.log('Files changed in the push event:', filesChanged);
       }
 
       if (eventType === 'issue_comment') {
         const commentText = payload.comment.body;
         const pullRequestTitle = payload.issue.title;
-        console.log(
+        log.log(
           `New comment on pull request "${pullRequestTitle}": ${commentText}`
         );
       }
 
       if (eventType === 'push') {
-        const repositoryName = payload.repository.full_name;
+        // for later usage
+        // const repositoryName = payload.repository.full_name;
         const commitHash = payload.after;
 
         // Use the GitHub API to fetch the list of files changed in the commit
@@ -70,7 +73,7 @@ class MilestoneGithubHookController implements Controller {
         });
 
         const filesChanged = response.data.files;
-        console.log('Files changed in the push event:', filesChanged);
+        log.log('Files changed in the push event:', filesChanged);
       }
     } catch (error) {
       console.error(error);
@@ -84,8 +87,8 @@ class MilestoneGithubHookController implements Controller {
    */
   private saveGithubData = async (req: Request, res: Response) => {
     try {
-      console.log('this has entered');
-      const event = req.get('X-GitHub-Event');
+      // for later usage
+      // const event = req.get('X-GitHub-Event');
 
       const secret = process.env.WEBHOOK_REQUEST_SECRET_MILESTONE;
       const signature = req.headers['x-hub-signature-256'];
@@ -100,14 +103,16 @@ class MilestoneGithubHookController implements Controller {
         const result = await milestoneGithubHookHelper.saveGithubData(req.body);
         if (result?.error) throw new Error('Github Error');
         else {
-          console.log('sending the response');
           res.status(200);
         }
       } else {
         throw new Error('invalid request');
       }
     } catch (error) {
-      console.log('Error while savingGithub data : ', error);
+      log.error(
+        'Error while saving github webhook (milestones) data:\n',
+        error
+      );
       res.status(500).send({ error: ERR.INTERNAL });
     }
   };

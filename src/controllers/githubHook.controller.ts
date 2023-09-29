@@ -25,7 +25,7 @@ class GithubHookController implements Controller {
    * @param req
    * @param res
    */
-  private handleWebhook = async (req: Request, res: Response) => {
+  private handleWebhook = async (req: Request) => {
     try {
       const octokit = new Octokit({
         auth: process.env.GITHUB_ACCESS_TOKEN_CLASSIC
@@ -35,7 +35,8 @@ class GithubHookController implements Controller {
       console.log(eventType, 'event type');
 
       if (eventType == 'pull_request') {
-        const repositoryName = payload.repository.full_name;
+        // later usage
+        // const repositoryName = payload.repository.full_name;
         const commitHash = payload.after;
 
         // Use the GitHub API to fetch the list of files changed in the commit
@@ -58,7 +59,8 @@ class GithubHookController implements Controller {
       }
 
       if (eventType === 'push') {
-        const repositoryName = payload.repository.full_name;
+        // later usage
+        // const repositoryName = payload.repository.full_name;
         const commitHash = payload.after;
 
         // Use the GitHub API to fetch the list of files changed in the commit

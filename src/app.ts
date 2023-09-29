@@ -27,7 +27,7 @@ class App {
    */
   public listen = () => {
     this.server = this.app.listen(process.env.PORT || 7200, () => {
-      log.log('Api is up and listning on port ', process.env.PORT || 7200);
+      log.logc('Api is up and listning on port ', process.env.PORT || 7200);
     });
   };
 
