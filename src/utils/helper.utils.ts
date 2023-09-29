@@ -4,6 +4,7 @@ import { NET_ERROR_CODE } from '../constants';
 // logging helper class
 class Logs {
   static log: Logs = null;
+  logging = Number(process.env.LOGGING) === 0 ? false : true;
 
   static getInstance = () => {
     if (!Logs.log) {
@@ -38,18 +39,34 @@ class Logs {
   };
 
   /**
-   * normal logs
+   * non-color logs
    * @param arg
    */
   log = (...arg: any) => {
+    if (!this.logging) return;
     console.log(...arg);
   };
 
   /**
-   * error logs
+   * non-color logs can't off using the LOGGING flag
+   * @param arg
+   */
+  logc = (...arg: any) => {
+    console.log(...arg);
+  };
+
+  /**
+   * direct logs to standard error
    */
   error = (...arg: any) => {
     console.error('\x1b[31m', ...arg, '\x1b[39m');
+  };
+
+  /**
+   * warning logs
+   */
+  warning = (...arg: any) => {
+    console.warn(...arg);
   };
 }
 export const log = Logs.getInstance();

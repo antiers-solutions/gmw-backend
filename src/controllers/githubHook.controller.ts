@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import * as express from 'express';
-import { ERR } from '../constants';
+import { ERR, STATUS_CODES } from '../constants';
 import { Controller } from '../interfaces';
 import { Request, Response } from 'express';
 import GithubHookHelper from '../controller-helpers/githubHook.helper';
@@ -24,27 +24,23 @@ class GithubHookController implements Controller {
    * @param res
    */
   private saveGithubData = async (req: Request, res: Response) => {
-    try {
-      // const event = req.get('X-GitHub-Event');
+    // const event = req.get('X-GitHub-Event');
 
-      const secret = process.env.WEBHOOK_REQUEST_SECRET;
-      const signature = req.headers['x-hub-signature-256'];
+    const secret = process.env.WEBHOOK_REQUEST_SECRET;
+    const signature = req.headers['x-hub-signature-256'];
 
-      const hmac = crypto.createHmac('sha256', secret);
-      const body = JSON.stringify(req.body);
-      hmac.update(body);
+    const hmac = crypto.createHmac('sha256', secret);
+    const body = JSON.stringify(req.body);
+    hmac.update(body);
 
-      const calculatedSignature = `sha256=${hmac.digest('hex')}`;
+    const calculatedSignature = `sha256=${hmac.digest('hex')}`;
 
-      if (signature === calculatedSignature) {
-        const result = await GithubHookHelper.saveGithubData(req.body);
-        if (result?.error) throw new Error('Github Error');
-        else res.status(200);
-      } else {
-        throw new Error('invalid request');
-      }
-    } catch (error) {
-      res.status(500).send({ error: ERR.INTERNAL });
+    if (signature === calculatedSignature) {
+      const result = await GithubHookHelper.saveGithubData(req.body);
+      if (result?.error) res.status(STATUS_CODES.INTERNALSERVER);
+      else res.status(STATUS_CODES.SUCCESS);
+    } else {
+      res.status(STATUS_CODES.INTERNALSERVER);
     }
   };
 
@@ -54,18 +50,17 @@ class GithubHookController implements Controller {
    * @param res
    */
   private mergePullRequest = async (req: Request, res: Response) => {
-    try {
-      if (req.body.pr_number) {
-        const result = await GithubHookHelper.mergePullRequest(
-          req.body.pr_number
-        );
-        if (result.error) throw new Error();
-        else res.status(200).send({ data: result.data });
-      } else {
-        res.status(500).send({ error: 'pr_number is not specified' });
-      }
-    } catch (error) {
-      res.status(500).send({ error: ERR.INTERNAL });
+    if (req.body.pr_number) {
+      const result = await GithubHookHelper.mergePullRequest(
+        req.body.pr_number
+      );
+      if (result.error)
+        res.status(STATUS_CODES.INTERNALSERVER).send({ error: ERR.INTERNAL });
+      else res.status(STATUS_CODES.SUCCESS).send({ data: result.data });
+    } else {
+      res
+        .status(STATUS_CODES.BADREQUEST)
+        .send({ error: ERR.PR_NUMBER_NOT_SPECIFIED });
     }
   };
 }

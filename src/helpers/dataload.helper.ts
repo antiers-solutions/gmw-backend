@@ -236,17 +236,17 @@ export const parseMetaDataFile = async (
     name?: string;
   },
   mergedPullRequests?: any
-) => {
+): Promise<any> => {
   try {
     let mdFileContent = '';
 
     // if the data is not present download it using the downloadUrl
-    if (mdDetails.downloadUrl) {
+    if (mdDetails?.downloadUrl) {
       const reqRes = await get(mdDetails.downloadUrl);
       if (!reqRes.data)
         throw new Error('fail to download grant metadata file data.');
       mdFileContent = reqRes.data;
-    } else mdFileContent = mdDetails.mdData;
+    } else mdFileContent = mdDetails?.mdData;
 
     // parsed metadata file in tree structure
     const mdParsedTree = reformMDContent(mdFileContent);
@@ -1064,11 +1064,12 @@ const getMilestoneOpenPullsReq = async () => {
 const openPullsLoader = async () => {
   // for stop loading open pull requests
   const loadOpenPulls = !!Number(process.env.NOT_LOAD_OPEN_PULLS);
-  const loadOpenPullsOnce = !!Number(process.env.LOAD_OP_ONCE);
-  const milestoneProposalCount = mongoDataHelper.getCount(
+  const milestoneProposalCount = await mongoDataHelper.getCount(
     DATA_MODELS.MilestoneProposal
   );
-  if (loadOpenPulls && !loadOpenPullsOnce && milestoneProposalCount) return;
+
+  // check if NOT_LOAD_OPEN_PULLS set or milestone proposal is empty or not
+  if (loadOpenPulls && milestoneProposalCount) return;
 
   // load the open pulls data
   const isOpenPullsLoaded = await loadOpenPullRequests();

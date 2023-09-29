@@ -142,7 +142,8 @@ export const REDIS_VARIABLES = {
 
 // Error messages for api
 export const ERR = {
-  INTERNAL: 'Internal server error'
+  INTERNAL: 'Internal server error',
+  PR_NUMBER_NOT_SPECIFIED: 'pr_number is not specified'
 };
 
 // Status codes

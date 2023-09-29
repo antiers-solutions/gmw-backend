@@ -12,9 +12,9 @@ before(() => {
 });
 
 describe('Unit Tests ', async () => {
-  // runGraphTests();
-  // runTeamsTests();
-  // runProjectTests();
+  runGraphTests();
+  runTeamsTests();
+  runProjectTests();
   runGitHubHookTests();
   // runProposalsTests();
   // runMilestoneTests();
