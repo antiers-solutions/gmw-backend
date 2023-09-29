@@ -15,8 +15,8 @@ describe('Unit Tests ', async () => {
   runGraphTests();
   runTeamsTests();
   runProjectTests();
+  runProposalsTests();
+  runMilestoneTests();
   runGitHubHookTests();
-  // runProposalsTests();
-  // runMilestoneTests();
-  // runOctoConnectionTests();
+  runOctoConnectionTests();
 });
