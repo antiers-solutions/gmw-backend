@@ -241,12 +241,12 @@ export const parseMetaDataFile = async (
     let mdFileContent = '';
 
     // if the data is not present download it using the downloadUrl
-    if (mdDetails.downloadUrl) {
+    if (mdDetails?.downloadUrl) {
       const reqRes = await get(mdDetails.downloadUrl);
       if (!reqRes.data)
         throw new Error('fail to download grant metadata file data.');
       mdFileContent = reqRes.data;
-    } else mdFileContent = mdDetails.mdData;
+    } else mdFileContent = mdDetails?.mdData;
 
     // parsed metadata file in tree structure
     const mdParsedTree = reformMDContent(mdFileContent);

@@ -32,6 +32,8 @@ class GithubHookHelper {
       const { pull_request } = requestBody;
       const { url } = pull_request;
 
+      log.log('requestBody.action : ', requestBody.action);
+
       const response: any = await axios.get(`${url}/files`);
       const element = response?.data[0];
 
@@ -39,83 +41,18 @@ class GithubHookHelper {
         const fileName = element.filename.split('/')[1];
 
         switch (requestBody.action) {
-          case GITHUB_ACTIONS.closed: {
-            if (pull_request?.merged) {
-              console.log('saving merged pull request data into Db..');
-
-              const dataRes: any = await MongoDataHelper.findAndQueryData(
-                DATA_MODELS.Proposal,
-                { pr_link: pull_request.html_url }
-              );
-
-              if (dataRes.length > 0) {
-                const { project, team } = JSON.parse(
-                  dataRes[0]?.extrected_proposal_data
-                );
-
-                project.start_date = pull_request.merged_at;
-                project.status = PROJECT_STATUS.Active;
-                project.user_github_details = {
-                  git_user_id: pull_request?.id || '',
-                  git_user_name: pull_request?.login || '',
-                  git_avatar_url: pull_request?.avatar_url || ''
-                };
-
-                await MongoDataHelper.saveData(DATA_MODELS.Project, project);
-
-                //save or update the saved Team data
-                await MongoDataHelper.saveData(DATA_MODELS.Team, team);
-
-                // change status of project
-                await MongoDataHelper.updateData(
-                  DATA_MODELS.Proposal,
-                  { pr_link: pull_request.html_url },
-                  { status: STATUS.ACCEPTED }
-                );
-                break;
-              } else {
-                throw new Error('Proposal in not present in the collection ');
-              }
-            } else {
-              console.log('Pull request Closed ... ');
-
-              await MongoDataHelper.updateData(
-                DATA_MODELS.Proposal,
-                { pr_link: pull_request?.html_url },
-                { status: STATUS.REJECTED }
-              );
-            }
-            break;
-          }
-
-          case GITHUB_ACTIONS.review_requested:
-          case GITHUB_ACTIONS.review_request_removed: {
-            console.log('reviewer added or removed....');
-            const reviewers = pull_request.requested_reviewers.map(
-              (review: any) => ({
-                reviewer_user_name: review?.login,
-                reviewer_id: review?.id,
-                reviewer_avatar_url: review?.avatar_url || ''
-              })
-            );
-
-            await MongoDataHelper.updateData(
-              DATA_MODELS.Proposal,
-              { pr_link: pull_request?.html_url },
-              { reviewers }
-            );
-            break;
-          }
-
           case GITHUB_ACTIONS.opened: {
-            console.log('new Pull request ..... ');
+            log.log('new Pull request ..... ');
 
-            const responseData: any = await axios.get(
-              `${element?.contents_url}`
+            let dataRes = await parseMetaDataFile(
+              {
+                downloadUrl: element.raw_url,
+                name: fileName
+              },
+              {
+                [fileName]: { merged_at: null }
+              }
             );
-            let dataRes = await parseMetaDataFile(responseData?.data, {
-              [fileName]: { mergedAt: null }
-            });
 
             const assignees = pull_request?.assignees.map((data: any) => ({
               git_user_id: data?.id || '',
@@ -150,20 +87,94 @@ class GithubHookHelper {
             };
 
             await MongoDataHelper.saveData(DATA_MODELS.Proposal, dataToSave);
+
             dataRes = null;
+            break;
+          }
+
+          case GITHUB_ACTIONS.closed: {
+            if (pull_request?.merged) {
+              log.log('saving merged pull request data into Db..');
+
+              const dataRes: any = await MongoDataHelper.findAndQueryData(
+                DATA_MODELS.Proposal,
+                { pr_link: pull_request.html_url }
+              );
+
+              if (dataRes.length > 0) {
+                const { project, team } = JSON.parse(
+                  dataRes[0]?.extrected_proposal_data
+                );
+
+                project.start_date = pull_request.merged_at;
+                project.status = PROJECT_STATUS.Active;
+                project.user_github_details = {
+                  git_user_id: pull_request?.id || '',
+                  git_user_name: pull_request?.login || '',
+                  git_avatar_url: pull_request?.avatar_url || ''
+                };
+
+                await MongoDataHelper.saveData(DATA_MODELS.Project, project);
+
+                //save or update the saved Team data
+                await MongoDataHelper.saveData(DATA_MODELS.Team, team);
+
+                // change status of project
+                await MongoDataHelper.updateData(
+                  DATA_MODELS.Proposal,
+                  { pr_link: pull_request.html_url },
+                  { status: STATUS.ACCEPTED }
+                );
+
+                break;
+              } else {
+                throw new Error('Proposal in not present in the collection ');
+              }
+            } else {
+              console.log('Pull request Closed ... ');
+
+              await MongoDataHelper.updateData(
+                DATA_MODELS.Proposal,
+                { pr_link: pull_request?.html_url },
+                { status: STATUS.REJECTED }
+              );
+            }
+            break;
+          }
+
+          case GITHUB_ACTIONS.review_requested:
+          case GITHUB_ACTIONS.review_request_removed: {
+            log.log('reviewer added or removed....');
+            const reviewers = pull_request.requested_reviewers.map(
+              (review: any) => ({
+                reviewer_user_name: review?.login,
+                reviewer_id: review?.id,
+                reviewer_avatar_url: review?.avatar_url || ''
+              })
+            );
+
+            await MongoDataHelper.updateData(
+              DATA_MODELS.Proposal,
+              { pr_link: pull_request?.html_url },
+              { reviewers }
+            );
+
             break;
           }
 
           case GITHUB_ACTIONS.synchronize:
           case GITHUB_ACTIONS.edited: {
-            console.log('new Pull request edited or synchronized ..... ');
+            log.log('new Pull request edited or synchronized ..... ');
 
-            const responseData: any = await axios.get(
-              `${element?.contents_url}`
+            const dataRes = await parseMetaDataFile(
+              {
+                name: fileName,
+                downloadUrl: element.raw_url
+              },
+              {
+                [fileName]: { mergedAt: null }
+              }
             );
-            const dataRes = await parseMetaDataFile(responseData?.data, {
-              [fileName]: { mergedAt: null }
-            });
 
             const dataToUpdate = {
               repos: dataRes?.proposal?.repos,
@@ -183,7 +194,7 @@ class GithubHookHelper {
 
           case GITHUB_ACTIONS.assigned:
           case GITHUB_ACTIONS.unassigned: {
-            console.log('assignees  added or removed ... ');
+            log.log('assignees  added or removed ... ');
 
             const assignees = pull_request?.assignees.map((data: any) => ({
               git_user_id: data?.id || '',
@@ -196,11 +207,12 @@ class GithubHookHelper {
               { pr_link: pull_request?.html_url },
               { assignees }
             );
+
             break;
           }
 
           case GITHUB_ACTIONS.reopened: {
-            console.log('Pull request Reopened ... ');
+            log.log('Pull request Reopened ... ');
 
             await MongoDataHelper.updateData(
               DATA_MODELS.Proposal,
@@ -212,8 +224,7 @@ class GithubHookHelper {
         }
 
         return {
-          error: false,
-          data: 'success'
+          error: false
         };
       } else {
         throw new Error('Changes are not in the applications/ directory');
@@ -224,8 +235,7 @@ class GithubHookHelper {
         error.message
       );
       return {
-        error: true,
-        data: null
+        error: true
       };
     }
   };
@@ -259,8 +269,7 @@ class GithubHookHelper {
         error.message
       );
       return {
-        error: true,
-        data: null
+        error: true
       };
     }
   };
