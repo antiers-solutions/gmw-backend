@@ -38,7 +38,7 @@ const {
 } = GITHUB_REPO_PATHS;
 
 /**
- * Helper for parsing the grant metadata
+ * Helper for parsing the grant metadata file
  */
 
 /**
@@ -270,7 +270,7 @@ export const parseMetaDataFile = async (
     const proposalId = v4();
 
     // reform team data for storing
-    const team: any = {
+    const team = {
       id: teamId,
       name:
         pairData[USED_STRINGS.TEAM_NAME] ||
@@ -281,7 +281,7 @@ export const parseMetaDataFile = async (
     };
 
     //reform project data for saving into db
-    const project: any = {
+    const project = {
       id: projectId,
       user_github_id: null,
       start_date: mergedPullRequests
@@ -731,65 +731,6 @@ const loadOldData = async (
  */
 
 /**
- * return true if the open pulls data loaded correctly otherwise false is returned
- * @returns boolean
- */
-const loadOpenPullRequests = async () => {
-  try {
-    const grantOpenPullsCount = mongoDataHelper.getCount(DATA_MODELS.Proposal, {
-      status: STATUS.OPEN
-    });
-    const milestoneOpenPullsCount = mongoDataHelper.getCount(
-      DATA_MODELS.MilestoneProposal
-    );
-
-    // check count of open pulls if found then remove them and store new whenever backend restarted
-    grantOpenPullsCount &&
-      (await mongoDataHelper.clearCollectionsData(DATA_MODELS.Proposal, {
-        status: STATUS.OPEN
-      }));
-    milestoneOpenPullsCount &&
-      (await mongoDataHelper.clearCollectionsData(
-        DATA_MODELS.MilestoneProposal
-      ));
-
-    // save the grants open pull requets
-    log.log('Loading Grants Open Pull Requests...');
-    const grantOpenPulls = await getGrantOpenPullsReq();
-
-    // save the purposal data in bulk
-    if (grantOpenPulls?.length) {
-      await mongoDataHelper.bulkSaveData(DATA_MODELS.Proposal, grantOpenPulls);
-      log.green('Grant Open Pulls Stored!');
-    } else {
-      log.error('fail to load open pulls data for grants');
-      return false;
-    }
-
-    // save the milestones open pull requests
-    log.log('Loading Milestones Open Pull Requests...');
-    const miltstoneOpenPulls = await getMilestoneOpenPullsReq();
-
-    // save the milstone proposals data
-    if (miltstoneOpenPulls?.length) {
-      await mongoDataHelper.bulkSaveData(
-        DATA_MODELS.MilestoneProposal,
-        miltstoneOpenPulls
-      );
-
-      log.green('Milestone Open Pulls Stored!');
-    } else {
-      log.error('fail to load open pulls data for milestones');
-      return false;
-    }
-    return true;
-  } catch (err) {
-    log.error(ERROR_MESSAGES.WHILE_LOADING_OPEN_PULLS, '\n', err.message);
-    return false;
-  }
-};
-
-/**
  * get all the open pull request data and parse it
  * @returns
  */
@@ -1055,6 +996,65 @@ const getMilestoneOpenPullsReq = async () => {
   } catch (error) {
     log.error('Open Pulls for Milestone section issue\n', error.message);
     return null;
+  }
+};
+
+/**
+ * return true if the open pulls data loaded correctly otherwise false is returned
+ * @returns boolean
+ */
+const loadOpenPullRequests = async () => {
+  try {
+    const grantOpenPullsCount = mongoDataHelper.getCount(DATA_MODELS.Proposal, {
+      status: STATUS.OPEN
+    });
+    const milestoneOpenPullsCount = mongoDataHelper.getCount(
+      DATA_MODELS.MilestoneProposal
+    );
+
+    // check count of open pulls if found then remove them and store new whenever backend restarted
+    grantOpenPullsCount &&
+      (await mongoDataHelper.clearCollectionsData(DATA_MODELS.Proposal, {
+        status: STATUS.OPEN
+      }));
+    milestoneOpenPullsCount &&
+      (await mongoDataHelper.clearCollectionsData(
+        DATA_MODELS.MilestoneProposal
+      ));
+
+    // save the grants open pull requets
+    log.log('Loading Grants Open Pull Requests...');
+    const grantOpenPulls = await getGrantOpenPullsReq();
+
+    // save the purposal data in bulk
+    if (grantOpenPulls?.length) {
+      await mongoDataHelper.bulkSaveData(DATA_MODELS.Proposal, grantOpenPulls);
+      log.green('Grant Open Pulls Stored!');
+    } else {
+      log.error('fail to load open pulls data for grants');
+      return false;
+    }
+
+    // save the milestones open pull requests
+    log.log('Loading Milestones Open Pull Requests...');
+    const miltstoneOpenPulls = await getMilestoneOpenPullsReq();
+
+    // save the milstone proposals data
+    if (miltstoneOpenPulls?.length) {
+      await mongoDataHelper.bulkSaveData(
+        DATA_MODELS.MilestoneProposal,
+        miltstoneOpenPulls
+      );
+
+      log.green('Milestone Open Pulls Stored!');
+    } else {
+      log.error('fail to load open pulls data for milestones');
+      return false;
+    }
+    return true;
+  } catch (err) {
+    log.error(ERROR_MESSAGES.WHILE_LOADING_OPEN_PULLS, '\n', err.message);
+    return false;
   }
 };
 

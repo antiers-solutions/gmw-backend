@@ -4,5 +4,5 @@
  * of the close pull requests
  */
 export const loadAndUpdateData = () => {
-  //
+  // for later usage
 };
