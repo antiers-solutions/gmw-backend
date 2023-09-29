@@ -27,7 +27,7 @@ class GithubHookHelper {
    * @param requestBody
    * @returns
    */
-  public saveGithubData = async (_event: string, requestBody: any) => {
+  public saveGithubData = async (requestBody: any) => {
     try {
       const { pull_request } = requestBody;
       const { url } = pull_request;
@@ -74,7 +74,7 @@ class GithubHookHelper {
                 );
                 break;
               } else {
-                throw new Error('Proposal in not present in the collection');
+                throw new Error('Proposal in not present in the collection ');
               }
             } else {
               console.log('Pull request Closed ... ');

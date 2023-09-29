@@ -16,7 +16,7 @@ export const runMilestoneTests = () => {
       count.resolves(MILESTONES.length);
       findData.resolves(MILESTONES);
 
-      const response = await milestoneHelper.getMilstonesData(1, 10);
+      const response = await milestoneHelper.getMilestonesData(1, 10);
 
       expect(response?.data?.milestones).to.be.an('array');
       expect(response?.data?.totalCount).to.be.a('number');

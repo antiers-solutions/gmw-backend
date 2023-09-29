@@ -19,7 +19,7 @@ class MilestoneHelper {
    * @param pageSize
    * @returns
    */
-  public getMilstonesData = async (
+  public getMilestonesData = async (
     pageNumber?: number,
     pageSize?: number
   ): Promise<ESResponse> => {

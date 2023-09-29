@@ -236,7 +236,7 @@ export const parseMetaDataFile = async (
     name?: string;
   },
   mergedPullRequests?: any
-) => {
+): Promise<any> => {
   try {
     let mdFileContent = '';
 

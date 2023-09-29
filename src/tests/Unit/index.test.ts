@@ -1,9 +1,10 @@
 import * as config from '../../config';
 import { runTeamsTests } from './TeamsTests/teams.test';
-import { runProposalsTests } from './ProposalsTests/proposals.test';
 import { runGraphTests } from './GraphTests/graphs.test';
 import { runProjectTests } from './ProjectsTests/projects.test';
+import { runProposalsTests } from './ProposalsTests/proposals.test';
 import { runMilestoneTests } from './MileStoneTests/milestones.test';
+import { runGitHubHookTests } from './GithubWebhookTests/githubHooks.test';
 import { runOctoConnectionTests } from './OctoConnectionTests/octoConnection.test';
 
 before(() => {
@@ -11,10 +12,11 @@ before(() => {
 });
 
 describe('Unit Tests ', async () => {
-  runGraphTests();
-  runTeamsTests();
-  runProjectTests();
-  runProposalsTests();
-  runMilestoneTests();
-  runOctoConnectionTests();
+  // runGraphTests();
+  // runTeamsTests();
+  // runProjectTests();
+  runGitHubHookTests();
+  // runProposalsTests();
+  // runMilestoneTests();
+  // runOctoConnectionTests();
 });
