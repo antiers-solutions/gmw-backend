@@ -1,10 +1,27 @@
 import axios from 'axios';
 import { v4 } from 'uuid';
-import { GITHUB_REPO_PATHS, GITHUB_URL } from '../constants';
-import { DATA_MODELS } from '../constants';
 import MongoDataHelper from '../helpers/mongo.data.helper';
 import octoConnectionHelper from '../helpers/octoConnection.helper';
 import mongoDataHelper from '../helpers/mongo.data.helper';
+import {
+  BRANCHS,
+  DATA_MODELS,
+  ERROR_MESSAGES,
+  HTTP_METHODS,
+  ORDERS,
+  PAGE_LIMIT,
+  PULL_REQUEST_TYPE,
+  STATUS,
+  USED_STRINGS,
+  LEVELS,
+  BUDGETS,
+  GITHUB_URL,
+  REVIEWS_STATUS,
+  GITHUB_REPO_PATHS,
+  PROJECT_STATUS,
+  GITHUB_USER_DATA_URL,
+  GITHUB_ACTIONS
+} from '../constants';
 
 class MilestoneGithubHookHelper {
   static instance: MilestoneGithubHookHelper = null;
@@ -24,11 +41,24 @@ class MilestoneGithubHookHelper {
    */
   public saveGithubData = async (requestBody: any) => {
     try {
+      // this is the incoming request
       if (requestBody?.pull_request) {
         const { pull_request } = requestBody;
         const prLink = pull_request?.url;
         const state = pull_request?.state; // to check if state is open or close
         const repoPath = `${process.env.GITHUB_REPO_DELIVERY_MY_TEST}`;
+        const prNumber = pull_request?.number;
+
+        // this is the file changes reponse of the open PR using octokit
+        const milestonefileDetailsResponse =
+          await octoConnectionHelper?.octoRequest(
+            `GET ${repoPath}/${prNumber}/files`
+          );
+
+        // this has the md content
+        const mdContentUrlMain = milestonefileDetailsResponse?.data[0]?.raw_url
+          ?.replace(GITHUB_REPO_PATHS.RAW_PATH, '')
+          .replace(GITHUB_URL, GITHUB_USER_DATA_URL);
 
         // if the pr is already stored in the db then move it to the else section
         // if the pr is alreday stored but the state is 'closed' then update the status to close and dont perfom any operations
@@ -38,15 +68,13 @@ class MilestoneGithubHookHelper {
             DATA_MODELS.MilestoneProposal,
             { pr_link: pull_request?.url }
           )) || [];
-
         const prLinkCheck = dbCheck.length ? dbCheck[0]?.pr_link : '';
-
         if (
           prLink === prLinkCheck &&
-          state === 'closed' &&
+          state === GITHUB_ACTIONS.closed &&
           !pull_request?.merged
         ) {
-          await mongoDataHelper.updateData(
+          const data = await mongoDataHelper.updateData(
             DATA_MODELS.MilestoneProposal,
             { id: dbCheck[0]?.id },
             { status: 'closed' }
@@ -54,7 +82,6 @@ class MilestoneGithubHookHelper {
         } else if (prLink !== prLinkCheck) {
           console.log('This is a new pull request');
           // extract the all required data from the incoming open PR and store it into the DB in proposal milestones
-
           const prNumber = pull_request?.number;
           const createdAt = pull_request?.body?.created_at;
           const updatedAt = pull_request?.updated_at;
@@ -64,27 +91,30 @@ class MilestoneGithubHookHelper {
             git_avatar: pull_request?.user?.avatar_url
           };
 
-          // get the file data for pull request using the pull request number
-          const MilestonefileDetailsResponse =
-            await octoConnectionHelper.octoRequest(
-              `GET /${repoPath}/${prNumber}/files`
-            );
+          // ################for further use will be removed###############
+          // // get the file data for pull request using the pull request number
+          // const milestonefileDetailsResponse =
+          //   await octoConnectionHelper.octoRequest(
+          //     `GET /${repoPath}/${prNumber}/files`
+          //   );
 
-          const fileName = MilestonefileDetailsResponse?.data[0]?.filename
+          const fileName = milestonefileDetailsResponse?.data[0]?.filename
             .replace('deliveries/', '')
             .toLowerCase();
 
           const res = await axios.get(
-            MilestonefileDetailsResponse?.data[0]?.raw_url
+            milestonefileDetailsResponse?.data[0]?.raw_url
           );
 
           const regex = /(\d+)\.md$/;
           const matches = fileName.match(regex) ? fileName.match(regex) : 0;
           const milestoneLevel = matches[1] ? parseInt(matches[1]) : 0;
 
-          // this has the md content
-
-          const mdContentUrl = MilestonefileDetailsResponse?.data[0]?.raw_url;
+          // ################for further use will be removed###############
+          // // this has the md content
+          // const mdContentUrl = milestonefileDetailsResponse?.data[0]?.raw_url
+          //   ?.replace(GITHUB_REPO_PATHS.RAW_PATH, '')
+          //   .replace(GITHUB_URL, GITHUB_USER_DATA_URL);
 
           const projectLink = res.data
             .split('\n')
@@ -107,7 +137,6 @@ class MilestoneGithubHookHelper {
           const parts = projectLink?.trim()?.length
             ? projectLink?.split('/')
             : null;
-          console.log('parts: ', parts);
 
           const applicationName = parts?.length ? parts[parts?.length - 1] : '';
 
@@ -121,7 +150,7 @@ class MilestoneGithubHookHelper {
             project_md_link: projectLink ? projectLink : '',
             milestone_level: Number(milestoneLevel),
             application_name: applicationName || '',
-            md_content_url: mdContentUrl || '',
+            md_content_url: mdContentUrlMain || '',
             md_link: null,
             created_at: createdAt,
             updated_at: updatedAt,
@@ -136,30 +165,30 @@ class MilestoneGithubHookHelper {
           );
         } else {
           console.log('This is the else section');
-
-          await mongoDataHelper.updateData(
+          const res = await mongoDataHelper.updateData(
             DATA_MODELS.MilestoneProposal,
             { id: dbCheck[0]?.id },
             { status: 'open' }
           );
-          if (requestBody.action === 'synchronize') {
-            // const fileDetailsResponse = await octoConnectionHelper.octoRequest(
-            //   `GET ${repoPath}/${pull_request?.number}/files`,
-            //   {
-            //     state: 'open',
-            //     base: 'master',
-            //     direction: 'desc',
-            //     head: `w3f:${''}`
-            //   }
-            // );
+
+          if (requestBody.action === GITHUB_ACTIONS.synchronize) {
             // extract the url
             // update it in the DB using the pr number or link
+            await mongoDataHelper.updateData(
+              DATA_MODELS.MilestoneProposal,
+              {
+                pr_link: prLink
+              },
+              {
+                md_content_url: mdContentUrlMain
+              }
+            );
           }
 
           // handling all the reviewer in this section for the open PRs
           if (
-            requestBody.action === 'review_requested' ||
-            requestBody.action === 'review_requested_removed'
+            requestBody.action === GITHUB_ACTIONS.review_requested ||
+            requestBody.action === GITHUB_ACTIONS.review_request_removed
           ) {
             // store the new reviewers
             // update it in the DB using the pr number or link
@@ -182,13 +211,11 @@ class MilestoneGithubHookHelper {
               },
               update
             );
-
-            console.log(data, 'this is the data');
           }
 
           if (
-            requestBody.action === 'assigned' ||
-            requestBody.action === 'unassigned'
+            requestBody.action === GITHUB_ACTIONS.assigned ||
+            requestBody.action === GITHUB_ACTIONS.unassigned
           ) {
             // store the new assignee
             // update it in the DB using the pr number or link
@@ -221,19 +248,11 @@ class MilestoneGithubHookHelper {
             // get all the data from the db using the pr number
             // save it into the collection of milestones
             // remove it from the milestone proposals
-            const data = await mongoDataHelper.findAndQueryData(
-              DATA_MODELS.MilestoneProposal,
-              { pr_link: prLink }
-            );
-
-            console.log(data, 'this is the data from merged if case');
-
+            const data = dbCheck;
             const projectsData =
               (await mongoDataHelper.findAndQueryData(DATA_MODELS.Project, {
                 file_name: data[0]?.application_name
               })) || [];
-
-            console.log(projectsData, 'Projects Data');
 
             const projectId = projectsData[0]?.id || '';
 
@@ -245,7 +264,7 @@ class MilestoneGithubHookHelper {
               $push: { milestones: milestones }
             };
 
-            await mongoDataHelper.updateData(
+            const check = await mongoDataHelper.updateData(
               DATA_MODELS.Project,
               { id: projectId },
               update
@@ -262,14 +281,21 @@ class MilestoneGithubHookHelper {
               merged_at: pull_request?.merged_at || ''
             };
 
-            await mongoDataHelper.saveData(
+            const check1 = await mongoDataHelper.saveData(
               DATA_MODELS.Milestone,
               milestoneMerged
             );
 
-            await mongoDataHelper.deleteData(DATA_MODELS.MilestoneProposal, {
-              pr_link: prLink
-            });
+            // console.log(check1, 'this is check 1');
+
+            const check2 = await mongoDataHelper.deleteData(
+              DATA_MODELS.MilestoneProposal,
+              {
+                pr_link: prLink
+              }
+            );
+
+            // console.log(check2, 'this is the check 2');
           }
 
           if (
@@ -292,6 +318,10 @@ class MilestoneGithubHookHelper {
             });
           }
         }
+        return {
+          error: false,
+          data: null
+        };
       }
     } catch (error) {
       console.error(

@@ -1,3 +1,743 @@
+export const findAndQueryClosedMilstone = {
+  id: 'a4a01e55-c3b2-445c-bd2d-6ca4b5e6d5f9',
+  pr_link:
+    'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/16',
+  pr_number: 16,
+  status: 'open',
+  file_name: 'hey.md',
+  user_github_details: [[Object]],
+  project_md_link:
+    'https://github.com/w3f/Grants-Program/blob/master/applications/multisignature_management_tool.md',
+  application_name: 'multisignature_management_tool.md',
+  md_content_url:
+    'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/raw/7ff5c723d290989d11f8a1de3184874e657dd5dd/deliveries%2Fhey.md',
+  milestone_level: 0,
+  md_link: null,
+  updated_at: '2023-09-28T10:51:47.000Z',
+  reviewers: [],
+  repos: [],
+  assignee_details: [],
+  __v: 0
+};
+export const findAndQueryClosedMilestoneProject = {
+  id: 'cf839ad4-809b-4eff-8363-d77a515876b7',
+  user_github_id: null,
+  file_name: 'multisignature_management_tool.md',
+  start_date: '2023-09-27T06:24:33.441Z',
+  payment_details: '3p1dgw78xgkq2ptpt1hcwmzozy1t93gmtb',
+  md_content:
+    '## Multi-signature_Management_Tool\n' +
+    '\n' +
+    '- **Proposer:** [Hong Tao](https://github.com/carlhong)\n' +
+    '- **Payment Address:** 3P1DGw78xgkQ2pTPT1hcwmzozY1T93gmTB\n' +
+    '\n' +
+    '## Project Description\n' +
+    '\n' +
+    "When we developed and used the multi-signature feature, we found that there is no multisignature wallet tool that can be used conveniently. The current wallet project is mainly designed for different usage environments, such as mobile wallet app, web wallet, chrome extension, etc. The development of these wallets (except the polkadot.js app) is at an early stage, and lack of multi-signature module . Polkadot.js apps is a very powerful tool, however the user experience and interface of substrate's native multi-signature module integrated in polkadot js is not friendly enough.\n" +
+    '\n' +
+    'Therefore, we want to develop a Web Multisignature Management Tool (like [gnosis](https://wallet.gnosis.pm/#/wallets) based on Ethereum), implement a Substrate multisignature Portal and Web Tool integration, and bring users a better experience. Besides, subscan will support multisig Extrinsic details display. At current stage, our goal is offering users have a convenient multisignature tool and helping  developers reduce the development cost of similar functions.\n' +
+    '\n' +
+    '- Network scalability\n' +
+    '\n' +
+    'All chains built  on substrate [`as_multi`](https://github.com/paritytech/substrate/blob/v2.0.0-rc6/frame/multisig/src/lib.rs#L235>)  module can use our tools to complete related operations directly. The chain that changes the [`as_multi`](https://github.com/paritytech/substrate/blob/v2.0.0-rc6/frame/multisig/src/lib.rs#L235>)  module can use our UX design partly or completely according to their needs to reduce the development cost.\n' +
+    '\n' +
+    '- Platform scalability\n' +
+    '\n' +
+    'The web Multi-signature Management Tool can only run on PC and use it with extension programs.\n' +
+    '\n' +
+    '## Objectives\n' +
+    '\n' +
+    '- Create multi-signature account and send extrinsic\n' +
+    '- Manage multi-signature wallets and extrinsic\n' +
+    '- `as_multi` Module subscan browser adaptation\n' +
+    '- Support multiple networks that are based on Substrate development\n' +
+    '- UX optimization\n' +
+    '\n' +
+    '## Team members\n' +
+    '\n' +
+    '[Wan Bei](https://github.com/woeom), [Hong Tao](https://github.com/carlhong)\n' +
+    '\n' +
+    '## Legal Structure\n' +
+    '\n' +
+    'Shanghai Yitaiyuan Tech\n' +
+    '\n' +
+    '## Team Website\n' +
+    '\n' +
+    '<https://www.subscan.io/>\n' +
+    '\n' +
+    "## Team's experience\n" +
+    '\n' +
+    'Our team is based in Shanghai and Nanjing. We are very interested in substrate and we have done a lot of related development work, such as helping Darwinia build web wallet. \n' +
+    '\n' +
+    'But our focus has always been Subscan blockchain explorer, which keeps it updated quickly.\n' +
+    '\n' +
+    '## Team Code Repos\n' +
+    '\n' +
+    '<https://github.com/itering/subscan>\n' +
+    '\n' +
+    '<https://github.com/itering/subscan_ui>\n' +
+    '\n' +
+    '## Development Roadmap\n' +
+    '\n' +
+    '### Basic function: generate Multisig account and send Extrinsic\n' +
+    '\n' +
+    '- General UI design (in [Figma](https://www.figma.com/proto/WaysNQWlEB4wWK0a4mzYJQ/Multisig?scaling=min-zoom&node-id=0%3A2))\n' +
+    '- backend design doc(in [Notion](https://www.notion.so/backend-doc-e7b4f79ede7b4d9cb39a52769c2aab2d), in [Google Docs](https://docs.google.com/document/d/18OgQ2Oh1oR9LIiZ9Uct35zHQ25f7gN1C-ngiqyrMfxU/edit?usp=sharing))\n' +
+    '- Integrate with polkadot js extension \n' +
+    '- Multisig wallet creation and management \n' +
+    '- Basic Multisig Extrinsic(transfer) create and process in Multisig wallet\n' +
+    '- Multisig wallet support polkadot mainnet\n' +
+    '- Build user-friendly UI to list decoded call data with its hash for users who participated in the multi-signatures, data will be verified by hash on frontend\n' +
+    '- Use database or other backend service to store the index data.\n' +
+    '- Docker Files and Images\n' +
+    '- Unit tests and integration test\n' +
+    '- Tutorials\n' +
+    '\n' +
+    'Total for worker implementation: 25 days\n' +
+    '\n' +
+    'Budget: 1 BTC\n' +
+    '\n' +
+    '### Advanced function: more features for multisig wallet and support more network\n' +
+    '\n' +
+    '- Multisig wallet support more kinds of Extrinsic such as staking, Democracy\n' +
+    '- Support kusama ,Darwinia and other network which base on Substrate 2.0 \n' +
+    '- Docker Files and Images\n' +
+    '- Unit tests and integration test\n' +
+    '- Tutorials\n' +
+    '\n' +
+    'Total for worker implementation: 30 days\n' +
+    '\n' +
+    'Budget: 1 BTC\n' +
+    '\n' +
+    ' \n' +
+    '\n' +
+    '**Total Budget: 2 BTC.**\n',
+  md_link:
+    'https://raw.githubusercontent.com/w3f/Grants-Program/master/applications/multisignature_management_tool.md',
+  project_name: 'multi-signature_management_tool',
+  status: 'complete',
+  total_cost: { amount: '', currency: '' },
+  total_duration: '',
+  team_id: 'de1f6c3e-d62a-47e3-a025-d6556c08caf0',
+  level: '1',
+  legal_structure: {
+    registered_address: '',
+    registered_legal_entity: ''
+  },
+  milestones: [
+    '7fd458a5-6248-4e36-8c18-1f17d00d2f70',
+    '1c351895-8b14-42d0-a2a9-d6ddb5a5db1c'
+  ],
+  totalMilestones: 0,
+  __v: 0
+};
+
+export const saveStubMergedMilestone = {
+  id: 'a4a01e55-c3b2-445c-bd2d-6ca4b5e6d5f9',
+  file_name: 'hey.md',
+  project_id: 'cf839ad4-809b-4eff-8363-d77a515876b7',
+  user_github_id: '113050323',
+  user_github_details: [
+    {
+      git_user_name: 'shauryaawasthi',
+      git_user_id: 113050323,
+      git_avatar: 'https://avatars.githubusercontent.com/u/113050323?v=4'
+    }
+  ],
+  project_md_link:
+    'https://github.com/w3f/Grants-Program/blob/master/applications/multisignature_management_tool.md',
+  md_content_url:
+    'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/raw/7ff5c723d290989d11f8a1de3184874e657dd5dd/deliveries%2Fhey.md',
+  merged_at: '2023-09-28T10:52:36Z'
+};
+
+export const axiosResponseMilestones = {
+  data:
+    '# Milestone Delivery :mailbox:\n' +
+    '\n' +
+    '> ⚡ Only the GitHub account, which is responsible for the pull request of the accepted application is allowed to submit milestones.\n' +
+    '> This is an test repo which is being used to test the possible cases ASASASASASASASASSASASASASAS\n' +
+    '>\n' +
+    "> Don't remove any of the mandatory parts presented in bold letters or as headlines! Lines starting with `>`, such as this one, can be removed.\n" +
+    '\n' +
+    '**The [invoice form :pencil:](https://forms.gle/8Wx7nxtq8fKrsuEz8) has been filled out correctly for this milestone and the delivery is according to the official [milestone delivery guidelines](https://github.com/w3f/General-Grants-Program/blob/master/grants/milestone-deliverables-guidelines.md).**\n' +
+    '\n' +
+    '- **Application Document:** [tDOT](https://github.com/w3f/Grants-Program/blob/master/applications/tdot.md).\n' +
+    '- **Milestone Number:** 2\n' +
+    '\n' +
+    "> Please provide a list of all deliverables of the milestone extracted from the initial application and a link to the deliverable itself. Ideally all links inside the below table should include a commit hash, which will be used for testing. If you don't provide a commit hash, we will work off the default branch of your repository. Thus, if you plan on continuing work after delivery, we suggest you create a separate branch for either the delivery or your continuing work.\n" +
+    '>\n' +
+    '> If there is anything particular about any of the deliverables we or a future reader should know, use the respective `Notes` column.\n' +
+    '\n' +
+    '| Number | Deliverable                               | Link                                                                                                                                                                                                                                                                                                                                                                                                                                           | Notes |\n' +
+    '| ------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |\n' +
+    '| 0b.    | Documentation                             | [architecture](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/architecture.png)                                                                                                                                                                                                                                                                                                                     |       |\n' +
+    '| 0c.    | Testing                                   | [xcm](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset-xcm/src/tests.rs#L158-L251) [stable-asset](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset/src/tests.rs#L1070-L1107)                                                                                                                                               |       |\n' +
+    '| 0d.    | Docker                                    | [Acala](https://github.com/AcalaNetwork/Acala/blob/ad240e9b96d4338a66fe7daad5bf53d8bb6a25f8/scripts/Dockerfile) [bifrost](https://github.com/nutsfinance/bifrost/blob/f0cba77760cf7e9b4576f6a255c6496edd36aad0/Dockerfile) [Local](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/Dockerfile)                                                                                                       |       |\n' +
+    '| 1.     | Substrate module: Stable Asset Pallet     | [code](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset/src/lib.rs#L765-L796)                                                                                                                                                                                                                                                                                                        |       |\n' +
+    '| 2.     | Substrate module: Stable Asset XCM Pallet | [code](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset-xcm/src/lib.rs#L297-L316) [local invocation](https://github.com/AcalaNetwork/Acala/blob/ad240e9b96d4338a66fe7daad5bf53d8bb6a25f8/runtime/karura/src/lib.rs#L1627-L1774) [xcm invocation](https://github.com/nutsfinance/bifrost/blob/f0cba77760cf7e9b4576f6a255c6496edd36aad0/runtime/bifrost-kusama/src/lib.rs#L1976-L1997) |       |\n'
+};
+
+export const milestonesPullRequetData = (properties: {
+  state?: string;
+  merged?: boolean;
+  assignees?: any[];
+  requested_reviewers?: any[];
+  url?: string;
+}) => {
+  const milestonePullData = {
+    pull_request: {
+      url:
+        properties?.url ||
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13',
+      id: 1530362585,
+      node_id: 'PR_kwDOKV4GPc5bN3rZ',
+      html_url:
+        'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/pull/13',
+      diff_url:
+        'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/pull/13.diff',
+      patch_url:
+        'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/pull/13.patch',
+      issue_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues/13',
+      number: 13,
+      // state: 'open' || 'close', // this an change that needs to be discussed
+      state: `${properties?.state}`, // this an change that needs to be discussed
+      locked: false,
+      title: 'For getting the response for the test functions',
+      user: {
+        login: 'shauryaawasthi',
+        id: 113050323,
+        node_id: 'U_kgDOBr0C0w',
+        avatar_url: 'https://avatars.githubusercontent.com/u/113050323?v=4',
+        gravatar_id: '',
+        url: 'https://api.github.com/users/shauryaawasthi',
+        html_url: 'https://github.com/shauryaawasthi',
+        followers_url: 'https://api.github.com/users/shauryaawasthi/followers',
+        following_url:
+          'https://api.github.com/users/shauryaawasthi/following{/other_user}',
+        gists_url:
+          'https://api.github.com/users/shauryaawasthi/gists{/gist_id}',
+        starred_url:
+          'https://api.github.com/users/shauryaawasthi/starred{/owner}{/repo}',
+        subscriptions_url:
+          'https://api.github.com/users/shauryaawasthi/subscriptions',
+        organizations_url: 'https://api.github.com/users/shauryaawasthi/orgs',
+        repos_url: 'https://api.github.com/users/shauryaawasthi/repos',
+        events_url:
+          'https://api.github.com/users/shauryaawasthi/events{/privacy}',
+        received_events_url:
+          'https://api.github.com/users/shauryaawasthi/received_events',
+        type: 'User',
+        site_admin: false
+      },
+      body:
+        '# Milestone Delivery Checklist\r\n' +
+        '\r\n' +
+        '- [x] The [milestone-delivery-template.md](https://github.com/w3f/Grant-Milestone-Delivery/blob/master/deliveries/milestone-delivery-template.md) has been copied and updated.\r\n' +
+        '- [ ] The [invoice form :pencil:](https://forms.gle/LSRr7PCjBpEbKGh89) has been filled out for this milestone.\r\n' +
+        '- [ ] This pull request is being made by the same account as the accepted application.\r\n' +
+        '- [ ] I have disclosed any and all sources of reused code in the submitted repositories and have done my due diligence to meet its license requirements.\r\n' +
+        '- [ ] In case of acceptance, the payment will be transferred to the BTC/ETH/fiat account provided in the application.\r\n' +
+        '- [ ] The delivery is according to the [Guidelines for Milestone Deliverables](https://grants.web3.foundation/docs/Support%20Docs/milestone-deliverables-guidelines).\r\n' +
+        '\r\n' +
+        'Link to the application pull request: https://github.com/w3f/Grants-Program/pull/XXX < please fill this in with the PR number of your application.\r\n',
+      created_at: '2023-09-26T10:50:31Z',
+      updated_at: '2023-09-26T11:55:17Z',
+      closed_at: null,
+      merged_at: null,
+      merge_commit_sha: '5092b7df85f8984c70651a824d3f6d818658367b',
+      assignee: null,
+      assignees: properties?.assignees || [],
+      requested_reviewers: properties?.requested_reviewers || [],
+      requested_teams: [],
+      labels: [],
+      milestone: null,
+      draft: false,
+      commits_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13/commits',
+      review_comments_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13/comments',
+      review_comment_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/comments{/number}',
+      comments_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues/13/comments',
+      statuses_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/statuses/18bf728b2a8f8b4b2e28d8303b96871e78521ae7',
+      head: {
+        label: 'shauryaawasthi:test_cases',
+        ref: 'test_cases',
+        sha: '18bf728b2a8f8b4b2e28d8303b96871e78521ae7',
+        user: {
+          login: 'shauryaawasthi',
+          id: 113050323,
+          node_id: 'U_kgDOBr0C0w',
+          avatar_url: 'https://avatars.githubusercontent.com/u/113050323?v=4',
+          gravatar_id: '',
+          url: 'https://api.github.com/users/shauryaawasthi',
+          html_url: 'https://github.com/shauryaawasthi',
+          followers_url:
+            'https://api.github.com/users/shauryaawasthi/followers',
+          following_url:
+            'https://api.github.com/users/shauryaawasthi/following{/other_user}',
+          gists_url:
+            'https://api.github.com/users/shauryaawasthi/gists{/gist_id}',
+          starred_url:
+            'https://api.github.com/users/shauryaawasthi/starred{/owner}{/repo}',
+          subscriptions_url:
+            'https://api.github.com/users/shauryaawasthi/subscriptions',
+          organizations_url: 'https://api.github.com/users/shauryaawasthi/orgs',
+          repos_url: 'https://api.github.com/users/shauryaawasthi/repos',
+          events_url:
+            'https://api.github.com/users/shauryaawasthi/events{/privacy}',
+          received_events_url:
+            'https://api.github.com/users/shauryaawasthi/received_events',
+          type: 'User',
+          site_admin: false
+        },
+        repo: {
+          id: 694037254,
+          node_id: 'R_kgDOKV4rBg',
+          name: 'Grants-Delivery-Repo',
+          full_name: 'shauryaawasthi/Grants-Delivery-Repo',
+          private: false,
+          owner: [Object],
+          html_url: 'https://github.com/shauryaawasthi/Grants-Delivery-Repo',
+          description: 'This is an test repo for Grants WEB3 milestones repo',
+          fork: true,
+          url: 'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo',
+          forks_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/forks',
+          keys_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/keys{/key_id}',
+          collaborators_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/collaborators{/collaborator}',
+          teams_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/teams',
+          hooks_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/hooks',
+          issue_events_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/issues/events{/number}',
+          events_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/events',
+          assignees_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/assignees{/user}',
+          branches_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/branches{/branch}',
+          tags_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/tags',
+          blobs_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/git/blobs{/sha}',
+          git_tags_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/git/tags{/sha}',
+          git_refs_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/git/refs{/sha}',
+          trees_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/git/trees{/sha}',
+          statuses_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/statuses/{sha}',
+          languages_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/languages',
+          stargazers_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/stargazers',
+          contributors_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/contributors',
+          subscribers_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/subscribers',
+          subscription_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/subscription',
+          commits_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/commits{/sha}',
+          git_commits_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/git/commits{/sha}',
+          comments_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/comments{/number}',
+          issue_comment_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/issues/comments{/number}',
+          contents_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/contents/{+path}',
+          compare_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/compare/{base}...{head}',
+          merges_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/merges',
+          archive_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/{archive_format}{/ref}',
+          downloads_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/downloads',
+          issues_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/issues{/number}',
+          pulls_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/pulls{/number}',
+          milestones_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/milestones{/number}',
+          notifications_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/notifications{?since,all,participating}',
+          labels_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/labels{/name}',
+          releases_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/releases{/id}',
+          deployments_url:
+            'https://api.github.com/repos/shauryaawasthi/Grants-Delivery-Repo/deployments',
+          created_at: '2023-09-20T07:53:58Z',
+          updated_at: '2023-09-20T07:53:58Z',
+          pushed_at: '2023-09-26T10:48:06Z',
+          git_url: 'git://github.com/shauryaawasthi/Grants-Delivery-Repo.git',
+          ssh_url: 'git@github.com:shauryaawasthi/Grants-Delivery-Repo.git',
+          clone_url:
+            'https://github.com/shauryaawasthi/Grants-Delivery-Repo.git',
+          svn_url: 'https://github.com/shauryaawasthi/Grants-Delivery-Repo',
+          homepage: null,
+          size: 2414,
+          stargazers_count: 0,
+          watchers_count: 0,
+          language: null,
+          has_issues: false,
+          has_projects: true,
+          has_downloads: true,
+          has_wiki: true,
+          has_pages: false,
+          has_discussions: false,
+          forks_count: 0,
+          mirror_url: null,
+          archived: false,
+          disabled: false,
+          open_issues_count: 0,
+          license: [Object],
+          allow_forking: true,
+          is_template: false,
+          web_commit_signoff_required: false,
+          topics: [],
+          visibility: 'public',
+          forks: 0,
+          open_issues: 0,
+          watchers: 0,
+          default_branch: 'master',
+          allow_squash_merge: true,
+          allow_merge_commit: true,
+          allow_rebase_merge: true,
+          allow_auto_merge: false,
+          delete_branch_on_merge: false,
+          allow_update_branch: false,
+          use_squash_pr_title_as_default: false,
+          squash_merge_commit_message: 'COMMIT_MESSAGES',
+          squash_merge_commit_title: 'COMMIT_OR_PR_TITLE',
+          merge_commit_message: 'PR_TITLE',
+          merge_commit_title: 'MERGE_MESSAGE'
+        }
+      },
+      base: {
+        label: 'shaurya-ATR940:master',
+        ref: 'master',
+        sha: '31140f5bbb865edc9d06d1749f5d4efc61c8b0fd',
+        user: {
+          login: 'shaurya-ATR940',
+          id: 129488822,
+          node_id: 'U_kgDOB7fXtg',
+          avatar_url: 'https://avatars.githubusercontent.com/u/129488822?v=4',
+          gravatar_id: '',
+          url: 'https://api.github.com/users/shaurya-ATR940',
+          html_url: 'https://github.com/shaurya-ATR940',
+          followers_url:
+            'https://api.github.com/users/shaurya-ATR940/followers',
+          following_url:
+            'https://api.github.com/users/shaurya-ATR940/following{/other_user}',
+          gists_url:
+            'https://api.github.com/users/shaurya-ATR940/gists{/gist_id}',
+          starred_url:
+            'https://api.github.com/users/shaurya-ATR940/starred{/owner}{/repo}',
+          subscriptions_url:
+            'https://api.github.com/users/shaurya-ATR940/subscriptions',
+          organizations_url: 'https://api.github.com/users/shaurya-ATR940/orgs',
+          repos_url: 'https://api.github.com/users/shaurya-ATR940/repos',
+          events_url:
+            'https://api.github.com/users/shaurya-ATR940/events{/privacy}',
+          received_events_url:
+            'https://api.github.com/users/shaurya-ATR940/received_events',
+          type: 'User',
+          site_admin: false
+        },
+        repo: {
+          id: 694027837,
+          node_id: 'R_kgDOKV4GPQ',
+          name: 'Grants-Delivery-Repo',
+          full_name: 'shaurya-ATR940/Grants-Delivery-Repo',
+          private: false,
+          owner: [Object],
+          html_url: 'https://github.com/shaurya-ATR940/Grants-Delivery-Repo',
+          description: 'This is an test repo for Grants WEB3 milestones repo',
+          fork: false,
+          url: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo',
+          forks_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/forks',
+          keys_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/keys{/key_id}',
+          collaborators_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/collaborators{/collaborator}',
+          teams_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/teams',
+          hooks_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/hooks',
+          issue_events_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues/events{/number}',
+          events_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/events',
+          assignees_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/assignees{/user}',
+          branches_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/branches{/branch}',
+          tags_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/tags',
+          blobs_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/git/blobs{/sha}',
+          git_tags_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/git/tags{/sha}',
+          git_refs_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/git/refs{/sha}',
+          trees_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/git/trees{/sha}',
+          statuses_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/statuses/{sha}',
+          languages_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/languages',
+          stargazers_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/stargazers',
+          contributors_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/contributors',
+          subscribers_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/subscribers',
+          subscription_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/subscription',
+          commits_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/commits{/sha}',
+          git_commits_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/git/commits{/sha}',
+          comments_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/comments{/number}',
+          issue_comment_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues/comments{/number}',
+          contents_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/contents/{+path}',
+          compare_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/compare/{base}...{head}',
+          merges_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/merges',
+          archive_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/{archive_format}{/ref}',
+          downloads_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/downloads',
+          issues_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues{/number}',
+          pulls_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls{/number}',
+          milestones_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/milestones{/number}',
+          notifications_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/notifications{?since,all,participating}',
+          labels_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/labels{/name}',
+          releases_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/releases{/id}',
+          deployments_url:
+            'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/deployments',
+          created_at: '2023-09-20T07:28:57Z',
+          updated_at: '2023-09-20T07:28:57Z',
+          pushed_at: '2023-09-26T10:50:31Z',
+          git_url: 'git://github.com/shaurya-ATR940/Grants-Delivery-Repo.git',
+          ssh_url: 'git@github.com:shaurya-ATR940/Grants-Delivery-Repo.git',
+          clone_url:
+            'https://github.com/shaurya-ATR940/Grants-Delivery-Repo.git',
+          svn_url: 'https://github.com/shaurya-ATR940/Grants-Delivery-Repo',
+          homepage: null,
+          size: 2403,
+          stargazers_count: 0,
+          watchers_count: 0,
+          language: null,
+          has_issues: true,
+          has_projects: true,
+          has_downloads: true,
+          has_wiki: true,
+          has_pages: false,
+          has_discussions: false,
+          forks_count: 1,
+          mirror_url: null,
+          archived: false,
+          disabled: false,
+          open_issues_count: 1,
+          license: [Object],
+          allow_forking: true,
+          is_template: false,
+          web_commit_signoff_required: false,
+          topics: [],
+          visibility: 'public',
+          forks: 1,
+          open_issues: 1,
+          watchers: 0,
+          default_branch: 'master',
+          allow_squash_merge: true,
+          allow_merge_commit: true,
+          allow_rebase_merge: true,
+          allow_auto_merge: false,
+          delete_branch_on_merge: false,
+          allow_update_branch: false,
+          use_squash_pr_title_as_default: false,
+          squash_merge_commit_message: 'COMMIT_MESSAGES',
+          squash_merge_commit_title: 'COMMIT_OR_PR_TITLE',
+          merge_commit_message: 'PR_TITLE',
+          merge_commit_title: 'MERGE_MESSAGE'
+        }
+      },
+      _links: {
+        self: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13'
+        },
+        html: {
+          href: 'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/pull/13'
+        },
+        issue: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues/13'
+        },
+        comments: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/issues/13/comments'
+        },
+        review_comments: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13/comments'
+        },
+        review_comment: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/comments{/number}'
+        },
+        commits: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13/commits'
+        },
+        statuses: {
+          href: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/statuses/18bf728b2a8f8b4b2e28d8303b96871e78521ae7'
+        }
+      },
+      author_association: 'CONTRIBUTOR',
+      auto_merge: null,
+      active_lock_reason: null,
+      merged: properties?.merged,
+      mergeable: null,
+      rebaseable: null,
+      mergeable_state: 'unknown',
+      merged_by: null,
+      comments: 0,
+      review_comments: 0,
+      maintainer_can_modify: true,
+      commits: 1,
+      additions: 23,
+      deletions: 0,
+      changed_files: 1
+    }
+  };
+
+  return milestonePullData;
+};
+
+export const octokitResponseOpenMilstones = {
+  status: 200,
+  url: 'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13/files',
+  headers: {
+    'access-control-allow-origin': '*',
+    'access-control-expose-headers':
+      'ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset',
+    'cache-control': 'private, max-age=60, s-maxage=60',
+    'content-encoding': 'gzip',
+    'content-security-policy': "default-src 'none'",
+    'content-type': 'application/json; charset=utf-8',
+    date: 'Tue, 26 Sep 2023 11:16:05 GMT',
+    etag: 'W/"a66d8124c5ca5928817a2b1dea5758676aca9e3fe8ab11dd55440301fb59f40a"',
+    'github-authentication-token-expiration': '2023-10-24 10:21:31 UTC',
+    'last-modified': 'Tue, 26 Sep 2023 11:16:03 GMT',
+    'referrer-policy':
+      'origin-when-cross-origin, strict-origin-when-cross-origin',
+    server: 'GitHub.com',
+    'strict-transport-security': 'max-age=31536000; includeSubdomains; preload',
+    'transfer-encoding': 'chunked',
+    vary: 'Accept, Authorization, Cookie, X-GitHub-OTP, Accept-Encoding, Accept, X-Requested-With',
+    'x-accepted-oauth-scopes': '',
+    'x-content-type-options': 'nosniff',
+    'x-frame-options': 'deny',
+    'x-github-api-version-selected': '2022-11-28',
+    'x-github-media-type': 'github.v3; format=json',
+    'x-github-request-id': '806C:3907F7:40FBF7:45E82A:6512BD75',
+    'x-oauth-scopes': 'admin:org, admin:public_key, repo, write:packages',
+    'x-ratelimit-limit': '5000',
+    'x-ratelimit-remaining': '4424',
+    'x-ratelimit-reset': '1695729479',
+    'x-ratelimit-resource': 'core',
+    'x-ratelimit-used': '576',
+    'x-xss-protection': '0'
+  },
+  data: [
+    {
+      sha: '601eb02fadc2e6577948a6de20dded4d54200bf2',
+      filename: 'deliveries/testCases.md',
+      status: 'added',
+      additions: 23,
+      deletions: 0,
+      changes: 23,
+      blob_url:
+        'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/blob/18bf728b2a8f8b4b2e28d8303b96871e78521ae7/deliveries%2FtestCases.md',
+      raw_url:
+        'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/raw/18bf728b2a8f8b4b2e28d8303b96871e78521ae7/deliveries%2FtestCases.md',
+      contents_url:
+        'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/contents/deliveries%2FtestCases.md?ref=18bf728b2a8f8b4b2e28d8303b96871e78521ae7',
+      patch:
+        '@@ -0,0 +1,23 @@\n' +
+        '+# Milestone Delivery :mailbox:\n' +
+        '+\n' +
+        '+> ⚡ Only the GitHub account, which is responsible for the pull request of the accepted application is allowed to submit milestones.\n' +
+        '+> This is an test repo which is being used to test the possible cases ASASASASASASASASSASASASASAS\n' +
+        '+>\n' +
+        "+> Don't remove any of the mandatory parts presented in bold letters or as headlines! Lines starting with `>`, such as this one, can be removed.\n" +
+        '+\n' +
+        '+**The [invoice form :pencil:](https://forms.gle/8Wx7nxtq8fKrsuEz8) has been filled out correctly for this milestone and the delivery is according to the official [milestone delivery guidelines](https://github.com/w3f/General-Grants-Program/blob/master/grants/milestone-deliverables-guidelines.md).**\n' +
+        '+\n' +
+        '+- **Application Document:** [tDOT](https://github.com/w3f/Grants-Program/blob/master/applications/tdot.md).\n' +
+        '+- **Milestone Number:** 2\n' +
+        '+\n' +
+        "+> Please provide a list of all deliverables of the milestone extracted from the initial application and a link to the deliverable itself. Ideally all links inside the below table should include a commit hash, which will be used for testing. If you don't provide a commit hash, we will work off the default branch of your repository. Thus, if you plan on continuing work after delivery, we suggest you create a separate branch for either the delivery or your continuing work.\n" +
+        '+>\n' +
+        '+> If there is anything particular about any of the deliverables we or a future reader should know, use the respective `Notes` column.\n' +
+        '+\n' +
+        '+| Number | Deliverable                               | Link                                                                                                                                                                                                                                                                                                                                                                                                                                           | Notes |\n' +
+        '+| ------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |\n' +
+        '+| 0b.    | Documentation                             | [architecture](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/architecture.png)                                                                                                                                                                                                                                                                                                                     |       |\n' +
+        '+| 0c.    | Testing                                   | [xcm](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset-xcm/src/tests.rs#L158-L251) [stable-asset](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset/src/tests.rs#L1070-L1107)                                                                                                                                               |       |\n' +
+        '+| 0d.    | Docker                                    | [Acala](https://github.com/AcalaNetwork/Acala/blob/ad240e9b96d4338a66fe7daad5bf53d8bb6a25f8/scripts/Dockerfile) [bifrost](https://github.com/nutsfinance/bifrost/blob/f0cba77760cf7e9b4576f6a255c6496edd36aad0/Dockerfile) [Local](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/Dockerfile)                                                                                                       |       |\n' +
+        '+| 1.     | Substrate module: Stable Asset Pallet     | [code](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset/src/lib.rs#L765-L796)                                                                                                                                                                                                                                                                                                        |       |\n' +
+        '+| 2.     | Substrate module: Stable Asset XCM Pallet | [code](https://github.com/nutsfinance/stable-asset/blob/a8487db99beb186a380965c3e1700e2bfee12a7e/lib/stable-asset-xcm/src/lib.rs#L297-L316) [local invocation](https://github.com/AcalaNetwork/Acala/blob/ad240e9b96d4338a66fe7daad5bf53d8bb6a25f8/runtime/karura/src/lib.rs#L1627-L1774) [xcm invocation](https://github.com/nutsfinance/bifrost/blob/f0cba77760cf7e9b4576f6a255c6496edd36aad0/runtime/bifrost-kusama/src/lib.rs#L1976-L1997) |       |'
+    }
+  ]
+};
+
+export const openMilestoneFistTimeSavaResponse = {
+  id: '827a4694-4712-45bf-8da4-be6a8f49ec8b',
+  pr_link:
+    'https://api.github.com/repos/shaurya-ATR940/Grants-Delivery-Repo/pulls/13',
+  pr_number: 13,
+  status: 'open',
+  file_name: 'testcases.md',
+  user_github_details: [
+    {
+      git_user_name: 'shauryaawasthi',
+      git_user_id: 113050323,
+      git_avatar: 'https://avatars.githubusercontent.com/u/113050323?v=4'
+    }
+  ],
+  project_md_link:
+    'https://github.com/w3f/Grants-Program/blob/master/applications/tdot.md.',
+  application_name: 'tdot.md.',
+  md_content_url:
+    'https://github.com/shaurya-ATR940/Grants-Delivery-Repo/raw/18bf728b2a8f8b4b2e28d8303b96871e78521ae7/deliveries%2FtestCases.md',
+  milestone_level: 0,
+  md_link: null,
+  updated_at: '2023-09-26T10:55:14.000Z',
+  reviewers: [],
+  repos: [],
+  assignee_details: []
+};
+
 export const PROJECTS: any[] = [
   {
     _id: {

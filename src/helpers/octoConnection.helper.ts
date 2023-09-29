@@ -48,7 +48,7 @@ class OctoHelper {
         const res: any = this.octoRequest(route, options);
         return res;
       }
-      log.error('Error while fething data from github api:\n', err.message);
+      log.error('Error while fething data from github api:\n', err);
       return null;
     }
   };

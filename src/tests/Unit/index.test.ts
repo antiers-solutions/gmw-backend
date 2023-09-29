@@ -5,6 +5,7 @@ import { runGraphTests } from './GraphTests/graphs.test';
 import { runProjectTests } from './ProjectsTests/projects.test';
 import { runMilestoneTests } from './MileStoneTests/milestones.test';
 import { runOctoConnectionTests } from './OctoConnectionTests/octoConnection.test';
+import { runMilestoneGithubHookHelperTests } from './MilestoneProposals/milestoneProposals.test';
 
 before(() => {
   config.loadEnvs();
@@ -17,4 +18,5 @@ describe('Unit Tests ', async () => {
   runProposalsTests();
   runMilestoneTests();
   runOctoConnectionTests();
+  runMilestoneGithubHookHelperTests();
 });
