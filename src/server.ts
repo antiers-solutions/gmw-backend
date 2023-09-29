@@ -17,6 +17,8 @@ import GithubHookController from './controllers/githubHook.controller';
 import DynamicCardsController from './controllers/dynamicCards.controller';
 import MilestoneProposalsController from './controllers/milestone-proposals.controller';
 import MilestoneGithubHookController from './controllers/milestone-githubHook.controller';
+import axios from 'axios';
+import octoConnectionHelper from '././helpers/octoConnection.helper';
 
 // start the service
 (async () => {
