@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { ERR } from '../constants';
+import { ERR_RES, USED_STRINGS } from '../constants';
 import crypto from 'crypto';
 import { Controller } from '../interfaces';
 import { Request, Response } from 'express';
@@ -34,7 +34,6 @@ class MilestoneGithubHookController implements Controller {
       });
       const payload = req.body;
       const eventType = req.headers['x-github-event'];
-      log.log(eventType, 'event type');
 
       if (eventType == 'pull_request') {
         // for later usage
@@ -91,29 +90,25 @@ class MilestoneGithubHookController implements Controller {
       // const event = req.get('X-GitHub-Event');
 
       const secret = process.env.WEBHOOK_REQUEST_SECRET_MILESTONE;
-      const signature = req.headers['x-hub-signature-256'];
+      const signature = req.headers[USED_STRINGS.X_HUB_SIGNATURE_256];
 
-      const hmac = crypto.createHmac('sha256', secret);
+      const hmac = crypto.createHmac(USED_STRINGS.SHA256, secret);
       const body = JSON.stringify(req.body);
       hmac.update(body);
 
-      const calculatedSignature = `sha256=${hmac.digest('hex')}`;
+      const calculatedSignature = `${USED_STRINGS.SHA256}=${hmac.digest(
+        'hex'
+      )}`;
 
       if (signature === calculatedSignature) {
         const result = await milestoneGithubHookHelper.saveGithubData(req.body);
-        if (result?.error) throw new Error('Github Error');
-        else {
-          res.status(200);
-        }
-      } else {
-        throw new Error('invalid request');
-      }
+        if (result?.error)
+          throw new Error('Issue while saving github webhook (milestone) data');
+        else res.status(200);
+      } else throw new Error('Invalid Request');
     } catch (error) {
-      log.error(
-        'Error while saving github webhook (milestones) data:\n',
-        error
-      );
-      res.status(500).send({ error: ERR.INTERNAL });
+      log.error('Milestone webhook error:\n', error);
+      res.status(500).send({ error: ERR_RES.INTERNAL_SERVER });
     }
   };
 
@@ -124,17 +119,16 @@ class MilestoneGithubHookController implements Controller {
    */
   private mergePullRequest = async (req: Request, res: Response) => {
     try {
-      if (req.body.pr_number) {
-        const result = await GithubHookHelper.mergePullRequest(
-          req.body.pr_number
-        );
+      const prNumber = req.body?.pr_number;
+      if (prNumber) {
+        const result = await GithubHookHelper.mergePullRequest(prNumber);
         if (result.error) throw new Error();
         else res.status(200).send({ data: result.data });
       } else {
-        res.status(500).send({ error: 'pr_number is not specified' });
+        res.status(500).send({ error: ERR_RES.INVALID_PR_NUM });
       }
     } catch (error) {
-      res.status(500).send({ error: ERR.INTERNAL });
+      res.status(500).send({ error: ERR_RES.INTERNAL_SERVER });
     }
   };
 }

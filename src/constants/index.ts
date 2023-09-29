@@ -99,7 +99,10 @@ export const USED_STRINGS = {
   TEAM_CODE_REPOS: 'Team Code Repos',
   DELIVERIES: 'deliveries',
   APPLICATION: 'Application',
-  DOCUMENT: 'Document'
+  DOCUMENT: 'Document',
+  X_HUB_SIGNATURE_256: 'x-hub-signature-256',
+  SHA256: 'sha256',
+  HEX: 'hex'
 };
 
 export const LEVELS = { L1: '1', L2: '2', L3: '3' };
@@ -141,8 +144,9 @@ export const REDIS_VARIABLES = {
 };
 
 // Error messages for api
-export const ERR = {
-  INTERNAL: 'Internal server error'
+export const ERR_RES = {
+  INTERNAL_SERVER: 'Internal server error!',
+  INVALID_PR_NUM: 'Invalid PR number'
 };
 
 // Status codes

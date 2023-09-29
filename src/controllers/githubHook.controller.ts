@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import * as express from 'express';
-import { ERR } from '../constants';
+import { ERR_RES } from '../constants';
 import { Controller } from '../interfaces';
 import { Request, Response } from 'express';
 import GithubHookHelper from '../controller-helpers/githubHook.helper';
@@ -42,7 +42,7 @@ class GithubHookController implements Controller {
         throw new Error('invalid request');
       }
     } catch (error) {
-      res.status(500).send({ error: ERR.INTERNAL });
+      res.status(500).send({ error: ERR_RES.INTERNAL_SERVER });
     }
   };
 
@@ -63,7 +63,7 @@ class GithubHookController implements Controller {
         res.status(500).send({ error: 'pr_number is not specified' });
       }
     } catch (error) {
-      res.status(500).send({ error: ERR.INTERNAL });
+      res.status(500).send({ error: ERR_RES.INTERNAL_SERVER });
     }
   };
 }
