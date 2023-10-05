@@ -26,6 +26,12 @@ class MilestoneProposalsController implements Controller {
       sessionCheck,
       this.getMilestoneProposalsById
     );
+
+    this.router.get(
+      `${this.path}/search-by-name`,
+      sessionCheck,
+      this.getProposalByName
+    );
   }
 
   /**
@@ -61,6 +67,20 @@ class MilestoneProposalsController implements Controller {
     const getMilestoneProposalsById =
       await milestoneProposalsHelper.getMilestoneProposalsDataById(searchID);
     sendResponse(res, getMilestoneProposalsById);
+  };
+
+  /**
+   * It is used for calling the search milestone proposal helper
+   * and sending response for it
+   * @param req
+   * @param res
+   */
+  getProposalByName = async (req: Request, res: Response) => {
+    const searchedName: any = req.query.searchedName;
+    const searchedResult = await milestoneProposalsHelper.getProposalDataByName(
+      searchedName
+    );
+    sendResponse(res, searchedResult);
   };
 }
 

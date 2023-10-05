@@ -89,6 +89,45 @@ class MilestoneProposalsHelper {
       return { data: null, error: true, status: STATUS_CODES.INTERNALSERVER };
     }
   };
+
+  /**
+   * handler gets milestones proposal data on basis of name from the database
+   * @param searchedName
+   * @returns
+   */
+  public getProposalDataByName = async (
+    searchedName: any
+  ): Promise<ESResponse> => {
+    try {
+      // using the regex expression for finding the name of the proposal in the db
+      const data = await mongoDataHelper.findAndQueryDataWithSelectedColumns(
+        DATA_MODELS.MilestoneProposal,
+        {
+          file_name: new RegExp(`^${searchedName.toLowerCase()}`)
+        },
+        []
+      );
+
+      // return if data returned is empty
+      if (!data.length) {
+        return {
+          status: STATUS_CODES.NOTFOUND,
+          message: RESPONSE_MESSAGES.NOT_FOUND
+        };
+      }
+
+      // return data
+      return { error: false, data };
+    } catch (error) {
+      console.log('error while searching : ', error);
+      return {
+        data: null,
+        error: true,
+        status: STATUS_CODES.INTERNALSERVER,
+        message: RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR
+      };
+    }
+  };
 }
 
 export default MilestoneProposalsHelper.getInstance();

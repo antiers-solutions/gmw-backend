@@ -78,11 +78,13 @@ class ProposalHelper {
    */
   getOpenProposalData = async (pageNumber: number, pageSize: number) => {
     try {
-      const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Proposal);
+      // total count of the open applications present in the DB
+      const totalCount = await mongoDataHelper.getCount(DATA_MODELS.Proposal, {
+        status: 'open'
+      });
 
       if (pageSize <= 40) {
         // getting data of all the proposals with filtered column and pagination
-
         const proposals = await mongoDataHelper.findAndQueryDataWithPagination(
           DATA_MODELS.Proposal,
           { status: STATUS.OPEN },
