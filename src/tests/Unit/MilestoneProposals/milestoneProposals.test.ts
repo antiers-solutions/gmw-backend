@@ -13,6 +13,7 @@ import {
   saveStubMergedMilestone
 } from '../mockedData';
 import axios from 'axios';
+import { log } from '../../../utils/helper.utils';
 
 export const runMilestoneGithubHookHelperTests = () => {
   describe('MilestoneGithubHookHelper', () => {
@@ -111,13 +112,12 @@ export const runMilestoneGithubHookHelperTests = () => {
           milestonePullData
         );
 
-        console.log(
+        log.log(
           response,
           'This is the test reponse for non merged close request milestone'
         );
         expect(response?.data).to.deep.equal(null);
         expect(response?.error).to.deep.equal(false);
-        /* expected data */
       });
 
       it('should handle a closed merged pull request', async () => {

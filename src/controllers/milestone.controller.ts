@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import milestoneHelper from '../controller-helpers/milestone.helper';
 import { sessionCheck } from '../middleware/sessionCheck';
 import sendResponse from '../responses/response.helper';
+import milestoneProposalsHelper from '../controller-helpers/milestone-proposals.helper';
 class MilestoneController implements Controller {
   public path = '/milestone';
 
@@ -27,7 +28,7 @@ class MilestoneController implements Controller {
   }
 
   /**
-   * It gets all the milestone datacfrom its helper
+   * It gets all the milestone data from its helper
    * and sends the response
    * @param req
    * @param res

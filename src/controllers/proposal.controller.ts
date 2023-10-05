@@ -30,7 +30,7 @@ class ProposalContoller implements Controller {
     this.router.get(
       `${this.path}/search-by-name`,
       sessionCheck,
-      this.getProposalById
+      this.getProposalByName
     );
   };
 
